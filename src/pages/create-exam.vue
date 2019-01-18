@@ -19,6 +19,17 @@
                         @blur="editTitleIndex = -1"
                         size="small"
                         suffix-icon="el-icon-edit"></el-input>
+              <span class="operation-box">
+                <span class="operation-item">增加选项</span>
+                <span class="operation-item"
+                      v-if="index!=0"
+                      @click="QuestionMoveUp(index)">上移</span>
+                <span class="operation-item"
+                      v-if="index!=questionList.length-1"
+                      @click="QuestionMoveDown(index)">下移</span>
+                <span class="operation-item text-danger"
+                      @click="QuestionDel(index)">删除</span>
+              </span>
             </p>
             <div class="answer-box"
                  v-if="item.type == 1 || item.type == 3">
@@ -41,12 +52,12 @@
                           @click="setAnswer(index, optionIndex)">设为答案</span>
                     <span class="operation-item"
                           v-if="optionIndex!=0"
-                          @click="moveUp(index, optionIndex)">上移</span>
+                          @click="OptionMoveUp(index, optionIndex)">上移</span>
                     <span class="operation-item"
                           v-if="optionIndex!=item.option.length-1"
-                          @click="moveDown(index, optionIndex)">下移</span>
-                    <span class="operation-item"
-                          @click="delOption(index, optionIndex)">删除</span>
+                          @click="OptionMoveDown(index, optionIndex)">下移</span>
+                    <span class="operation-item text-danger"
+                          @click="OptionDel(index, optionIndex)">删除</span>
                   </div>
                 </div>
               </div>
@@ -93,6 +104,7 @@
   </div>
 </template>
 <script>
+import { zIndexUp, zIndexDown } from '@/utils/array'
 export default {
   data () {
     return {
@@ -178,10 +190,20 @@ export default {
     }
   },
   methods: {
+    QuestionMoveUp (questionIndex) {
+      zIndexUp(this.questionList, questionIndex)
+    },
+    QuestionMoveDown (questionIndex) {
+      zIndexDown(this.questionList, questionIndex)
+    },
     setAnswer (questionIndex, optionIndex) { },
-    moveUp (questionIndex, optionIndex) { },
-    moveDown (questionIndex, optionIndex) { },
-    delOption (questionIndex, optionIndex) { }
+    OptionMoveUp (questionIndex, optionIndex) {
+      zIndexUp(this.questionList[questionIndex].option, optionIndex)
+    },
+    OptionMoveDown (questionIndex, optionIndex) {
+      zIndexDown(this.questionList[questionIndex].option, optionIndex)
+    },
+    OptionDel (questionIndex, optionIndex) { }
   },
   directives: {
     focus: {
@@ -228,9 +250,13 @@ export default {
         }
         .t-info {
           line-height: 32px;
+          width: 100%;
+          flex: 1;
         }
         .t-input {
           display: none;
+          width: 100%;
+          flex: 1;
         }
         &.editing {
           .t-input {
@@ -238,6 +264,17 @@ export default {
           }
           .t-info {
             display: none;
+          }
+        }
+        .operation-box {
+          width: 230px;
+          text-align: right;
+          .operation-item {
+            margin: 0 5px;
+            font-size: 14px;
+            line-height: 32px;
+            color: #2d8cf0;
+            cursor: pointer;
           }
         }
       }
@@ -313,6 +350,9 @@ export default {
       }
     }
   }
+}
+.text-danger {
+  color: #f56c6c !important;
 }
 </style>
 
