@@ -17,6 +17,12 @@ Vue.use(ElementUI)
 // Vue.use(CheckboxGroup)
 // Vue.use(Input)
 
+Vue.directive('focus', {
+  inserted: function (el) {
+    el.focus()
+  }
+})
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
