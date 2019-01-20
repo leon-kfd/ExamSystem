@@ -7,27 +7,36 @@
 */
 function swapArray (arr, index1, index2) {
   arr[index1] = arr.splice(index2, 1, arr[index1])[0];
-  return arr;
+  return arr
 }
 
-//上移 将当前数组index索引与后面一个元素互换位置，向数组后面移动一位
+// 上移 将当前数组index索引与后面一个元素互换位置，向数组后面移动一位
 
 function zIndexUp (arr, index) {
-  if (index != 0) {
-    swapArray(arr, index, index - 1);
+  if (index !== 0) {
+    swapArray(arr, index, index - 1)
   } else {
-    console.log('Err: 已经处于置顶，无法上移');
+    console.log('Err: 已经处于置顶，无法上移')
   }
 }
 
-//下移 将当前数组index索引与前面一个元素互换位置，向数组前面移动一位
+// 下移 将当前数组index索引与前面一个元素互换位置，向数组前面移动一位
 
 function zIndexDown (arr, index) {
-  if (index + 1 != arr.length) {
-    swapArray(arr, index, index + 1);
+  if (index + 1 !== arr.length) {
+    swapArray(arr, index, index + 1)
   } else {
-    console.log('Err: 已经处于置底，无法下移');
+    console.log('Err: 已经处于置底，无法下移')
   }
 }
 
-export { swapArray, zIndexUp, zIndexDown }
+// 删除数组元素
+function delItem (arr, index) {
+  if (index < arr.length) {
+    arr.splice(index, 1)
+  } else {
+    console.log('Err: 超出数组长度')
+  }
+}
+
+export { swapArray, zIndexUp, zIndexDown, delItem }
