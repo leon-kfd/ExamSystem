@@ -1,5 +1,6 @@
 <template>
-  <div class="page">
+  <div class="page"
+       id="CreateExam">
     <div class="container">
       <div class="create-exam-box">
         <h1 style="padding: 8px">编辑试题</h1>
@@ -16,11 +17,15 @@
               <el-input v-model="item.title"
                         class="t-input"
                         v-focus
+                        type="textarea"
+                        :autosize="{minRows:1, maxRows: 4}"
                         @blur="editTitleIndex = -1"
+                        @keydown.native="textareaTitleBlur($event)"
                         size="small"
                         suffix-icon="el-icon-edit"></el-input>
               <span class="operation-box">
-                <span class="operation-item">增加选项</span>
+                <span class="operation-item"
+                      v-if="item.type == 1 || item.type == 3">增加选项</span>
                 <span class="operation-item"
                       v-if="index!=0"
                       @click="QuestionMoveUp(index)">上移</span>
@@ -43,12 +48,15 @@
                      }">
                   <span class="options">{{optionIndex | questionOption}}</span>
                   <span class="info"
-                        @click="editOptionIndex = optionIndex; currentTestIndex = index">{{optionItem.text}}</span>
+                        @click="editOptionIndex = optionIndex; currentTestIndex = index; editBlurFlag = true">{{optionItem.text}}</span>
                   <el-input v-model="optionItem.text"
                             class="t-input"
                             v-focus
                             size="small"
+                            type="textarea"
+                            :autosize="{minRows:1, maxRows: 4}"
                             @blur="editOptionIndex = -1; currentTestIndex = -1"
+                            @keydown.native="textareaOptionBlur($event, index, optionIndex)"
                             suffix-icon="el-icon-edit"></el-input>
                   <div class="operation-box">
                     <span class="operation-item"
@@ -56,7 +64,7 @@
                           @click="setAnswer(index, optionIndex)">设为答案</span>
                     <span class="operation-item"
                           v-else
-                          @click="setAnswer(index, optionIndex)">取消设为答案</span>
+                          @click="cancelAnswer(index, optionIndex)">取消设为答案</span>
                     <span class="operation-item"
                           v-if="optionIndex!=0"
                           @click="OptionMoveUp(index, optionIndex)">上移</span>
@@ -81,7 +89,7 @@
                           @click="setAnswer(index, 0)">设为答案</span>
                     <span class="operation-item"
                           v-else
-                          @click="setAnswer(index, 0)">取消设为答案</span>
+                          @click="cancelAnswer(index, 0)">取消设为答案</span>
                   </div>
                 </div>
               </div>
@@ -95,7 +103,7 @@
                           @click="setAnswer(index, 1)">设为答案</span>
                     <span class="operation-item"
                           v-else
-                          @click="setAnswer(index, 0)">取消设为答案</span>
+                          @click="cancelAnswer(index, 1)">取消设为答案</span>
                   </div>
                 </div>
               </div>
@@ -105,16 +113,20 @@
         <div class="create-btn-box">
           <el-button type="primary"
                      plain
-                     icon="el-icon-plus">单选题</el-button>
+                     icon="el-icon-plus"
+                     @click="addQuerstion(1)">单选题</el-button>
           <el-button type="primary"
                      plain
-                     icon="el-icon-plus">判断题</el-button>
+                     icon="el-icon-plus"
+                     @click="addQuerstion(2)">判断题</el-button>
           <el-button type="primary"
                      plain
-                     icon="el-icon-plus">多选题</el-button>
+                     icon="el-icon-plus"
+                     @click="addQuerstion(3)">多选题</el-button>
           <el-button type="primary"
                      plain
-                     icon="el-icon-plus">问答题</el-button>
+                     icon="el-icon-plus"
+                     @click="addQuerstion(4)">问答题</el-button>
         </div>
       </div>
     </div>
@@ -126,56 +138,7 @@ export default {
   data () {
     return {
       typeList: ['单选题', '判断题', '多选题', '问答题'],
-      questionList: [
-        {
-          type: 1,
-          title: '单选题1 - title 测试',
-          option: [
-            {
-              text: 'option1'
-            },
-            {
-              text: 'option2'
-            },
-            {
-              text: 'option3'
-            },
-            {
-              text: 'option4'
-            }
-          ],
-          answer: 1
-        },
-        {
-          type: 2,
-          title: '判断题2 - title 测试',
-          answer: 1
-        },
-        {
-          type: 3,
-          title: '多选题 - title',
-          option: [
-            {
-              text: 'option1'
-            },
-            {
-              text: 'option2'
-            },
-            {
-              text: 'option3'
-            },
-            {
-              text: 'option4'
-            }
-          ],
-          answer: [1, 2]
-        },
-        {
-          type: 4,
-          title: '问答题 - title',
-          answer: ''
-        }
-      ],
+      questionList: [],
       currentTestIndex: -1,
       editTitleIndex: -1,
       editOptionIndex: -1
@@ -222,7 +185,22 @@ export default {
         delItem(this.questionList, questionIndex)
       }).catch(_ => { })
     },
-    setAnswer (questionIndex, optionIndex) { },
+    setAnswer (questionIndex, optionIndex) {
+      let type = this.questionList[questionIndex].type
+      switch (type) {
+        case 1:
+        case 2: this.questionList[questionIndex].answer = optionIndex + 1; break
+        case 3: this.questionList[questionIndex].answer.push(optionIndex + 1); break
+      }
+    },
+    cancelAnswer (questionIndex, optionIndex) {
+      let type = this.questionList[questionIndex].type
+      switch (type) {
+        case 1:
+        case 2: this.questionList[questionIndex].answer = -1; break
+        case 3: delItem(this.questionList[questionIndex].answer, this.questionList[questionIndex].answer.indexOf(optionIndex + 1)); break
+      }
+    },
     OptionMoveUp (questionIndex, optionIndex) {
       zIndexUp(this.questionList[questionIndex].option, optionIndex)
     },
@@ -235,11 +213,83 @@ export default {
       } else {
         this.$message.warning('单选题与多选题至少需要3个选项')
       }
+    },
+    addQuerstion (type) {
+      switch (type) {
+        case 1: this.questionList.push({
+          type: 1,
+          title: '',
+          option: [
+            {
+              text: ''
+            },
+            {
+              text: ''
+            },
+            {
+              text: ''
+            },
+            {
+              text: ''
+            }
+          ],
+          answer: -1
+        }); break
+        case 2: this.questionList.push({
+          type: 2,
+          title: '',
+          answer: -1
+        }); break
+        case 3: this.questionList.push({
+          type: 3,
+          title: '',
+          option: [
+            {
+              text: ''
+            },
+            {
+              text: ''
+            },
+            {
+              text: ''
+            },
+            {
+              text: ''
+            }
+          ],
+          answer: []
+        }); break
+        case 4: this.questionList.push({
+          type: 4,
+          title: '',
+          answer: ''
+        })
+      }
+    },
+    textareaTitleBlur (event) {
+      if (event.keyCode === 13) {
+        this.editTitleIndex = -1
+        event.preventDefault()
+        return false
+      }
+    },
+    textareaOptionBlur (event, titleIndex, optionIndex) {
+      if (event.keyCode === 13) {
+        this.currentTestIndex = -1
+        this.editOptionIndex = -1
+        event.preventDefault()
+        let _this = this
+        setTimeout(_ => {
+          _this.currentTestIndex = titleIndex
+          _this.editOptionIndex = optionIndex + 1
+        })
+        return false
+      }
     }
   },
   directives: {
     focus: {
-      update: el => el.querySelector('input').focus(),
+      update: el => el.querySelector('input, textarea').focus(),
     }
   }
 }
@@ -284,6 +334,11 @@ export default {
           line-height: 32px;
           width: 100%;
           flex: 1;
+          position: relative;
+          &:empty::after {
+            content: "点击输入标题内容";
+            color: #667;
+          }
         }
         .t-input {
           display: none;
@@ -318,6 +373,7 @@ export default {
             display: flex;
             border-radius: 4px;
             padding-left: 8px;
+            position: relative;
             .options {
               font-weight: bold;
               font-size: 18px;
@@ -334,6 +390,11 @@ export default {
               flex: 1;
               line-height: 32px;
               color: #262630;
+              position: relative;
+              &:empty:after {
+                content: "点击输入选项内容";
+                color: #667;
+              }
             }
             .t-input {
               display: none;
@@ -368,22 +429,31 @@ export default {
                 }
               }
             }
+            &::after {
+              content: "答案";
+              position: absolute;
+              line-height: 20px;
+              border-radius: 10px;
+              text-align: center;
+              color: #fff;
+              background: #67c23a;
+              box-shadow: 0 0 4px #c2e7b0;
+              font-size: 12px;
+              overflow: hidden;
+              top: 4px;
+              left: 0;
+              width: 0;
+              height: 0;
+              transition: all 0.4s;
+            }
             &.answer {
               border: 1px solid #c2e7b0;
-              position: relative;
               &::after {
-                content: "答案";
-                position: absolute;
                 height: 20px;
-                line-height: 20px;
-                border-radius: 10px;
-                text-align: center;
-                color: #fff;
-                background: #67c23a;
-                font-size: 12px;
                 width: 40px;
                 top: -6px;
                 left: -20px;
+                transition: all 0.4s;
               }
             }
           }
@@ -406,5 +476,14 @@ export default {
   color: #f56c6c !important;
 }
 </style>
+<style>
+#CreateExam .el-textarea__inner {
+  padding: 5px 8px;
+  font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB",
+    "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+  resize: none;
+}
+</style>
+
 
 
