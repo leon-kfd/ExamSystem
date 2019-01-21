@@ -20,7 +20,7 @@
                         type="textarea"
                         :autosize="{minRows:1, maxRows: 4}"
                         @blur="editTitleIndex = -1"
-                        @keydown.native="textareaTitleBlur($event)"
+                        @keydown.native="textareaTitleBlur($event, index)"
                         size="small"
                         suffix-icon="el-icon-edit"></el-input>
               <span class="operation-box">
@@ -276,10 +276,15 @@ export default {
         this.$message.warning('单选题与多选题最多只能有7个选项')
       }
     },
-    textareaTitleBlur (event) {
+    textareaTitleBlur (event, titleIndex) {
       if (event.keyCode === 13) {
         this.editTitleIndex = -1
         event.preventDefault()
+        let _this = this
+        setTimeout(_ => {
+          _this.currentTestIndex = titleIndex
+          _this.editOptionIndex = 0
+        })
         return false
       }
     },
@@ -494,6 +499,3 @@ export default {
   resize: none;
 }
 </style>
-
-
-
