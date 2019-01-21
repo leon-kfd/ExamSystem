@@ -1,7 +1,30 @@
 <template>
   <div class="page"
        id="CreateExam">
-    <div class="container">
+    <div class="header-operation">
+      <div class="container">
+        <div class="create-btn-box">
+          <el-button type="primary"
+                     plain
+                     icon="el-icon-plus"
+                     @click="addQuerstion(1)">单选题</el-button>
+          <el-button type="primary"
+                     plain
+                     icon="el-icon-plus"
+                     @click="addQuerstion(2)">判断题</el-button>
+          <el-button type="primary"
+                     plain
+                     icon="el-icon-plus"
+                     @click="addQuerstion(3)">多选题</el-button>
+          <el-button type="primary"
+                     plain
+                     icon="el-icon-plus"
+                     @click="addQuerstion(4)">问答题</el-button>
+        </div>
+      </div>
+    </div>
+    <div class="container"
+         id="a">
       <div class="create-exam-box">
         <h1 style="padding: 8px">编辑试题</h1>
         <div class="question-box">
@@ -110,24 +133,6 @@
               </div>
             </div>
           </div>
-        </div>
-        <div class="create-btn-box">
-          <el-button type="primary"
-                     plain
-                     icon="el-icon-plus"
-                     @click="addQuerstion(1)">单选题</el-button>
-          <el-button type="primary"
-                     plain
-                     icon="el-icon-plus"
-                     @click="addQuerstion(2)">判断题</el-button>
-          <el-button type="primary"
-                     plain
-                     icon="el-icon-plus"
-                     @click="addQuerstion(3)">多选题</el-button>
-          <el-button type="primary"
-                     plain
-                     icon="el-icon-plus"
-                     @click="addQuerstion(4)">问答题</el-button>
         </div>
       </div>
     </div>
@@ -266,6 +271,24 @@ export default {
           answer: ''
         })
       }
+      this.$nextTick(_ => {
+        // 自动滚动到底部
+        const top = document.body.getBoundingClientRect().height
+        const pageY = window.pageYOffset
+        const endPostion = pageY + top
+        const startTime = new Date()
+        const duration = 800
+        function run () {
+          const time = new Date() - startTime
+          window.scrollTo(0, pageY + top * (time / duration))
+          run.timer = requestAnimationFrame(run);
+          if (time >= duration) {
+            window.scrollTo(0, endPostion);
+            cancelAnimationFrame(run.timer);
+          }
+        }
+        window.requestAnimationFrame(run)
+      })
     },
     addOption (questionIndex) {
       if (this.questionList[questionIndex].option.length < 7) {
@@ -315,16 +338,26 @@ export default {
   margin: 0 auto;
   padding: 10px;
 }
+.header-operation {
+  position: fixed;
+  z-index: 999;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 80px;
+  min-width: 1180px;
+  background: #fff;
+  box-shadow: 0 1px 3px #aaa;
+  .create-btn-box {
+    padding: 10px 0;
+  }
+}
 .create-exam-box {
   background: #fff;
   padding: 8px;
   border-radius: 4px;
   box-shadow: 0 1px 10px #aaa;
-  .create-btn-box {
-    padding: 10px 0;
-    text-align: center;
-    border-top: 1px solid #ccc;
-  }
+  margin-top: 90px;
   .question-box {
     padding: 10px;
     .test-item {
