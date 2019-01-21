@@ -25,7 +25,8 @@
                         suffix-icon="el-icon-edit"></el-input>
               <span class="operation-box">
                 <span class="operation-item"
-                      v-if="item.type == 1 || item.type == 3">增加选项</span>
+                      v-if="item.type == 1 || item.type == 3"
+                      @click="addOption(index)">增加选项</span>
                 <span class="operation-item"
                       v-if="index!=0"
                       @click="QuestionMoveUp(index)">上移</span>
@@ -264,6 +265,15 @@ export default {
           title: '',
           answer: ''
         })
+      }
+    },
+    addOption (questionIndex) {
+      if (this.questionList[questionIndex].option.length < 7) {
+        this.questionList[questionIndex].option.push({
+          text: ''
+        })
+      } else {
+        this.$message.warning('单选题与多选题最多只能有7个选项')
       }
     },
     textareaTitleBlur (event) {
