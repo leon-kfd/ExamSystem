@@ -26,15 +26,15 @@
     <div class="container"
          id="a">
       <div class="create-exam-box">
-        <h1 style="padding: 8px">编辑试题</h1>
+        <h3 style="padding: 8px">编辑试题</h3>
         <div class="question-box">
           <div class="test-item"
                v-for="(item, index) in questionList"
                :key="index">
             <p class="test-title"
-               :class="{editing: editTitleIndex == index}">
+               :class="{editing: editTitleIndex == index, 'score-setting': editScoreIndex == index}">
               <span class="t-number">{{index+1}}</span>
-              <el-tag class="t-type">{{item.type | questionType}}</el-tag>
+              <el-tag class="t-type">{{item.type | questionType}} <span class="score-text">{{item.score}}</span>分</el-tag>
               <span class="t-info"
                     @click="editTitleIndex=index">{{item.title}}</span>
               <el-input v-model="item.title"
@@ -50,6 +50,19 @@
                 <span class="operation-item"
                       v-if="item.type == 1 || item.type == 3"
                       @click="addOption(index)">增加选项</span>
+                <span class="operation-item"
+                      @click="editScoreIndex=index">设置分数</span>
+                <span class="operation-item score">
+                  <el-input-number v-model="item.score"
+                                   v-focus
+                                   style="width: 50px"
+                                   size='small'
+                                   :controls="false"
+                                   @blur="editScoreIndex=-1"
+                                   @keydown.native="textareaScoreBlur($event, index)"
+                                   :min="1"
+                                   :max="100"></el-input-number>
+                </span>
                 <span class="operation-item"
                       v-if="index!=0"
                       @click="QuestionMoveUp(index)">上移</span>
@@ -72,7 +85,7 @@
                      }">
                   <span class="options">{{optionIndex | questionOption}}</span>
                   <span class="info"
-                        @click="editOptionIndex = optionIndex; currentTestIndex = index; editBlurFlag = true">{{optionItem.text}}</span>
+                        @click="editOptionIndex = optionIndex; currentTestIndex = index">{{optionItem.text}}</span>
                   <el-input v-model="optionItem.text"
                             class="t-input"
                             v-focus
@@ -140,6 +153,7 @@
 </template>
 <script>
 import { zIndexUp, zIndexDown, delItem } from '@/utils/array'
+import { ScrollTo } from '@/utils/animate'
 export default {
   data () {
     return {
@@ -147,7 +161,8 @@ export default {
       questionList: [],
       currentTestIndex: -1,
       editTitleIndex: -1,
-      editOptionIndex: -1
+      editOptionIndex: -1,
+      editScoreIndex: -1
     }
   },
   filters: {
@@ -239,12 +254,14 @@ export default {
               text: ''
             }
           ],
-          answer: -1
+          answer: -1,
+          score: 5
         }); break
         case 2: this.questionList.push({
           type: 2,
           title: '',
-          answer: -1
+          answer: -1,
+          score: 5
         }); break
         case 3: this.questionList.push({
           type: 3,
@@ -263,31 +280,22 @@ export default {
               text: ''
             }
           ],
-          answer: []
+          answer: [],
+          score: 5
         }); break
         case 4: this.questionList.push({
           type: 4,
           title: '',
-          answer: ''
+          answer: '',
+          score: 5
         })
       }
       this.$nextTick(_ => {
         // 自动滚动到底部
         const top = document.body.getBoundingClientRect().height
-        const pageY = window.pageYOffset
-        const endPostion = pageY + top
-        const startTime = new Date()
-        const duration = 800
-        function run () {
-          const time = new Date() - startTime
-          window.scrollTo(0, pageY + top * (time / duration))
-          run.timer = requestAnimationFrame(run);
-          if (time >= duration) {
-            window.scrollTo(0, endPostion);
-            cancelAnimationFrame(run.timer);
-          }
-        }
-        window.requestAnimationFrame(run)
+        ScrollTo(top, 800)
+        // 新增问题默认获取焦点
+        this.editTitleIndex = this.questionList.length - 1
       })
     },
     addOption (questionIndex) {
@@ -323,6 +331,12 @@ export default {
         })
         return false
       }
+    },
+    textareaScoreBlur (event, titleIndex) {
+      if (event.keyCode === 13) {
+        this.editScoreIndex = -1
+        event.preventDefault()
+      }
     }
   },
   directives: {
@@ -339,7 +353,7 @@ export default {
   padding: 10px;
 }
 .header-operation {
-  position: fixed;
+  position: absolute;
   z-index: 999;
   top: 0;
   left: 0;
@@ -401,8 +415,17 @@ export default {
             display: none;
           }
         }
+        .score {
+          display: none;
+        }
+        &.score-setting {
+          .score {
+            display: inline;
+          }
+        }
         .operation-box {
-          width: 230px;
+          min-width: 230px;
+          margin-left: 15px;
           text-align: right;
           .operation-item {
             margin: 0 5px;
@@ -522,6 +545,10 @@ export default {
 }
 .text-danger {
   color: #f56c6c !important;
+}
+.score-text {
+  font-weight: bold;
+  padding: 0 2px 0 5px;
 }
 </style>
 <style>
