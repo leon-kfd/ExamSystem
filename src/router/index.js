@@ -8,7 +8,7 @@ Vue.use(Router)
 
 let adminRouter = [
   {
-    path: '/admin/test1',
+    path: 'test1',
     name: 'test1',
     component: () => import('@/pages/admin/test1'),
     meta: {
@@ -17,7 +17,7 @@ let adminRouter = [
     }
   },
   {
-    path: '/admin/test2',
+    path: 'test2',
     name: 'test2',
     component: () => import('@/pages/admin/test2'),
     meta: {
@@ -26,7 +26,7 @@ let adminRouter = [
     },
     children: [
       {
-        path: 'admin/test2/test2-1',
+        path: 'test2-1',
         name: 'test2-1',
         component: () => import('@/pages/admin/test2-1'),
         meta: {
@@ -36,7 +36,7 @@ let adminRouter = [
     ]
   },
   {
-    path: '/outer',
+    path: 'outer',
     name: 'outer',
     meta: {
       label: 'outer',

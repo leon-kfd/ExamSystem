@@ -16,6 +16,7 @@
           <el-menu-item v-for="(menuSecond, index) in menu.children"
                         :key="index"
                         :index="menuSecond.name"
+                        @click="$router.push({name:menuSecond.name})"
                         style="padding-left: 55px;">{{menuSecond.meta.label}}</el-menu-item>
         </el-submenu>
         <el-menu-item v-else-if="menu.outer"
@@ -25,7 +26,8 @@
           <span slot="title">{{ menu.meta.label }}</span>
         </el-menu-item>
         <el-menu-item v-else
-                      :index="menu.name">
+                      :index="menu.name"
+                      @click="$router.push({name:menu.name})">
           <i :class="menu.meta.iconClass"></i>
           <span slot="title">{{ menu.meta.label }}</span>
         </el-menu-item>
@@ -99,7 +101,6 @@ export default {
   z-index: 999;
   top: 0;
   right: 0;
-  min-width: 1000px;
   height: 48px;
   line-height: 48px;
   background: #fff;
@@ -147,7 +148,6 @@ export default {
   top: 48px;
   right: 0;
   bottom: 0;
-  min-width: 1000px;
   overflow: auto;
   padding: 20px;
   background: #f8f8f9;

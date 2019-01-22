@@ -41,11 +41,12 @@ body {
     "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
 }
 /* 滚动条样式 */
-body::-webkit-scrollbar {
+*::-webkit-scrollbar {
   width: 12px;
+  height: 12px;
   background-color: #dddde2;
 }
-body::-webkit-scrollbar-thumb {
+*::-webkit-scrollbar-thumb {
   border-radius: 10px;
   background-color: #667;
   background-image: -webkit-linear-gradient(
