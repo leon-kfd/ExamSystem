@@ -350,6 +350,18 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+#CreateExam {
+  &:after {
+    content: "";
+    position: fixed;
+    top: 128px;
+    width: 100%;
+    z-index: 888;
+    left: 0;
+    height: 1px;
+    box-shadow: 0 1px 10px;
+  }
+}
 .container {
   width: 1160px;
   margin: 0 auto;

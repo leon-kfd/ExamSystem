@@ -14,8 +14,7 @@
         <div class="center-box">
           <main class="exam-body">
             <div class="exam-main">
-              <h2 class="exam-title"
-                  @click="a">全球化时代的思维技能</h2>
+              <h2 class="exam-title">全球化时代的思维技能</h2>
               <div class="radio-block">
                 <div class="type-title">单选题</div>
                 <section class="test-item">
