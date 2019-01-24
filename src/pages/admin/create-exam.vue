@@ -1,7 +1,8 @@
 <template>
   <div class="page"
        id="CreateExam">
-    <div class="header-operation">
+    <div class="header-operation"
+         :style="{'padding-left': IsCollapse ? '64px' : '200px' }">
       <div class="container">
         <div class="create-btn-box">
           <el-button type="primary"
@@ -155,6 +156,7 @@
 import { zIndexUp, zIndexDown, delItem } from '@/utils/array'
 import { ScrollTo } from '@/utils/animate'
 export default {
+  props: ['IsCollapse'],
   data () {
     return {
       typeList: ['单选题', '判断题', '多选题', '问答题'],
@@ -292,8 +294,9 @@ export default {
       }
       this.$nextTick(_ => {
         // 自动滚动到底部
-        const top = document.body.getBoundingClientRect().height
-        ScrollTo(top, 800)
+        const top = document.getElementById('CreateExam').getBoundingClientRect().height
+        const el = document.querySelector('.app-content')
+        ScrollTo(top, 800, el)
         // 新增问题默认获取焦点
         this.editTitleIndex = this.questionList.length - 1
       })
@@ -353,15 +356,16 @@ export default {
   padding: 10px;
 }
 .header-operation {
-  position: absolute;
+  position: fixed;
   z-index: 999;
-  top: 0;
+  top: 48px;
   left: 0;
   width: 100%;
   height: 80px;
   min-width: 1180px;
   background: #fff;
-  box-shadow: 0 1px 3px #aaa;
+  border-top: 1px solid #eee;
+  transition: all 0.4s;
   .create-btn-box {
     padding: 10px 0;
   }

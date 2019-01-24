@@ -5,32 +5,36 @@
          :style="{width: isCollapse ? '64px' : '200px'}">
       <el-menu class="el-menu-vertical-demo"
                :collapse="isCollapse"
-               v-for="(menu, index) in menuList"
-               :key="index">
-        <el-submenu :index="menu.name"
-                    v-if="menu.children">
-          <template slot="title">
+               :default-active="MenuActiveIndex">
+        <template v-for="(menu,index) in menuList">
+          <el-submenu :index="menu.name"
+                      :key="index"
+                      v-if="menu.children">
+            <template slot="title">
+              <i :class="menu.meta.iconClass"></i>
+              <span slot="title">{{ menu.meta.label }}</span>
+            </template>
+            <el-menu-item v-for="(menuSecond, indexSecond) in menu.children"
+                          :key="indexSecond"
+                          :index="menuSecond.name"
+                          @click="$router.push({name:menuSecond.name})"
+                          style="padding-left: 55px;">{{menuSecond.meta.label}}</el-menu-item>
+          </el-submenu>
+          <el-menu-item v-else-if="menu.outer"
+                        :index="menu.name"
+                        :key="index"
+                        @click.native.stop="open(menu.outer.outerUrl)">
             <i :class="menu.meta.iconClass"></i>
             <span slot="title">{{ menu.meta.label }}</span>
-          </template>
-          <el-menu-item v-for="(menuSecond, index) in menu.children"
+          </el-menu-item>
+          <el-menu-item v-else
+                        :index="menu.name"
                         :key="index"
-                        :index="menuSecond.name"
-                        @click="$router.push({name:menuSecond.name})"
-                        style="padding-left: 55px;">{{menuSecond.meta.label}}</el-menu-item>
-        </el-submenu>
-        <el-menu-item v-else-if="menu.outer"
-                      :index="menu.name"
-                      @click.native.stop="open(menu.outer.outerUrl)">
-          <i :class="menu.meta.iconClass"></i>
-          <span slot="title">{{ menu.meta.label }}</span>
-        </el-menu-item>
-        <el-menu-item v-else
-                      :index="menu.name"
-                      @click="$router.push({name:menu.name})">
-          <i :class="menu.meta.iconClass"></i>
-          <span slot="title">{{ menu.meta.label }}</span>
-        </el-menu-item>
+                        @click="$router.push({name:menu.name})">
+            <i :class="menu.meta.iconClass"></i>
+            <span slot="title">{{ menu.meta.label }}</span>
+          </el-menu-item>
+        </template>
       </el-menu>
     </div>
     <div class="app-header"
@@ -44,10 +48,10 @@
       </span>
       <el-breadcrumb separator="/"
                      class="breadcrumb-box">
-        <el-breadcrumb-item :to="{'name': 'home'}">
+        <el-breadcrumb-item :to="{'name': 'admin'}">
           <span>主页</span>
         </el-breadcrumb-item>
-        <el-breadcrumb-item v-for="(item, index) in adminRouterList"
+        <el-breadcrumb-item v-for="(item, index) in breadList"
                             :key="index"
                             :to="{'name': item.name}">
           <span>{{ item.meta.label }}</span>
@@ -56,7 +60,7 @@
     </div>
     <div class="app-content"
          :style="{left: isCollapse ? '64px' : '200px'}">
-      <router-view></router-view>
+      <router-view :is-collapse="isCollapse"></router-view>
     </div>
   </div>
 </template>
@@ -73,6 +77,14 @@ export default {
   computed: {
     menuList () {
       return adminRouter
+    },
+    MenuActiveIndex () {
+      return this.$route.name
+    },
+    breadList () {
+      let temp = this.$route.matched
+      temp.shift()
+      return temp
     }
   },
   methods: {

@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Exam from '@/pages/exam'
-import CreateExam from '@/pages/create-exam'
 import Admin from '@/pages/admin/index'
 
 Vue.use(Router)
@@ -17,20 +16,21 @@ let adminRouter = [
     }
   },
   {
-    path: 'test2',
-    name: 'test2',
-    component: () => import('@/pages/admin/test2'),
+    path: 'examManage',
+    name: 'examManage',
+    redirect: 'examManage/createExam',
+    component: () => import('@/pages/admin/exam-manage'),
     meta: {
-      label: 'test2',
+      label: '考试管理',
       iconClass: 'el-icon-document'
     },
     children: [
       {
-        path: 'test2-1',
-        name: 'test2-1',
-        component: () => import('@/pages/admin/test2-1'),
+        path: 'createExam',
+        name: 'createExam',
+        component: () => import('@/pages/admin/create-exam'),
         meta: {
-          label: 'test2-1'
+          label: '创建考试'
         }
       }
     ]
@@ -53,11 +53,6 @@ export default new Router({
       path: '/',
       name: 'Exam',
       component: Exam
-    },
-    {
-      path: '/CreateExam',
-      name: 'CreateExam',
-      component: CreateExam
     },
     {
       path: '/admin',
