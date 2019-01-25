@@ -27,28 +27,24 @@
           <div class="form-box">
             <div class="row-item">
               <div class="input-box">
-                <label for="username"
-                       :class="{active: LoginForm.usernameActive||LoginForm.username.length>0}">手机号</label>
                 <input type="text"
                        class="input-ui"
                        v-model="LoginForm.username"
-                       @focus="LoginForm.usernameActive = true"
-                       @blur="LoginForm.usernameActive = false"
                        autocomplete="off"
                        name="username">
+                <label for="username"
+                       :class="{active: LoginForm.username.length>0}">手机号</label>
                 <span class="line"></span>
               </div>
             </div>
             <div class="row-item">
               <div class="input-box">
-                <label for="password"
-                       :class="{active: LoginForm.passwordActive||LoginForm.password.length>0}">密码</label>
                 <input type="password"
                        class="input-ui"
                        v-model="LoginForm.password"
-                       @focus="LoginForm.passwordActive = true"
-                       @blur="LoginForm.passwordActive = false"
                        name="password">
+                <label for="password"
+                       :class="{active: LoginForm.password.length>0}">密码</label>
                 <span class="line"></span>
               </div>
             </div>
@@ -89,9 +85,7 @@ export default {
       active: true,
       LoginForm: {
         username: '',
-        usernameActive: false,
         password: '',
-        passwordActive: false,
         role: 'student'
       },
     }
@@ -173,9 +167,9 @@ $theme-color: #573896;
   }
   .submit-btn-control {
     display: flex;
+    margin-top: 50px;
     // height: 40px;
     // overflow: hidden;
-    margin-top: 50px;
   }
   .btn-login {
     margin-left: 20px;
@@ -241,7 +235,13 @@ $theme-color: #573896;
         border-bottom: 1px solid #ddd;
         border-radius: 0;
         font-size: 16px;
-        &:focus + .line {
+        &:focus ~ label {
+          font-size: 14px;
+          color: #262626;
+          transform: translate(-5px, -30px);
+          transition: all 0.4s;
+        }
+        &:focus ~ .line {
           width: 100%;
           transition: all 0.4s;
         }
