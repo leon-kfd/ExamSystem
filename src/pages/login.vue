@@ -108,6 +108,8 @@ export default {
         setTimeout(_ => {
           console.log('表单提交')
           console.table({ username, password, role })
+          let token = 'temp00001'
+          sessionStorage.setItem('token', token)
           this.btnLoginLoading = false
         }, 2000)
       }

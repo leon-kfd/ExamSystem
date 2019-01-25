@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import Exam from '@/pages/exam'
 import Admin from '@/pages/admin/index'
 import Login from '@/pages/login'
+import { Message } from 'element-ui'
 
 Vue.use(Router)
 
@@ -48,7 +49,7 @@ let adminRouter = [
     }
   }
 ]
-export default new Router({
+const router = new Router({
   routes: [
     {
       path: '/',
@@ -71,4 +72,17 @@ export default new Router({
     }
   ]
 })
+router.beforeEach((to, from, next) => {
+  if (to.path == '/login') {
+    next()
+    return
+  }
+  if (sessionStorage.getItem('token')) {
+    next()
+  } else {
+    Message.error('无法获取到用户状态，请重新登录')
+    next('/login')
+  }
+})
+export default router
 export { adminRouter }
