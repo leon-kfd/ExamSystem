@@ -9,6 +9,7 @@
              v-if="!active">
           <h2 class="title"><span>Register</span></h2>
           <div class="form-box">
+            <p style="height: 200px;line-height: 200px;color: #889;text-align:center;font-size: 14px;">Function Not Open..</p>
           </div>
         </div>
         <!-- </transition> -->
@@ -55,12 +56,15 @@
               </el-radio-group>
               <el-button type="primary"
                          :disabled="loginValid"
+                         @click="Login"
+                         :loading="btnLoginLoading"
                          class="btn-login">Login</el-button>
             </div>
             <div class="row-item"
                  style="margin-top: -20px;">
               <p class="login-footer clear">
-                <span class="text1 fl">Register</span>
+                <span class="text1 fl"
+                      @click="active=false">Register</span>
                 <span class="text2 fr">Forget Password?</span>
               </p>
             </div>
@@ -88,11 +92,25 @@ export default {
         password: '',
         role: 'student'
       },
+      btnLoginLoading: false
     }
   },
   computed: {
     loginValid () {
       return !(this.LoginForm.username.length > 0 && this.LoginForm.password.length > 0 && this.LoginForm.role.length > 0)
+    }
+  },
+  methods: {
+    Login () {
+      if (!this.loginValid) {
+        this.btnLoginLoading = true
+        let { username, password, role } = this.LoginForm
+        setTimeout(_ => {
+          console.log('表单提交')
+          console.table({ username, password, role })
+          this.btnLoginLoading = false
+        }, 2000)
+      }
     }
   }
 }
@@ -168,8 +186,8 @@ $theme-color: #573896;
   .submit-btn-control {
     display: flex;
     margin-top: 50px;
-    // height: 40px;
-    // overflow: hidden;
+    height: 40px;
+    overflow: hidden;
   }
   .btn-login {
     margin-left: 20px;
@@ -286,7 +304,10 @@ $theme-color: #573896;
   border-color: #573896;
   box-shadow: -1px 0 0 0 #573896;
   color: #fff;
-  padding: 12px 15px;
+  padding: 12px 14px;
+}
+#Login .el-radio-button__inner {
+  padding: 12px 10px;
 }
 #Login .el-button--primary {
   background-color: #573896;
