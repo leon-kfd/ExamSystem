@@ -1,0 +1,303 @@
+<template>
+  <div class="page"
+       id="Login">
+    <div class="main"
+         :class="active?'login-active':'register-active'">
+      <div class="left-box">
+        <!-- <transition name="fadeInUp"> -->
+        <div class="register-box"
+             v-if="!active">
+          <h2 class="title"><span>Register</span></h2>
+          <div class="form-box">
+          </div>
+        </div>
+        <!-- </transition> -->
+        <div class="to-register"
+             v-show="active">
+          <el-button plain
+                     class="btn-transparent"
+                     @click="active=false">To register</el-button>
+        </div>
+      </div>
+      <div class="right-box">
+        <!-- <transition name="fadeInUp"> -->
+        <div class="login-box"
+             v-if="active">
+          <h2 class="title"><span>Login</span></h2>
+          <div class="form-box">
+            <div class="row-item">
+              <div class="input-box">
+                <label for="username"
+                       :class="{active: LoginForm.usernameActive||LoginForm.username.length>0}">手机号</label>
+                <input type="text"
+                       class="input-ui"
+                       v-model="LoginForm.username"
+                       @focus="LoginForm.usernameActive = true"
+                       @blur="LoginForm.usernameActive = false"
+                       autocomplete="off"
+                       name="username">
+                <span class="line"></span>
+              </div>
+            </div>
+            <div class="row-item">
+              <div class="input-box">
+                <label for="password"
+                       :class="{active: LoginForm.passwordActive||LoginForm.password.length>0}">密码</label>
+                <input type="password"
+                       class="input-ui"
+                       v-model="LoginForm.password"
+                       @focus="LoginForm.passwordActive = true"
+                       @blur="LoginForm.passwordActive = false"
+                       name="password">
+                <span class="line"></span>
+              </div>
+            </div>
+            <div class="row-item submit-btn-control">
+              <el-radio-group v-model="LoginForm.role">
+                <el-radio-button label="student">Role1</el-radio-button>
+                <el-radio-button label="teacher">Role2</el-radio-button>
+              </el-radio-group>
+              <el-button type="primary"
+                         :disabled="loginValid"
+                         class="btn-login">Login</el-button>
+            </div>
+            <div class="row-item"
+                 style="margin-top: -20px;">
+              <p class="login-footer clear">
+                <span class="text1 fl">Register</span>
+                <span class="text2 fr">Forget Password?</span>
+              </p>
+            </div>
+          </div>
+        </div>
+        <!-- </transition> -->
+        <div class="to-login"
+             v-show="!active">
+          <el-button plain
+                     class="btn-transparent"
+                     @click="active=true">To Login</el-button>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+<script>
+export default {
+  name: 'Login',
+  data () {
+    return {
+      active: true,
+      LoginForm: {
+        username: '',
+        usernameActive: false,
+        password: '',
+        passwordActive: false,
+        role: 'student'
+      },
+    }
+  },
+  computed: {
+    loginValid () {
+      return !(this.LoginForm.username.length > 0 && this.LoginForm.password.length > 0 && this.LoginForm.role.length > 0)
+    }
+  }
+}
+</script>
+<style lang="scss" scoped>
+$theme-color: #573896;
+.main {
+  width: 90vw;
+  max-width: 700px;
+  height: 80vh;
+  max-height: 500px;
+  background: #fff;
+  box-shadow: 0 1px 10px #aaa;
+  margin: 10vh auto;
+  border-radius: 4px;
+  display: flex;
+  .left-box {
+    border-radius: 4px 0 0 4px;
+    transition: all 0.4s;
+    position: relative;
+    .to-register {
+      position: absolute;
+      width: 100%;
+      height: 60px;
+      bottom: 40px;
+      text-align: center;
+    }
+  }
+  .right-box {
+    border-radius: 0 4px 4px 0;
+    transition: all 0.4s;
+    position: relative;
+    .to-login {
+      position: absolute;
+      width: 100%;
+      height: 60px;
+      bottom: 40px;
+      text-align: center;
+    }
+  }
+  &.login-active {
+    .left-box {
+      width: 40%;
+      background: #a0a0b0;
+    }
+    .right-box {
+      width: 60%;
+      background: #fff;
+    }
+  }
+  &.register-active {
+    .left-box {
+      width: 60%;
+      background: #fff;
+    }
+    .right-box {
+      width: 40%;
+      background: #a0a0b0;
+    }
+  }
+}
+.login-box,
+.register-box {
+  padding: 20px;
+  h2.title {
+    padding-top: 20px;
+    padding-left: 15px;
+    span {
+      padding-left: 10px;
+      border-left: 4px solid $theme-color;
+    }
+  }
+  .submit-btn-control {
+    display: flex;
+    // height: 40px;
+    // overflow: hidden;
+    margin-top: 50px;
+  }
+  .btn-login {
+    margin-left: 20px;
+    width: 100%;
+    flex: 1;
+  }
+  .login-footer {
+    span.text1 {
+      color: #4069c0;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    span.text2 {
+      color: #8c3232;
+      font-size: 14px;
+      cursor: pointer;
+    }
+  }
+}
+.btn-transparent {
+  background: transparent;
+  color: #fff;
+  &:hover {
+    border: 1px solid #fff;
+  }
+}
+.form-box {
+  padding: 10px;
+  padding-top: 60px;
+  .row-item {
+    margin-bottom: 40px;
+    .input-box {
+      position: relative;
+      label {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 40px;
+        line-height: 40px;
+        padding-left: 5px;
+        color: #888894;
+        pointer-events: none;
+        font-size: 14px;
+        transition: all 0.4s;
+        &.active {
+          font-size: 14px;
+          color: #262626;
+          transform: translate(-5px, -30px);
+          transition: all 0.4s;
+        }
+      }
+      .input-ui {
+        box-sizing: border-box;
+        width: 100%;
+        height: 40px;
+        line-height: 40px;
+        padding: 0;
+        padding-left: 5px;
+        background: transparent;
+        color: #363636;
+        outline: none;
+        border: none;
+        border-bottom: 1px solid #ddd;
+        border-radius: 0;
+        font-size: 16px;
+        &:focus + .line {
+          width: 100%;
+          transition: all 0.4s;
+        }
+      }
+      .line {
+        position: absolute;
+        width: 0;
+        left: 0;
+        bottom: 0;
+        border-top: 2px solid $theme-color;
+        transition: all 0.4s;
+      }
+    }
+  }
+}
+@media screen and (max-width: 800px) {
+  .main {
+    &.login-active {
+      .left-box {
+        display: none;
+      }
+      .right-box {
+        width: 100%;
+        border-radius: 4px;
+      }
+    }
+    &.register-active {
+      .left-box {
+        width: 100%;
+        border-radius: 4px;
+      }
+      .right-box {
+        display: none;
+      }
+    }
+  }
+}
+</style>
+<style>
+#Login .el-radio-button__orig-radio:checked + .el-radio-button__inner {
+  background-color: #573896;
+  border-color: #573896;
+  box-shadow: -1px 0 0 0 #573896;
+  color: #fff;
+  padding: 12px 15px;
+}
+#Login .el-button--primary {
+  background-color: #573896;
+  border-color: #573896;
+}
+#Login .el-button--primary.is-disabled {
+  background-color: #655c72;
+  border-color: #655c72;
+}
+#Login .el-radio-button__inner:hover {
+  color: #573896;
+}
+</style>
+

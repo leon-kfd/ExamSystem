@@ -57,6 +57,7 @@ li {
   content: "";
   clear: both;
   visibility: hidden;
+  display: table;
   height: 0;
 }
 /* 滚动条样式 */
@@ -100,5 +101,24 @@ li {
 *::-webkit-scrollbar-track:hover {
   -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.4);
   background-color: rgba(0, 0, 0, 0.01);
+}
+.fadeInUp-enter-active {
+  animation: fadeInUp 0.5s;
+}
+.fadeInUp-leave-active {
+  animation: fadeInUp 0.5s reverse;
+}
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    -webkit-transform: translate3d(0, 20px, 0);
+    transform: translate3d(0, 20px, 0);
+  }
+
+  to {
+    opacity: 1;
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+  }
 }
 </style>
