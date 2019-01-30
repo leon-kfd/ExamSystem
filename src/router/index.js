@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import Exam from '@/pages/exam'
 import Admin from '@/pages/admin/index'
 import Login from '@/pages/login'
+import StudentHome from '@/pages/student-home'
 import { Message } from 'element-ui'
 
 Vue.use(Router)
@@ -53,13 +54,23 @@ const router = new Router({
   routes: [
     {
       path: '/',
-      name: 'Exam',
-      component: Exam
+      name: 'HomePage',
+      redirect: '/login'
     },
     {
       path: '/login',
       name: 'Login',
       component: Login
+    },
+    {
+      path: '/StudentHome',
+      name: 'StudentHome',
+      component: StudentHome,
+    },
+    {
+      path: '/exam',
+      name: 'Exam',
+      component: Exam
     },
     {
       path: '/admin',
