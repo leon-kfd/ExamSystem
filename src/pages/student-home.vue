@@ -20,6 +20,23 @@
           </div>
           <div class="notice-box">
             <p class="title"><span>公告消息</span></p>
+            <div class="notice-list">
+              <div class="notice-listitem">
+                <p class="notice-title ellipsis">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Autem asperiores itaque ullam blanditiis eaque! Dolorem corrupti adipisci cum. Maxime exercitationem quibusdam aliquid veritatis doloremque dignissimos adipisci atque iure aut laboriosam.</p>
+                <p class="notice-bottom clear"><span class="notice-publisher fl">Publisher.01</span><span class="notice-date fr">2019/01/31</span></p>
+              </div>
+              <div class="notice-listitem">
+                <p class="notice-title ellipsis">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Autem asperiores itaque ullam blanditiis eaque! Dolorem corrupti adipisci cum. Maxime exercitationem quibusdam aliquid veritatis doloremque dignissimos adipisci atque iure aut laboriosam.</p>
+                <p class="notice-bottom clear"><span class="notice-publisher fl">Publisher.01</span><span class="notice-date fr">2019/01/31</span></p>
+              </div>
+              <div class="notice-listitem">
+                <p class="notice-title ellipsis">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Autem asperiores itaque ullam blanditiis eaque! Dolorem corrupti adipisci cum. Maxime exercitationem quibusdam aliquid veritatis doloremque dignissimos adipisci atque iure aut laboriosam.</p>
+                <p class="notice-bottom clear"><span class="notice-publisher fl">Publisher.01</span><span class="notice-date fr">2019/01/31</span></p>
+              </div>
+            </div>
+            <p class="btn-viewmore-box">
+              <button class="btn btn-viewmore btn-animate1">查看更多 <i class="el-icon-d-arrow-right"></i></button>
+            </p>
           </div>
         </div>
         <div class="right-box">
@@ -36,10 +53,147 @@
                       :style="{left: `${10+(tabActive-1)*90}px`}"></span>
               </ul>
             </div>
+            <div class="my-exam-box tab1"
+                 v-if="tabActive==1"
+                 id="MyExam">
+              <div class="exam-listitem"
+                   v-for="(item,index) in myExamList"
+                   :key="index">
+                <el-badge value="New"
+                          style="width: 100%"
+                          :hidden="!item.isNew">
+                  <el-card class="exam-info"
+                           :body-style="{padding: '10px'}">
+                    <div class="exam-info-main">
+                      <dl>
+                        <dt>试卷题目</dt>
+                        <dd>{{item.title}}</dd>
+                      </dl>
+                      <dl>
+                        <dt>出卷人</dt>
+                        <dd>{{item.publisher}}</dd>
+                      </dl>
+                      <dl>
+                        <dt>考试时长</dt>
+                        <dd>{{item.examLength}}</dd>
+                      </dl>
+                      <dl>
+                        <dt>考试时间</dt>
+                        <dd style="font-size: 13px;color: #445">{{item.startDate}} ~ {{item.endDate}}</dd>
+                      </dl>
+                      <dl>
+                        <dt>考试班级</dt>
+                        <dd>{{item.class}}</dd>
+                      </dl>
+                      <dl>
+                        <dt>题量</dt>
+                        <dd>
+                          <el-table :data="item.questionNum"
+                                    style="width: 170px;display: inline-block;"
+                                    size="small">
+                            <el-table-column prop="radio"
+                                             label="单选"
+                                             width="42"
+                                             align="center">
+                            </el-table-column>
+                            <el-table-column prop="judge"
+                                             label="判断"
+                                             width="42"
+                                             align="center">
+                            </el-table-column>
+                            <el-table-column prop="checkbox"
+                                             label="多选"
+                                             width="42"
+                                             align="center">
+                            </el-table-column>
+                            <el-table-column prop="question"
+                                             label="问答"
+                                             width="42"
+                                             align="center">
+                            </el-table-column>
+                          </el-table>
+                        </dd>
+                      </dl>
+                      <dl>
+                        <dt>当前状态</dt>
+                        <dd>
+                          <el-tag type="warning"
+                                  v-if="item.status==0"
+                                  size="small">未开始</el-tag>
+                          <el-tag type="success"
+                                  v-if="item.status==1"
+                                  size="small">已开始</el-tag>
+                          <el-tag type="danger"
+                                  v-if="item.status==2"
+                                  size="small">已结束</el-tag>
+                        </dd>
+                      </dl>
+                    </div>
+                    <div class="exam-info-footer">
+                      <button class="btn btn-enter btn-animate1">进入考试 <i class="el-icon-d-arrow-right"></i></button>
+                    </div>
+                  </el-card>
+                </el-badge>
+              </div>
+              <div class="exam-listitem fake"></div>
+              <div class="exam-listitem fake"></div>
+              <div class="exam-listitem fake"></div>
+            </div>
+            <div class="finish-exam-box tab2"
+                 id="FinishExam"
+                 v-if="tabActive==2">
+              <div class="exam-listitem"
+                   v-for="(item,index) in myExamFinishList"
+                   :key="index">
+                <el-card class="exam-info"
+                         :body-style="{padding: '10px'}">
+                  <div class="exam-info-main">
+                    <dl>
+                      <dt>试卷题目</dt>
+                      <dd>{{item.title}}</dd>
+                    </dl>
+                    <dl>
+                      <dt>出卷人</dt>
+                      <dd>{{item.publisher}}</dd>
+                    </dl>
+                    <dl>
+                      <dt>考试时长</dt>
+                      <dd>{{item.examLength}}</dd>
+                    </dl>
+                    <dl>
+                      <dt>考试时间</dt>
+                      <dd style="font-size: 13px;color: #445">{{item.startDate}} ~ {{item.endDate}}</dd>
+                    </dl>
+                    <dl>
+                      <dt>考试班级</dt>
+                      <dd>{{item.class}}</dd>
+                    </dl>
+                    <dl>
+                      <dt>完成状态</dt>
+                      <dd :style="{color: item.finishStatus==1?'#409EFF':'#E6A23C'}">{{item.finishStatus==1?'全部完成':'超时强行提交，未完成'}}</dd>
+                    </dl>
+                    <dl>
+                      <dt>用时</dt>
+                      <dd>{{item.useTime | useTimeFilter}}</dd>
+                    </dl>
+                    <dl>
+                      <dt>得分</dt>
+                      <dd style="font-size: 20px;font-weight: bold">{{item.myScore}}</dd>
+                    </dl>
+                  </div>
+                  <div class="exam-info-footer">
+                    <button class="btn btn-enter btn-animate1">查看详情 <i class="el-icon-d-arrow-right"></i></button>
+                  </div>
+                </el-card>
+              </div>
+              <div class="exam-listitem fake"></div>
+              <div class="exam-listitem fake"></div>
+              <div class="exam-listitem fake"></div>
+            </div>
           </div>
-          <div class="exam-public-box">
-            <div class="public-list">Public List</div>
-          </div>
+          <!-- <div class="exam-public-box">
+            <p class="title">公共题库</p>
+          </div> -->
         </div>
       </div>
     </div>
@@ -50,7 +204,111 @@ export default {
   name: 'StudentHome',
   data () {
     return {
-      tabActive: 1
+      tabActive: 1,
+      myExamList: [
+        {
+          title: 'Temp',
+          publisher: 'Publisher',
+          examLength: '2小时',
+          startDate: '2019/01/01',
+          endDate: '2019/01/09',
+          class: '15信管',
+          questionNum: [{
+            radio: 30,
+            judge: 10,
+            checkbox: 10,
+            question: 3,
+          }],
+          status: 0,
+          isNew: true
+        },
+        {
+          title: 'Lorem ipsum dolor, sit amet consectetur adipisicing elit. ',
+          publisher: 'Publisher',
+          examLength: '2小时',
+          startDate: '2019/01/01',
+          endDate: '2019/01/09',
+          class: '15信管',
+          questionNum: [{
+            radio: 30,
+            judge: 10,
+            checkbox: 10,
+            question: 3,
+          }],
+          status: 1,
+          isNew: true
+        },
+        {
+          title: 'Temp',
+          publisher: 'Publisher',
+          examLength: '2小时',
+          startDate: '2019/01/01',
+          endDate: '2019/01/09',
+          class: '15信管',
+          questionNum: [{
+            radio: 30,
+            judge: 10,
+            checkbox: 10,
+            question: 3,
+          }],
+          status: 2,
+          isNew: false
+        },
+        {
+          title: 'Temp',
+          publisher: 'Publisher',
+          examLength: '2小时',
+          startDate: '2019/01/01',
+          endDate: '2019/01/09',
+          class: '15信管',
+          questionNum: [{
+            radio: 30,
+            judge: 10,
+            checkbox: 10,
+            question: 3,
+          }],
+          status: 2,
+          isNew: false
+        }
+      ],
+      myExamFinishList: [
+        {
+          title: 'Temp',
+          publisher: 'Publisher',
+          examLength: '2小时',
+          startDate: '2019/01/01',
+          endDate: '2019/01/09',
+          class: '15信管',
+          useTime: 5400,
+          finishStatus: 1,
+          myScore: 80
+        },
+        {
+          title: 'Temp',
+          publisher: 'Publisher',
+          examLength: '2小时',
+          startDate: '2019/01/01',
+          endDate: '2019/01/09',
+          class: '15信管',
+          useTime: 2730,
+          finishStatus: 2,
+          myScore: 80
+        }
+      ]
+    }
+  },
+  filters: {
+    useTimeFilter (val) {
+      let temp, hour, minute
+      if (val > 3600) {
+        hour = Math.floor(val / 3600) + '小时'
+        minute = Math.floor((val - Math.floor(val / 3600) * 3600) / 60) + '分钟'
+        temp = hour + minute
+      } else {
+        minute = Math.floor(val / 60) + '分钟'
+        temp = minute
+      }
+      return temp
     }
   }
 }
@@ -87,20 +345,20 @@ nav.nav {
   background: #fff;
   border-radius: 4px;
   box-shadow: 0 0 10px #ccc;
-  height: 600px;
   margin-top: 60px;
   padding: 15px 10px;
   display: flex;
   .left-box {
     width: 300px;
     height: 100%;
-    padding-right: 10px;
     margin-right: 10px;
-    border-right: 1px solid #ddd;
   }
   .right-box {
     width: 100%;
     flex: 1;
+    border-left: 1px solid #ddd;
+    padding-left: 10px;
+    min-height: 100%;
   }
 }
 .user-info {
@@ -114,6 +372,10 @@ nav.nav {
     color: #262626;
     text-align: center;
     position: relative;
+    height: 26px;
+    line-height: 26px;
+    margin: 0 -20px;
+
     span {
       position: absolute;
       display: inline-block;
@@ -122,6 +384,8 @@ nav.nav {
       background: #fff;
       width: 100px;
       left: 50%;
+      font-size: 14px;
+      color: #889;
       transform: translateX(-50px);
       z-index: 999;
     }
@@ -132,6 +396,38 @@ nav.nav {
       border-top: 1px solid #ddd;
       left: 0;
       top: 13px;
+    }
+  }
+  .notice-list {
+    padding: 10px 0;
+    .notice-listitem {
+      &:not(:last-child) {
+        border-bottom: 1px solid #eee;
+      }
+      padding: 0 20px;
+      margin: 0 -20px;
+      cursor: pointer;
+      &:hover {
+        background: #f5f5f6;
+        .notice-title {
+          text-decoration: underline;
+        }
+      }
+      .notice-title {
+        height: 40px;
+        line-height: 40px;
+        font-size: 15px;
+        font-weight: bold;
+        color: #363640;
+      }
+      .notice-bottom {
+        padding-bottom: 12px;
+        .notice-publisher,
+        .notice-date {
+          font-size: 13px;
+          color: #889;
+        }
+      }
     }
   }
 }
@@ -168,6 +464,55 @@ nav.nav {
       }
     }
   }
+  .my-exam-box,
+  .finish-exam-box {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    .exam-listitem {
+      width: 240px;
+      margin: 15px 10px;
+      &.fake {
+        height: 0;
+        overflow: hidden;
+        margin: 0 10px;
+      }
+      .exam-info-main {
+        padding-top: 5px;
+        dl {
+          margin-bottom: 10px;
+          display: flex;
+          dt {
+            font-size: 14px;
+            color: #889;
+            line-height: 20px;
+          }
+          dd {
+            width: 100%;
+            flex: 1;
+            color: #262630;
+            font-size: 14px;
+            text-align: right;
+            line-height: 20px;
+          }
+        }
+      }
+      .exam-info-footer {
+        height: 60px;
+        background: #f9f9fd;
+        border-top: 1px solid #eee;
+        margin: -10px;
+        margin-top: 20px;
+        padding: 10px;
+        text-align: center;
+      }
+    }
+  }
+  .my-exam-box {
+    .exam-info-main {
+      min-height: 285px;
+    }
+  }
 }
 .user-info {
   .portrait-box {
@@ -202,19 +547,20 @@ nav.nav {
       color: #665;
       margin: 10px 0;
     }
-    .btn-viewmore-box {
-      margin-top: 20px;
-      margin-bottom: 10px;
-      button {
-        i {
-          display: none;
-          margin-left: 5px;
-        }
-        &:hover {
-          i {
-            display: inline;
-          }
-        }
+  }
+}
+.btn-viewmore-box {
+  margin-top: 20px;
+  margin-bottom: 10px;
+  text-align: center;
+  button {
+    i {
+      display: none;
+      margin-left: 5px;
+    }
+    &:hover {
+      i {
+        display: inline;
       }
     }
   }
@@ -255,7 +601,7 @@ $borderRadius: 4px;
   position: relative;
   &:hover {
     color: $btnColor;
-    animation: pulse ease-out 1s $duration-4X;
+    animation: pulse ease-out 1s $duration-4X alternate infinite;
   }
   &::before,
   &::after {
@@ -306,7 +652,26 @@ $borderRadius: 4px;
   }
 
   to {
-    box-shadow: 0 0 0 2px rgba(64, 158, 255, 0.1);
+    box-shadow: 0 0 0 4px rgba(64, 158, 255, 0.1);
   }
 }
 </style>
+<style lang="scss">
+#MyExam .el-table {
+  th,
+  td,
+  .cell {
+    padding: 0 3px;
+  }
+}
+#MyExam .el-badge__content.is-fixed {
+  right: 20px;
+}
+#MyExam .el-badge:hover .el-card {
+  box-shadow: 0 2px 20px #ccc;
+}
+#FinishExam .el-card:hover {
+  box-shadow: 0 2px 20px #ccc;
+}
+</style>
+

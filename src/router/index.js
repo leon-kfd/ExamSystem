@@ -22,7 +22,7 @@ let adminRouter = [
     path: 'examManage',
     name: 'examManage',
     redirect: 'examManage/createExam',
-    component: () => import('@/pages/admin/exam-manage'),
+    component: () => import('@/pages/admin/exam-manage/index'),
     meta: {
       label: '考试管理',
       iconClass: 'el-icon-document'
@@ -31,9 +31,53 @@ let adminRouter = [
       {
         path: 'createExam',
         name: 'createExam',
-        component: () => import('@/pages/admin/create-exam'),
+        component: () => import('@/pages/admin/exam-manage/create-exam'),
         meta: {
           label: '创建考试'
+        }
+      },
+      {
+        path: 'examList',
+        name: 'examList',
+        component: () => import('@/pages/admin/exam-manage/exam-list'),
+        meta: {
+          label: '考试列表'
+        }
+      },
+      {
+        path: 'ExamEvaluation',
+        name: 'ExamEvaluation',
+        component: () => import('@/pages/admin/exam-manage/exam-evaluation'),
+        meta: {
+          label: '阅卷评卷'
+        }
+      }
+    ]
+  },
+  {
+    path: 'studentManage',
+    name: 'studentManage',
+    redirect: 'studentManage/studentList',
+    component: () => import('@/pages/admin/student-manage/index'),
+    meta: {
+      label: '学生管理',
+      iconClass: 'el-icon-picture-outline'
+    },
+    children: [
+      {
+        path: 'studentList',
+        name: 'studentList',
+        component: () => import('@/pages/admin/student-manage/student-list'),
+        meta: {
+          label: '学生列表'
+        }
+      },
+      {
+        path: 'scoreManage',
+        name: 'scoreManage',
+        component: () => import('@/pages/admin/student-manage/score-manage'),
+        meta: {
+          label: '成绩管理'
         }
       }
     ]
@@ -75,7 +119,7 @@ const router = new Router({
     {
       path: '/admin',
       name: 'admin',
-      redirect: '/admin/test1',
+      redirect: '/admin/examManage/createExam',
       component: Admin,
       children: [
         ...adminRouter

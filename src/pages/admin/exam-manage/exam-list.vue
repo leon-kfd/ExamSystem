@@ -1,3 +1,3 @@
 <template>
-  <div>test2-1</div>
+  <div>ExamList</div>
 </template>

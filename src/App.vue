@@ -60,6 +60,11 @@ li {
   display: table;
   height: 0;
 }
+.ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 /* 滚动条样式 */
 *::-webkit-scrollbar {
   width: 8px;
