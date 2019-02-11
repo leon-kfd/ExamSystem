@@ -2,7 +2,7 @@
   <div class="page"
        id="CreateExam">
     <div class="header-operation"
-         :style="{'padding-left': IsCollapse ? '64px' : '200px' }">
+         :style="{'padding-left': headerLeft + 'px' }">
       <div class="container clear">
         <div class="create-btn-box fl">
           <el-button type="primary"
@@ -31,21 +31,24 @@
         </div>
       </div>
     </div>
-    <div class="container"
-         id="a">
+    <div class="container">
       <div class="create-exam-box">
         <h3 class="main-title"><span>考试信息</span></h3>
         <div class="exam-info-box clear">
           <div class="form fl">
             <el-form ref="examForm"
-                     :model="examForm"
+                     :rules="examForm.rules"
+                     :model="examForm.fields"
                      label-width="100px"
                      style="width: 550px">
-              <el-form-item label="考试题目">
+              <el-form-item label="考试题目"
+                            prop="title">
                 <el-input v-model="examForm.fields.title"
+                          placeholder="请输入试卷标题"
                           style="width: 450px"></el-input>
               </el-form-item>
-              <el-form-item label="考试时间">
+              <el-form-item label="考试时间"
+                            prop="date">
                 <el-date-picker v-model="examForm.fields.date"
                                 type="datetimerange"
                                 range-separator="至"
@@ -54,7 +57,8 @@
                                 style="width: 450px">
                 </el-date-picker>
               </el-form-item>
-              <el-form-item label="考试班级">
+              <el-form-item label="考试班级"
+                            prop="class">
                 <el-select v-model="examForm.fields.class"
                            multiple
                            placeholder="请选择"
@@ -66,7 +70,8 @@
                   </el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item label="考试时长">
+              <el-form-item label="考试时长"
+                            prop="long">
                 <el-input-number v-model="examForm.fields.long"
                                  controls-position="right"
                                  :step="10"
@@ -140,10 +145,10 @@
                                    :max="100"></el-input-number>
                 </span>
                 <span class="operation-item"
-                      v-if="index!=0"
+                      v-if="!randomOrder&&index!=0"
                       @click="QuestionMoveUp(index)">上移</span>
                 <span class="operation-item"
-                      v-if="index!=questionList.length-1"
+                      v-if="!randomOrder&&index!=questionList.length-1"
                       @click="QuestionMoveDown(index)">下移</span>
                 <span class="operation-item text-danger"
                       @click="QuestionDel(index)">删除</span>
@@ -179,10 +184,10 @@
                           v-else
                           @click="cancelAnswer(index, optionIndex)">取消设为答案</span>
                     <span class="operation-item"
-                          v-if="optionIndex!=0"
+                          v-if="!randomOrder&&optionIndex!=0"
                           @click="OptionMoveUp(index, optionIndex)">上移</span>
                     <span class="operation-item"
-                          v-if="optionIndex!=item.option.length-1"
+                          v-if="!randomOrder&&optionIndex!=item.option.length-1"
                           @click="OptionMoveDown(index, optionIndex)">下移</span>
                     <span class="operation-item text-danger"
                           @click="OptionDel(index, optionIndex)">删除</span>
@@ -234,6 +239,7 @@ export default {
   props: ['IsCollapse'],
   data () {
     return {
+      scrollLeft: 0,
       typeList: ['单选题', '判断题', '多选题', '问答题'],
       classList: [
         {
@@ -257,6 +263,12 @@ export default {
           class: [],
           autoMarking: false,
           randomOrder: false
+        },
+        rules: {
+          title: [{ required: true, message: '请输入考试试卷标题' }],
+          date: [{ required: true, message: '请选择考试时间' }],
+          long: [{ required: true, message: '请输入考试时长' }],
+          class: [{ required: true, message: '请选择班级' }]
         }
       },
       questionList: [],
@@ -290,6 +302,23 @@ export default {
       }
       return result
     }
+  },
+  computed: {
+    headerLeft () {
+      let CollapseLeft
+      CollapseLeft = this.IsCollapse ? 64 : 200
+      return CollapseLeft + 20 - this.scrollLeft
+    },
+    randomOrder () {
+      return this.examForm.fields.randomOrder
+    }
+  },
+  mounted () {
+    let appContent = this.$parent.$refs.appContent
+    appContent.addEventListener('scroll', () => {
+      this.scrollLeft = appContent.scrollLeft
+      console.log(" scroll " + appContent.scrollLeft)
+    })
   },
   methods: {
     QuestionMoveUp (questionIndex) {
@@ -477,7 +506,11 @@ export default {
   background: #fff;
   border-top: 1px solid #eee;
   transition: all 0.4s;
+  padding: 0 20px;
   .create-btn-box {
+    padding: 10px 0;
+  }
+  .submit-btn-box {
     padding: 10px 0;
   }
 }

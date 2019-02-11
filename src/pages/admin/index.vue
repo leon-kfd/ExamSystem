@@ -61,6 +61,7 @@
       </el-breadcrumb>
     </div>
     <div class="app-content"
+         ref="appContent"
          :style="{left: isCollapse ? '64px' : '200px'}">
       <router-view :is-collapse="isCollapse" />
     </div>
