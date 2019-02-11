@@ -12,17 +12,24 @@ let adminRouter = [
   {
     path: 'test1',
     name: 'test1',
-    component: () => import('@/pages/admin/test1'),
     meta: {
       label: 'test1',
       iconClass: 'el-icon-location'
-    }
+    },
+    redirect: 'test1/index',
+    noChildren: true,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/pages/admin/test1')
+      }
+    ]
   },
   {
     path: 'examManage',
     name: 'examManage',
     redirect: 'examManage/createExam',
-    component: () => import('@/pages/admin/exam-manage/index'),
+    component: () => import('@/pages/admin/index'),
     meta: {
       label: '考试管理',
       iconClass: 'el-icon-document'
@@ -58,7 +65,6 @@ let adminRouter = [
     path: 'studentManage',
     name: 'studentManage',
     redirect: 'studentManage/studentList',
-    component: () => import('@/pages/admin/student-manage/index'),
     meta: {
       label: '学生管理',
       iconClass: 'el-icon-picture-outline'
@@ -79,6 +85,30 @@ let adminRouter = [
         meta: {
           label: '成绩管理'
         }
+      },
+      {
+        path: 'studentMessage',
+        name: 'studentMessage',
+        component: () => import('@/pages/admin/student-manage/student-message'),
+        meta: {
+          label: '学生留言'
+        }
+      }
+    ]
+  },
+  {
+    path: 'setNotice',
+    name: 'setNotice',
+    meta: {
+      label: '发布公告',
+      iconClass: 'el-icon-location'
+    },
+    redirect: 'setNotice/index',
+    noChildren: true,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/pages/admin/set-notice')
       }
     ]
   },
@@ -121,9 +151,7 @@ const router = new Router({
       name: 'admin',
       redirect: '/admin/examManage/createExam',
       component: Admin,
-      children: [
-        ...adminRouter
-      ]
+      children: adminRouter
     }
   ]
 })

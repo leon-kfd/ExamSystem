@@ -3,8 +3,8 @@
        id="CreateExam">
     <div class="header-operation"
          :style="{'padding-left': IsCollapse ? '64px' : '200px' }">
-      <div class="container">
-        <div class="create-btn-box">
+      <div class="container clear">
+        <div class="create-btn-box fl">
           <el-button type="primary"
                      plain
                      icon="el-icon-plus"
@@ -22,13 +22,88 @@
                      icon="el-icon-plus"
                      @click="addQuerstion(4)">问答题</el-button>
         </div>
+        <div class="submit-btn-box fr">
+          <el-button type="success"
+                     plain
+                     icon="el-icon-upload2">临时保存</el-button>
+          <el-button type="warning"
+                     icon="el-icon-check">发布考试</el-button>
+        </div>
       </div>
     </div>
     <div class="container"
          id="a">
       <div class="create-exam-box">
-        <h3 style="padding: 8px">编辑试题</h3>
+        <h3 class="main-title"><span>考试信息</span></h3>
+        <div class="exam-info-box clear">
+          <div class="form fl">
+            <el-form ref="examForm"
+                     :model="examForm"
+                     label-width="100px"
+                     style="width: 550px">
+              <el-form-item label="考试题目">
+                <el-input v-model="examForm.fields.title"
+                          style="width: 450px"></el-input>
+              </el-form-item>
+              <el-form-item label="考试时间">
+                <el-date-picker v-model="examForm.fields.date"
+                                type="datetimerange"
+                                range-separator="至"
+                                start-placeholder="开始日期"
+                                end-placeholder="结束日期"
+                                style="width: 450px">
+                </el-date-picker>
+              </el-form-item>
+              <el-form-item label="考试班级">
+                <el-select v-model="examForm.fields.class"
+                           multiple
+                           placeholder="请选择"
+                           style="width: 450px">
+                  <el-option v-for="item in classList"
+                             :key="item.value"
+                             :label="item.label"
+                             :value="item.value">
+                  </el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="考试时长">
+                <el-input-number v-model="examForm.fields.long"
+                                 controls-position="right"
+                                 :step="10"
+                                 :min="10"
+                                 :max="1440"
+                                 style="width: 120px"></el-input-number>
+                <span style="margin-left: 8px;color: #889">分钟</span>
+              </el-form-item>
+              <el-form-item label="自动阅卷">
+                <el-switch v-model="examForm.fields.autoMarking"></el-switch>
+              </el-form-item>
+              <el-form-item label="随机顺序">
+                <el-switch v-model="examForm.fields.randomOrder"></el-switch>
+              </el-form-item>
+            </el-form>
+          </div>
+          <div class="tips fl">
+            <el-alert title="Tips"
+                      type="warning"
+                      :closable="false"
+                      show-icon>
+              <slot>
+                <ul class="tips-list">
+                  <li>考试班级可多选，若无相应班级，请老师先在班级管理页面添加自己的班级</li>
+                  <li>当考试为纯选择题题型时可以开启自动阅卷功能，考试结束自动计算考试得分，问答题不可进行自动阅卷</li>
+                  <li>当开启了自动阅卷功能时，可以开启随机顺序功能，考试时题目顺序随机，选项顺序随机，选项会进行自动阅卷，编辑试题时不需再进行试题与选项的顺序更改</li>
+                  <li>添加题目后记得设置题目相应的分数，请尽量将总分控制在100分</li>
+                  <li>考虑到不可控因素，当考试题量较多时，请多使用临时保存功能，以防数据丢失。可以在临时保存页面找到自己保存的试题继续进行编辑。</li>
+                </ul>
+              </slot>
+            </el-alert>
+          </div>
+        </div>
+        <h3 class="main-title"><span>考试题目</span></h3>
         <div class="question-box">
+          <div class="no-question"
+               v-if="questionList.length==0">请添加试题内容...</div>
           <div class="test-item"
                v-for="(item, index) in questionList"
                :key="index">
@@ -160,6 +235,30 @@ export default {
   data () {
     return {
       typeList: ['单选题', '判断题', '多选题', '问答题'],
+      classList: [
+        {
+          label: '15信管',
+          value: 1
+        },
+        {
+          label: '15计本',
+          value: 2
+        },
+        {
+          label: '15软件',
+          value: 3
+        }
+      ],
+      examForm: {
+        fields: {
+          title: '',
+          date: [],
+          long: 120,
+          class: [],
+          autoMarking: false,
+          randomOrder: false
+        }
+      },
       questionList: [],
       currentTestIndex: -1,
       editTitleIndex: -1,
@@ -388,6 +487,31 @@ export default {
   border-radius: 4px;
   box-shadow: 0 1px 10px #aaa;
   margin-top: 90px;
+  .main-title {
+    padding-left: 8px;
+    margin: 10px 0;
+    span {
+      border-left: 4px solid #409eff;
+      padding-left: 5px;
+    }
+  }
+  .exam-info-box {
+    padding: 8px;
+    .form {
+      width: 550px;
+    }
+    .tips {
+      width: 450px;
+      margin-left: 30px;
+      .tips-list {
+        list-style-type: circle !important;
+        li {
+          margin: 10px 0;
+          list-style-type: circle !important;
+        }
+      }
+    }
+  }
   .question-box {
     padding: 10px;
     .test-item {
@@ -566,6 +690,13 @@ export default {
   font-weight: bold;
   padding: 0 2px 0 5px;
 }
+.no-question {
+  height: 200px;
+  line-height: 200px;
+  text-align: center;
+  color: #99a;
+  font-size: 14px;
+}
 </style>
 <style>
 #CreateExam .el-textarea__inner {
@@ -573,5 +704,13 @@ export default {
   font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB",
     "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
   resize: none;
+}
+#CreateExam .el-alert {
+  align-items: flex-start;
+  padding: 16px;
+}
+#CreateExam .el-alert__title {
+  font-size: 16px;
+  line-height: 26px;
 }
 </style>

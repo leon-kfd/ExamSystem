@@ -9,7 +9,7 @@
         <template v-for="(menu,index) in menuList">
           <el-submenu :index="menu.name"
                       :key="index"
-                      v-if="menu.children">
+                      v-if="menu.children&&!menu.noChildren">
             <template slot="title">
               <i :class="menu.meta.iconClass"></i>
               <span slot="title">{{ menu.meta.label }}</span>
@@ -27,7 +27,7 @@
             <i :class="menu.meta.iconClass"></i>
             <span slot="title">{{ menu.meta.label }}</span>
           </el-menu-item>
-          <el-menu-item v-else
+          <el-menu-item v-else-if="menu.noChildren"
                         :index="menu.name"
                         :key="index"
                         @click="$router.push({name:menu.name})">
@@ -51,16 +51,18 @@
         <el-breadcrumb-item :to="{'name': 'admin'}">
           <span>主页</span>
         </el-breadcrumb-item>
-        <el-breadcrumb-item v-for="(item, index) in breadList"
-                            :key="index"
-                            :to="{'name': item.name}">
-          <span>{{ item.meta.label }}</span>
-        </el-breadcrumb-item>
+        <template v-for="(item, index) in breadList">
+          <el-breadcrumb-item :key="index"
+                              v-if="item.meta.label"
+                              :to="{'name': item.name}">
+            <span>{{ item.meta.label }}</span>
+          </el-breadcrumb-item>
+        </template>
       </el-breadcrumb>
     </div>
     <div class="app-content"
          :style="{left: isCollapse ? '64px' : '200px'}">
-      <router-view :is-collapse="isCollapse"></router-view>
+      <router-view :is-collapse="isCollapse" />
     </div>
   </div>
 </template>
