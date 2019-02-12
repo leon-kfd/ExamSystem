@@ -10,22 +10,6 @@ Vue.use(Router)
 
 let adminRouter = [
   {
-    path: 'test1',
-    name: 'test1',
-    meta: {
-      label: 'test1',
-      iconClass: 'el-icon-location'
-    },
-    redirect: 'test1/index',
-    noChildren: true,
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/pages/admin/test1')
-      }
-    ]
-  },
-  {
     path: 'examManage',
     name: 'examManage',
     redirect: 'examManage/createExam',
@@ -41,6 +25,14 @@ let adminRouter = [
         component: () => import('@/pages/admin/exam-manage/create-exam'),
         meta: {
           label: '创建考试'
+        }
+      },
+      {
+        path: 'saveTempExam',
+        name: 'saveTempExam',
+        component: () => import('@/pages/admin/exam-manage/save-temp-exam'),
+        meta: {
+          label: '临时保存'
         }
       },
       {
@@ -97,6 +89,22 @@ let adminRouter = [
     ]
   },
   {
+    path: 'classManage',
+    name: 'classManage',
+    meta: {
+      label: '班级管理',
+      iconClass: 'el-icon-location'
+    },
+    redirect: 'classManage/index',
+    noChildren: true,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/pages/admin/class-manage')
+      }
+    ]
+  },
+  {
     path: 'setNotice',
     name: 'setNotice',
     meta: {
@@ -111,18 +119,18 @@ let adminRouter = [
         component: () => import('@/pages/admin/set-notice')
       }
     ]
-  },
-  {
-    path: 'outer',
-    name: 'outer',
-    meta: {
-      label: 'outer',
-      iconClass: 'el-icon-document'
-    },
-    outer: {
-      outerUrl: 'http://www.baidu.com'
-    }
   }
+  // {
+  //   path: 'outer',
+  //   name: 'outer',
+  //   meta: {
+  //     label: 'outer',
+  //     iconClass: 'el-icon-document'
+  //   },
+  //   outer: {
+  //     outerUrl: 'http://www.baidu.com'
+  //   }
+  // }
 ]
 const router = new Router({
   routes: [

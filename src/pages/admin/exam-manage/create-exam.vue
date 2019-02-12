@@ -2,8 +2,9 @@
   <div class="page"
        id="CreateExam">
     <div class="header-operation"
-         :style="{'padding-left': headerLeft + 'px' }">
-      <div class="container clear">
+         :style="{paddingLeft: `${IsCollapse?84:220}px`,transform: `translateX(-${scrollLeft-10}px`}">
+      <div class="container clear"
+           style="background: #fff">
         <div class="create-btn-box fl">
           <el-button type="primary"
                      plain
@@ -25,14 +26,19 @@
         <div class="submit-btn-box fr">
           <el-button type="success"
                      plain
-                     icon="el-icon-upload2">临时保存</el-button>
+                     icon="el-icon-upload2"
+                     @click="saveTemp"
+                     :loading="saveTempLoading">临时保存</el-button>
           <el-button type="warning"
-                     icon="el-icon-check">发布考试</el-button>
+                     icon="el-icon-check"
+                     @click="submitExam"
+                     :loading="submitExamLoading">发布考试</el-button>
         </div>
       </div>
     </div>
     <div class="container">
-      <div class="create-exam-box">
+      <div class="create-exam-box"
+           v-loading="saveTempLoading||submitExamLoading">
         <h3 class="main-title"><span>考试信息</span></h3>
         <div class="exam-info-box clear">
           <div class="form fl">
@@ -117,6 +123,7 @@
               <span class="t-number">{{index+1}}</span>
               <el-tag class="t-type">{{item.type | questionType}} <span class="score-text">{{item.score}}</span>分</el-tag>
               <span class="t-info"
+                    :class="{'empty-to-error':questionListFlag}"
                     @click="editTitleIndex=index">{{item.title}}</span>
               <el-input v-model="item.title"
                         class="t-input"
@@ -166,6 +173,7 @@
                      }">
                   <span class="options">{{optionIndex | questionOption}}</span>
                   <span class="info"
+                        :class="{'empty-to-error': questionListFlag}"
                         @click="editOptionIndex = optionIndex; currentTestIndex = index">{{optionItem.text}}</span>
                   <el-input v-model="optionItem.text"
                             class="t-input"
@@ -275,7 +283,10 @@ export default {
       currentTestIndex: -1,
       editTitleIndex: -1,
       editOptionIndex: -1,
-      editScoreIndex: -1
+      editScoreIndex: -1,
+      questionListFlag: false,
+      saveTempLoading: false,
+      submitExamLoading: false
     }
   },
   filters: {
@@ -304,11 +315,6 @@ export default {
     }
   },
   computed: {
-    headerLeft () {
-      let CollapseLeft
-      CollapseLeft = this.IsCollapse ? 64 : 200
-      return CollapseLeft + 20 - this.scrollLeft
-    },
     randomOrder () {
       return this.examForm.fields.randomOrder
     }
@@ -317,7 +323,6 @@ export default {
     let appContent = this.$parent.$refs.appContent
     appContent.addEventListener('scroll', () => {
       this.scrollLeft = appContent.scrollLeft
-      console.log(" scroll " + appContent.scrollLeft)
     })
   },
   methods: {
@@ -468,7 +473,46 @@ export default {
         this.editScoreIndex = -1
         event.preventDefault()
       }
+    },
+    saveTemp () {
+      this.saveTempLoading = true
+      setTimeout(_ => {
+        console.log(this.examForm.fields)
+        console.log(this.questionList)
+        this.saveTempLoading = false
+      }, 2000)
+    },
+    submitExam () {
+      this.questionListFlag = false
+      // let questionListFlag = this.questionList.some((item) => item.title.length == 0)
+      this.$refs['examForm'].validate((valid) => {
+        if (valid) {
+          let questionListFlag = false
+          this.questionList.map((item) => {
+            if (item.title.length == 0) {
+              questionListFlag = true
+            } else if (item.option) {
+              questionListFlag = questionListFlag || item.option.some((item1) => item1.text.length == 0)
+            }
+          })
+          if (questionListFlag) {
+            this.questionListFlag = questionListFlag
+            this.$message.error('含有未编辑的考试题目或选项')
+          } else {
+            this.submitExamLoading = true
+            setTimeout(_ => {
+              console.log(this.examForm.fields)
+              console.log(this.questionList)
+              this.submitExamLoading = false
+            }, 2000)
+          }
+        }
+      })
     }
+  },
+  destroyed () {
+    let appContent = this.$parent.$refs.appContent
+    appContent.removeEventListener('scroll', () => { })
   },
   directives: {
     focus: {
@@ -504,7 +548,6 @@ export default {
   height: 80px;
   min-width: 1180px;
   background: #fff;
-  border-top: 1px solid #eee;
   transition: all 0.4s;
   padding: 0 20px;
   .create-btn-box {
@@ -574,6 +617,9 @@ export default {
             content: "点击输入标题内容";
             color: #667;
           }
+          &.empty-to-error:empty::after {
+            color: #bb4444;
+          }
         }
         .t-input {
           display: none;
@@ -638,6 +684,9 @@ export default {
               &:empty:after {
                 content: "点击输入选项内容";
                 color: #667;
+              }
+              &.empty-to-error:empty:after {
+                color: #bb4444;
               }
             }
             .t-input {
