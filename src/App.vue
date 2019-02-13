@@ -131,5 +131,6 @@ li {
   padding: 20px;
   border: 1px solid #dde;
   box-sizing: border-box;
+  min-width: 500px;
 }
 </style>

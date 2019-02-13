@@ -1,6 +1,5 @@
 <template>
-  <div class="page"
-       id="CreateExam">
+  <div id="CreateExam">
     <div class="back-to-top"
          :class="{active:showBackTop}"
          :style="{transform: `translateX(${IsCollapse?629:695}px)`}"

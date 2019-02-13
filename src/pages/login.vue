@@ -1,6 +1,5 @@
 <template>
-  <div class="page"
-       id="Login">
+  <div id="Login">
     <div class="main"
          :class="active?'login-active':'register-active'">
       <div class="left-box">
