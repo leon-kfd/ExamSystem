@@ -98,6 +98,9 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+.home-page {
+  min-width: 500px;
+}
 .app-nav {
   position: fixed;
   top: 0;
@@ -122,6 +125,7 @@ export default {
   box-shadow: 0 0 10px 0 #80848f;
   padding: 0 10px;
   transition: all 0.4s;
+  min-width: 300px;
   .icon-bar-box {
     display: inline-block;
     position: relative;
@@ -168,6 +172,7 @@ export default {
   background: #f8f8f9;
   font-size: 14px;
   transition: all 0.4s;
+  min-width: 300px;
 }
 </style>
 <style>

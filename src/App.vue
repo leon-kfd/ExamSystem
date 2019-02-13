@@ -116,14 +116,20 @@ li {
 @keyframes fadeInUp {
   from {
     opacity: 0;
-    -webkit-transform: translate3d(0, 20px, 0);
-    transform: translate3d(0, 20px, 0);
+    -webkit-transform: translateY(20px);
+    transform: translateY(20px);
   }
 
   to {
     opacity: 1;
-    -webkit-transform: translate3d(0, 0, 0);
-    transform: translate3d(0, 0, 0);
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
   }
+}
+.page {
+  background: #fff;
+  padding: 20px;
+  border: 1px solid #dde;
+  box-sizing: border-box;
 }
 </style>

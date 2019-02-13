@@ -1,8 +1,14 @@
 <template>
   <div class="page"
        id="CreateExam">
+    <div class="back-to-top"
+         :class="{active:showBackTop}"
+         :style="{transform: `translateX(${IsCollapse?629:695}px)`}"
+         @click="backTop">
+      <i class="el-icon-arrow-up"></i>
+    </div>
     <div class="header-operation"
-         :style="{paddingLeft: `${IsCollapse?84:220}px`,transform: `translateX(-${scrollLeft-10}px`}">
+         :style="{paddingLeft: `${IsCollapse?84:220}px`,transform: `translateX(${-scrollLeft}px`}">
       <div class="container clear"
            style="background: #fff">
         <div class="create-btn-box fl">
@@ -243,6 +249,7 @@
 <script>
 import { zIndexUp, zIndexDown, delItem } from '@/utils/array'
 import { ScrollTo } from '@/utils/animate'
+import { debounce } from '@/utils/tools'
 export default {
   props: ['IsCollapse'],
   data () {
@@ -286,7 +293,8 @@ export default {
       editScoreIndex: -1,
       questionListFlag: false,
       saveTempLoading: false,
-      submitExamLoading: false
+      submitExamLoading: false,
+      showBackTop: false
     }
   },
   filters: {
@@ -317,13 +325,19 @@ export default {
   computed: {
     randomOrder () {
       return this.examForm.fields.randomOrder
-    }
+    },
   },
   mounted () {
     let appContent = this.$parent.$refs.appContent
-    appContent.addEventListener('scroll', () => {
+    appContent.addEventListener('scroll', debounce(() => {
       this.scrollLeft = appContent.scrollLeft
-    })
+      let scrollTop = appContent.scrollTop
+      if (scrollTop > 500) {
+        this.showBackTop = true
+      } else {
+        this.showBackTop = false
+      }
+    }, 400))
   },
   methods: {
     QuestionMoveUp (questionIndex) {
@@ -484,7 +498,6 @@ export default {
     },
     submitExam () {
       this.questionListFlag = false
-      // let questionListFlag = this.questionList.some((item) => item.title.length == 0)
       this.$refs['examForm'].validate((valid) => {
         if (valid) {
           let questionListFlag = false
@@ -506,7 +519,15 @@ export default {
               this.submitExamLoading = false
             }, 2000)
           }
+        } else {
+          this.backTop()
         }
+      })
+    },
+    backTop () {
+      this.$nextTick(_ => {
+        const el = document.querySelector('.app-content')
+        ScrollTo(0, 400, el)
       })
     }
   },
@@ -532,6 +553,27 @@ export default {
     left: 0;
     height: 1px;
     box-shadow: 0 1px 10px;
+  }
+}
+.back-to-top {
+  position: fixed;
+  bottom: 68px;
+  left: 50%;
+  width: 40px;
+  height: 40px;
+  text-align: center;
+  line-height: 40px;
+  font-size: 24px;
+  background: #262630;
+  color: #fff;
+  border-radius: 4px;
+  box-shadow: 0 0 10px #262630;
+  cursor: pointer;
+  transition: transform 0.4s ease-in, opacity 0.4s ease-in;
+  opacity: 0;
+  &.active {
+    opacity: 1;
+    transition: transform 0.4s ease-in, opacity 0.4s ease-in;
   }
 }
 .container {
