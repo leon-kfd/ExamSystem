@@ -1,6 +1,5 @@
 <template>
-  <div class="page"
-       id="StudentHome">
+  <div id="StudentHome">
     <nav class="nav"></nav>
     <div class="container">
       <div class="page-body">

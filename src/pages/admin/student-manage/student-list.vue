@@ -6,11 +6,11 @@
       <el-select v-model="CurrentClass"
                  size="small"
                  placeholder="请选择">
-        <option v-for="(item,index) in classList"
-                :key="index"
-                :label="item.label"
-                :value="item.value">
-        </option>
+        <el-option v-for="(item,index) in classList"
+                   :key="index"
+                   :label="item.label"
+                   :value="item.value">
+        </el-option>
       </el-select>
       <el-button type="primary"
                  size="small"
