@@ -29,9 +29,9 @@ function throttle (func, wait = 100) {
 
 /** 
 * 函数去抖
-* @param     func     {Function}   实际要执行的函数
-* @param     delay    {Number}     延迟时间，单位是毫秒（ms）
-* @return    {Function}
+* @param  func     {Function}   实际要执行的函数
+* @param  delay    {Number}     延迟时间，单位是毫秒（ms）
+* @return          {Function}
 */
 function debounce (fn, delay = 1000) {
   let timer;
@@ -53,4 +53,17 @@ function debounce (fn, delay = 1000) {
     }, delay);
   }
 }
-export { throttle, debounce }
+
+/**
+ * 类型检测
+ * @param element {Any} 传入需要检测的元素
+ * @return {String}
+ */
+function typeTest (element) {
+  let classType = {}
+  'Array Date RegExp Object Error'.split(' ').forEach(item => classType[`[object ${item}]`] = item.toLowerCase())
+  if (element == null) return String(element)
+  return typeof element === 'object' ? classType[Object.prototype.toString.call(element)] || 'object' : typeof element
+}
+
+export { throttle, debounce, typeTest }
