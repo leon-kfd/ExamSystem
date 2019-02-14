@@ -1,5 +1,6 @@
 <template>
-  <div class="page">
+  <div class="page"
+       id="SaveTempTable">
     <div class="save-temp-table">
       <div class="table-main">
         <el-table :data="tableData"
@@ -112,12 +113,5 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.table-main {
-  margin-top: 15px;
-}
-.table-pagination {
-  margin: 15px 0;
-  text-align: right;
-}
 </style>
 
