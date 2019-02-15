@@ -120,10 +120,6 @@
                 <dd>{{item.title}}</dd>
               </dl>
               <dl>
-                <dt>出卷人</dt>
-                <dd>{{item.publisher}}</dd>
-              </dl>
-              <dl>
                 <dt>考试时长</dt>
                 <dd>{{item.examLength}}</dd>
               </dl>

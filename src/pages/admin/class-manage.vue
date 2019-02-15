@@ -1,9 +1,7 @@
 <template>
   <div id="ClassManage">
     <div class="classroom-box">
-      <el-transfer filterable
-                   :filter-method="filterMethod"
-                   :titles="['班级列表', '我的班级']"
+      <el-transfer :titles="['班级列表', '我的班级']"
                    filter-placeholder="请输入班级名"
                    v-model="myClass"
                    :data="classList">
@@ -12,8 +10,10 @@
           <span style="font-size:12px;color: #99a;margin-right: 4px">筛选</span>
           <el-select class="transfer-footer"
                      style="width: 75%;"
-                     size="small">
-            <el-option>aaa</el-option>
+                     size="small"
+                     v-model="ClassFilterValue">
+            <el-option :value="1"
+                       :label="'aaa'">aaa</el-option>
           </el-select>
         </div>
         <div slot="right-footer"
@@ -40,10 +40,13 @@ export default {
         },
         {
           label: '15软件',
-          key: 2
+          key: 2,
         }
-      ]
+      ],
+      ClassFilterValue: ''
     }
+  },
+  methods: {
   }
 }
 </script>

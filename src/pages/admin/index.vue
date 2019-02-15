@@ -37,7 +37,7 @@
         </template>
       </el-menu>
     </div>
-    <div class="app-header"
+    <div class="app-header clear"
          :style="{left: isCollapse ? '64px' : '200px'}">
       <span class="icon-bar-box"
             :class="{'is-collapse': isCollapse}"
@@ -59,6 +59,19 @@
           </el-breadcrumb-item>
         </template>
       </el-breadcrumb>
+      <div class="user-info-box fr">
+        <el-dropdown>
+          <div>
+            <img class="user-img"
+                 src="http://placem.at/people?w=64&h=64">
+            <span class="username">Username</span>
+          </div>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item>个人中心</el-dropdown-item>
+            <el-dropdown-item>退出系统</el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
+      </div>
     </div>
     <div class="app-content"
          ref="appContent"
@@ -125,7 +138,7 @@ export default {
   box-shadow: 0 0 10px 0 #80848f;
   padding: 0 10px;
   transition: all 0.4s;
-  min-width: 300px;
+  min-width: 400px;
   .icon-bar-box {
     display: inline-block;
     position: relative;
@@ -161,6 +174,27 @@ export default {
     vertical-align: middle;
     padding-left: 10px;
   }
+  .user-info-box {
+    height: 48px;
+    line-height: 48px;
+    padding: 0 10px;
+    cursor: pointer;
+    img {
+      width: 36px;
+      height: 36px;
+      box-sizing: border-box;
+      border: 2px solid #f0a044;
+      border-radius: 50%;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    .username {
+      font-size: 14px;
+      color: #778;
+      font-weight: bold;
+      margin-left: 3px;
+    }
+  }
 }
 .app-content {
   position: absolute;
@@ -172,7 +206,7 @@ export default {
   background: #f8f8f9;
   font-size: 14px;
   transition: all 0.4s;
-  min-width: 300px;
+  min-width: 400px;
 }
 </style>
 <style>

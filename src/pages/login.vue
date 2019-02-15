@@ -106,7 +106,7 @@ export default {
         let { username, password, role } = this.LoginForm
         setTimeout(_ => {
           console.log('表单提交')
-          console.table({ username, password, role })
+          console.log({ username, password, role })
           let token = 'temp00001'
           sessionStorage.setItem('token', token)
           this.btnLoginLoading = false
