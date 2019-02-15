@@ -12,8 +12,8 @@
               <p class="student-name">Student Name</p>
               <p class="student-number">2015034843000</p>
               <p class="student-classname">15信息管理与信息系统</p>
-              <p class="btn-viewmore-box">
-                <button class="btn btn-viewmore btn-animate1">查看更多 <i class="el-icon-d-arrow-right"></i></button>
+              <p class="d-btn-viewmore-box">
+                <button class="d-btn btn-viewmore btn-animate1">查看更多 <i class="el-icon-d-arrow-right"></i></button>
               </p>
             </div>
           </div>
@@ -34,7 +34,7 @@
               </div>
             </div>
             <p class="btn-viewmore-box">
-              <button class="btn btn-viewmore btn-animate1">查看更多 <i class="el-icon-d-arrow-right"></i></button>
+              <button class="d-btn btn-viewmore btn-animate1">查看更多 <i class="el-icon-d-arrow-right"></i></button>
             </p>
           </div>
         </div>
@@ -85,6 +85,10 @@
                         <dd>{{item.class}}</dd>
                       </dl>
                       <dl>
+                        <dt>相关课程</dt>
+                        <dd>{{item.course}}</dd>
+                      </dl>
+                      <dl>
                         <dt>题量</dt>
                         <dd>
                           <el-table :data="item.questionNum"
@@ -129,7 +133,7 @@
                       </dl>
                     </div>
                     <div class="exam-info-footer">
-                      <button class="btn btn-enter btn-animate1">进入考试 <i class="el-icon-d-arrow-right"></i></button>
+                      <button class="d-btn btn-enter btn-animate1">进入考试 <i class="el-icon-d-arrow-right"></i></button>
                     </div>
                   </el-card>
                 </el-badge>
@@ -168,6 +172,10 @@
                       <dd>{{item.class}}</dd>
                     </dl>
                     <dl>
+                      <dt>相关课程</dt>
+                      <dd>{{item.course}}</dd>
+                    </dl>
+                    <dl>
                       <dt>完成状态</dt>
                       <dd :style="{color: item.finishStatus==1?'#409EFF':'#E6A23C'}">{{item.finishStatus==1?'全部完成':'超时强行提交，未完成'}}</dd>
                     </dl>
@@ -181,7 +189,7 @@
                     </dl>
                   </div>
                   <div class="exam-info-footer">
-                    <button class="btn btn-enter btn-animate1">查看详情 <i class="el-icon-d-arrow-right"></i></button>
+                    <button class="d-btn btn-enter btn-animate1">查看详情 <i class="el-icon-d-arrow-right"></i></button>
                   </div>
                 </el-card>
               </div>
@@ -212,6 +220,7 @@ export default {
           startDate: '2019/01/01',
           endDate: '2019/01/09',
           class: '15信管',
+          course: '高等数学',
           questionNum: [{
             radio: 30,
             judge: 10,
@@ -228,6 +237,7 @@ export default {
           startDate: '2019/01/01',
           endDate: '2019/01/09',
           class: '15信管',
+          course: '高等数学',
           questionNum: [{
             radio: 30,
             judge: 10,
@@ -244,6 +254,7 @@ export default {
           startDate: '2019/01/01',
           endDate: '2019/01/09',
           class: '15信管',
+          course: '高等数学',
           questionNum: [{
             radio: 30,
             judge: 10,
@@ -260,6 +271,7 @@ export default {
           startDate: '2019/01/01',
           endDate: '2019/01/09',
           class: '15信管',
+          course: '高等数学',
           questionNum: [{
             radio: 30,
             judge: 10,
@@ -278,6 +290,7 @@ export default {
           startDate: '2019/01/01',
           endDate: '2019/01/09',
           class: '15信管',
+          course: '高等数学',
           useTime: 5400,
           finishStatus: 1,
           myScore: 80
@@ -289,6 +302,7 @@ export default {
           startDate: '2019/01/01',
           endDate: '2019/01/09',
           class: '15信管',
+          course: '高等数学',
           useTime: 2730,
           finishStatus: 2,
           myScore: 80
@@ -564,112 +578,22 @@ nav.nav {
     }
   }
 }
-.btn {
-  display: inline-block;
-  line-height: 1;
-  white-space: nowrap;
-  cursor: pointer;
-  background: #fff;
-  border: 1px solid #dcdfe6;
-  border-color: #dcdfe6;
-  color: #606266;
-  -webkit-appearance: none;
-  text-align: center;
-  box-sizing: border-box;
-  outline: none;
-  margin: 0;
-  transition: 0.1s;
-  font-weight: 500;
-  -moz-user-select: none;
-  -webkit-user-select: none;
-  -ms-user-select: none;
-  // padding: 10px 14px;
-  text-align: center;
-  width: 120px;
-  padding: 10px 0;
-  font-size: 14px;
-  border-radius: 4px;
-}
-$btnColor: #409eff;
-$duration: 0.1s;
-$duration-2X: 0.2s;
-$duration-3X: 0.3s;
-$duration-4X: 0.4s;
-$borderRadius: 4px;
-.btn-animate1 {
-  position: relative;
-  &:hover {
-    color: $btnColor;
-    animation: pulse ease-out 1s $duration-4X alternate infinite;
-  }
-  &::before,
-  &::after {
-    content: "";
-    position: absolute;
-    width: 0;
-    height: 0;
-    border-radius: $borderRadius;
-    visibility: hidden;
-  }
-  &::before {
-    top: -1px;
-    left: 0;
-    border-top: 1px solid $btnColor;
-    border-right: 1px solid $btnColor;
-    transition: height linear $duration $duration-2X,
-      width linear $duration $duration-3X, visibility 0s $duration-4X;
-  }
-  &::after {
-    bottom: -1px;
-    right: 0;
-    border-bottom: 1px solid $btnColor;
-    border-left: 1px solid $btnColor;
-    transition: height linear $duration, width linear $duration $duration,
-      visibility 0s $duration-2X;
-  }
-  &:hover {
-    &::before,
-    &::after {
-      width: 100%;
-      height: 100%;
-      visibility: visible;
-    }
-    &::before {
-      transition: visibility 0s, width linear $duration,
-        height linear $duration $duration;
-    }
-    &::after {
-      transition: visibility 0s $duration-2X,
-        width linear $duration $duration-2X,
-        height linear $duration $duration-3X;
-    }
-  }
-}
-@keyframes pulse {
-  from {
-    box-shadow: 0 0 rgba(64, 158, 255, 0.1);
-  }
-
-  to {
-    box-shadow: 0 0 0 4px rgba(64, 158, 255, 0.1);
-  }
-}
 </style>
 <style lang="scss">
-#MyExam .el-table {
+#StudentHome #MyExam .el-table {
   th,
   td,
   .cell {
     padding: 0 3px;
   }
 }
-#MyExam .el-badge__content.is-fixed {
+#StudentHome #MyExam .el-badge__content.is-fixed {
   right: 20px;
 }
-#MyExam .el-badge:hover .el-card {
+#StudentHome #MyExam .el-badge:hover .el-card {
   box-shadow: 0 2px 20px #ccc;
 }
-#FinishExam .el-card:hover {
+#StudentHome #FinishExam .el-card:hover {
   box-shadow: 0 2px 20px #ccc;
 }
 </style>
