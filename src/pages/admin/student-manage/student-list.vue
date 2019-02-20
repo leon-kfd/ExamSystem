@@ -67,6 +67,8 @@
   </div>
 </template>
 <script>
+import api from '@/axios/api.js'
+import axios from "axios";
 export default {
   name: 'StudentList',
   data () {
@@ -100,6 +102,9 @@ export default {
       total: 10
     }
   },
+  created () {
+    this.getClassroomList()
+  },
   methods: {
     handleSizeChange (val) {
       console.log(`每页 ${val} 条`)
@@ -107,8 +112,11 @@ export default {
     handleCurrentChange (val) {
       console.log(`当前页: ${val}`)
     },
-    SendEmail () {
-
+    SendEmail () { },
+    async getClassroomList () {
+      // let data = await api('getClassroomList')
+      let data = await axios.post('http://localhost/ExamSystemApi/public/api/getStudentList')
+      console.log(data)
     }
   }
 }
