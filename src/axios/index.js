@@ -7,23 +7,22 @@ export default function request (config, fnName, data) {
   var newConfig = JSON.parse(JSON.stringify(config[fnName]))
   if (data) {
     if (config[fnName].method === 'get' || config[fnName].method === 'delete' || config[fnName].method === undefined) {
-      newConfig.url = newConfig.url.replace(/\{([\d\w_]+)\}/g, (word, $1) => {
-        var res = data[$1]
-        // 删除data中的对应字段
-        delete data[$1]
-        return res
-      })
+      // newConfig.url = newConfig.url.replace(/\{([\d\w_]+)\}/g, (word, $1) => {
+      //   var res = data[$1]
+      //   // 删除data中的对应字段
+      //   delete data[$1]
+      //   return res
+      // })
       newConfig.params = data
     } else {
-      newConfig.url = newConfig.url.replace(/\{([\d\w_]+)\}/g, (word, $1) => {
-        var res = data[$1]
-        // 删除data中的对应字段
-        delete data[$1]
-        return res
-      })
+      // newConfig.url = newConfig.url.replace(/\{([\d\w_]+)\}/g, (word, $1) => {
+      //   var res = data[$1]
+      //   // 删除data中的对应字段
+      //   delete data[$1]
+      //   return res
+      // })
       newConfig.data = data
     }
-    console.log(newConfig)
     // newConfig.data = data
   }
   return fetch(newConfig)

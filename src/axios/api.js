@@ -1,12 +1,12 @@
 import request from './index.js'
 
 export const config = {
-  mock: {
-    url: '/mock',
+  getTeacherClassroom: {
+    url: '/getTeacherClassroom',
     method: 'post'
   },
-  getClassroomList: {
-    url: '/getClassroomList',
+  getStudentList: {
+    url: '/getStudentList',
     method: 'post'
   }
 }

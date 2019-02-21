@@ -163,17 +163,17 @@ const router = new Router({
     }
   ]
 })
-router.beforeEach((to, from, next) => {
-  if (to.path == '/login') {
-    next()
-    return
-  }
-  if (sessionStorage.getItem('token')) {
-    next()
-  } else {
-    Message.error('无法获取到用户状态，请重新登录')
-    next('/login')
-  }
-})
+// router.beforeEach((to, from, next) => {
+//   if (to.path == '/login') {
+//     next()
+//     return
+//   }
+//   if (sessionStorage.getItem('token')) {
+//     next()
+//   } else {
+//     Message.error('无法获取到用户状态，请重新登录')
+//     next('/login')
+//   }
+// })
 export default router
 export { adminRouter }
