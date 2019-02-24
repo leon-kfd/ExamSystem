@@ -23,7 +23,6 @@ export default function request (config, fnName, data) {
       // })
       newConfig.data = data
     }
-    // newConfig.data = data
   }
   return fetch(newConfig)
 }

@@ -60,9 +60,9 @@
       <div class="table-pagination">
         <el-pagination @size-change="handleSizeChange"
                        @current-change="handleCurrentChange"
-                       :current-page="current"
+                       :current-page="page"
                        :page-sizes="[10, 20, 30, 40]"
-                       :page-size="10"
+                       :page-size="pageSize"
                        layout="total, sizes, prev, pager, next, jumper"
                        :total="total">
         </el-pagination>
@@ -85,22 +85,10 @@ export default {
           label: '数据加载中'
         }
       ],
-      tableData: [
-        // {
-        //   studentNum: '2015034843000',
-        //   name: 'XXXX',
-        //   tel: '13200000000',
-        //   email: 'abc@123.com'
-        // },
-        // {
-        //   studentNum: '2015034843000',
-        //   name: 'XXXX',
-        //   tel: '13200000000',
-        //   email: 'abc@123.com'
-        // }
-      ],
-      current: 1,
-      total: 10
+      tableData: [],
+      page: 1,
+      pageSize: 10,
+      total: 0
     }
   },
   async created () {
@@ -108,42 +96,32 @@ export default {
     await this.getData()
   },
   methods: {
-    handleSizeChange (val) {
-      console.log(`每页 ${val} 条`)
-    },
     handleCurrentChange (val) {
-      console.log(`当前页: ${val}`)
+      this.page = val
+      this.getData()
+    },
+    handleSizeChange (val) {
+      this.pageSize = val
+      this.getData()
     },
     SendEmail () { },
     async getClassroomList () {
       this.loading = true
-      let { classList } = await api('getTeacherClassroom', {
-        token: 'B3FA9AE026124082ADB9C4D84091AEFC'
-      }).finally(_ => {
-        this.loading = false
-      })
+      let { classList } = await api('getTeacherClassroom')
       this.classList = classList
       this.CurrentClass = classList ? classList[0].value : 0
-      // api('getTeacherClassroom', {
-      //   token: 'B3FA9AE026124082ADB9C4D84091AEFC'
-      // }).then((data) => {
-      //   console.log(data)
-      // }).catch((data) => {
-      //   console.log('err')
-      // }).finally(_ => {
-      //   console.log('finished')
-      // })
     },
     async getData () {
       this.loading = true
-      let studentList = await api('getStudentList', {
-        token: 'B3FA9AE026124082ADB9C4D84091AEFC',
-        classId: this.CurrentClass
+      let { items, total } = await api('getStudentList', {
+        classId: this.CurrentClass,
+        page: this.page,
+        pageSize: this.pageSize
       }).finally(_ => {
         this.loading = false
       })
-      this.tableData = studentList
-      console.log(studentList)
+      this.tableData = items
+      this.total = total
     }
   }
 }

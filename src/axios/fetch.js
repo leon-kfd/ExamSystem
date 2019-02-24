@@ -22,6 +22,16 @@ const instance = axios.create({
 })
 
 instance.interceptors.request.use((config) => {
+  // let token = sessionStorage.getItem('token')
+  let token = 'B3FA9AE026124082ADB9C4D84091AEFC'
+  if (token) {
+    if (config.data) {
+      config.data.token = token
+    } else {
+      config.data = {}
+      config.data.token = token
+    }
+  }
   if (config.method === 'post' && config.headers['Content-Type'] !== 'application/json') {
     config.data = qs.stringify(config.data)
   }
@@ -49,6 +59,12 @@ instance.interceptors.response.use(
     }
   },
   err => {
+    Message({
+      showClose: true,
+      message: 'Api访问失败，请检查网络..',
+      type: 'error',
+      duration: 1500
+    })
     return Promise.reject(err)
   }
 )
