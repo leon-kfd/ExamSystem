@@ -52,6 +52,9 @@ li {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+.bold {
+  font-weight: bold;
+}
 
 /* 滚动条样式 */
 *::-webkit-scrollbar {
@@ -217,7 +220,7 @@ $borderRadius: 4px;
   min-width: 500px;
 }
 .h-operation {
-  margin: 15px 0;
+  margin: 15px 0 20px;
 }
 .h-operation-text {
   font-size: 14px;
@@ -230,4 +233,17 @@ $borderRadius: 4px;
 .table-pagination {
   margin: 15px 0;
   text-align: right;
+}
+
+.text-info {
+  color: #409EFF;
+}
+.text-success {
+  color: #67C23A;
+}
+.text-danger {
+  color: #F56C6C;
+}
+.text-warning {
+  color: #E6A23C;
 }
