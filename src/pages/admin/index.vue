@@ -68,7 +68,7 @@
           </div>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item>个人中心</el-dropdown-item>
-            <el-dropdown-item>退出系统</el-dropdown-item>
+            <el-dropdown-item @click.native="toLogout">退出系统</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </div>
@@ -106,6 +106,11 @@ export default {
   methods: {
     open (url) {
       window.open(url)
+    },
+    toLogout () {
+      sessionStorage.removeItem('token')
+      this.$message.success('退出登录....')
+      this.$router.push('/')
     }
   }
 }

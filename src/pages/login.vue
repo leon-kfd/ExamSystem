@@ -33,7 +33,7 @@
                        autocomplete="off"
                        name="username">
                 <label for="username"
-                       :class="{active: LoginForm.username.length>0}">手机号</label>
+                       :class="{active: LoginForm.username.length>0}">账号</label>
                 <span class="line"></span>
               </div>
             </div>
@@ -42,6 +42,7 @@
                 <input type="password"
                        class="input-ui"
                        v-model="LoginForm.password"
+                       @keyup.enter="toLogin"
                        name="password">
                 <label for="password"
                        :class="{active: LoginForm.password.length>0}">密码</label>
@@ -50,21 +51,21 @@
             </div>
             <div class="row-item submit-btn-control">
               <el-radio-group v-model="LoginForm.role">
-                <el-radio-button label="student">Role1</el-radio-button>
-                <el-radio-button label="teacher">Role2</el-radio-button>
+                <el-radio-button :label="1">学生</el-radio-button>
+                <el-radio-button :label="2">教师</el-radio-button>
               </el-radio-group>
               <el-button type="primary"
                          :disabled="loginValid"
-                         @click="Login"
+                         @click="toLogin"
                          :loading="btnLoginLoading"
-                         class="btn-login">Login</el-button>
+                         class="btn-login">登录</el-button>
             </div>
             <div class="row-item"
                  style="margin-top: -20px;">
               <p class="login-footer clear">
-                <span class="text1 fl"
-                      @click="active=false">Register</span>
-                <span class="text2 fr">Forget Password?</span>
+                <!-- <span class="text1 fl"
+                      @click="active=false">注册</span> -->
+                <span class="text2 fr">忘记密码?</span>
               </p>
             </div>
           </div>
@@ -89,28 +90,37 @@ export default {
       LoginForm: {
         username: '',
         password: '',
-        role: 'student'
+        role: 1
       },
       btnLoginLoading: false
     }
   },
   computed: {
     loginValid () {
-      return !(this.LoginForm.username.length > 0 && this.LoginForm.password.length > 0 && this.LoginForm.role.length > 0)
+      return !(this.LoginForm.username.length > 0 && this.LoginForm.password.length > 0 && this.LoginForm.role)
     }
   },
+  mounted () {
+    sessionStorage.removeItem('token')
+  },
   methods: {
-    Login () {
+    async toLogin () {
       if (!this.loginValid) {
         this.btnLoginLoading = true
-        let { username, password, role } = this.LoginForm
-        setTimeout(_ => {
-          console.log('表单提交')
-          console.log({ username, password, role })
-          let token = 'temp00001'
-          sessionStorage.setItem('token', token)
+        let { username: account, password, role } = this.LoginForm
+        await this.$api('login', {
+          account, password, role
+        }).then(data => {
+          sessionStorage.setItem('token', data.token)
+          this.$message.success('登录成功...')
+          if (data.role == 1) {
+            this.$router.push('StudentHome')
+          } else if (data.role == 2) {
+            this.$router.push('admin')
+          }
+        }).finally(_ => {
           this.btnLoginLoading = false
-        }, 2000)
+        })
       }
     }
   }

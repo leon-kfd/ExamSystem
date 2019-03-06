@@ -5,8 +5,9 @@ export default function request (config, fnName, data) {
     throw new Error('调用api函数函数错误，请检查函数名称是否错误')
   }
   var newConfig = JSON.parse(JSON.stringify(config[fnName]))
+  if (!config[fnName].method) newConfig.method = 'post'
   if (data) {
-    if (config[fnName].method === 'get' || config[fnName].method === 'delete' || config[fnName].method === undefined) {
+    if (newConfig.method === 'get' || newConfig.method === 'delete' || newConfig.method === undefined) {
       // newConfig.url = newConfig.url.replace(/\{([\d\w_]+)\}/g, (word, $1) => {
       //   var res = data[$1]
       //   // 删除data中的对应字段

@@ -71,8 +71,6 @@
   </div>
 </template>
 <script>
-import api from '@/axios/api.js'
-import axios from "axios";
 export default {
   name: 'StudentList',
   data () {

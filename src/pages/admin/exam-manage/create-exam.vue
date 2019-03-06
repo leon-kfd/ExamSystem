@@ -81,6 +81,13 @@
                   </el-option>
                 </el-select>
               </el-form-item>
+              <el-form-item label="相关课程"
+                            prop="course">
+                <el-input v-model="examForm.fields.course"
+                          placeholder="请输入考试相关课程"
+                          style="width: 450px">
+                </el-input>
+              </el-form-item>
               <el-form-item label="考试时长"
                             prop="long">
                 <el-input-number v-model="examForm.fields.long"
@@ -275,6 +282,7 @@ export default {
           date: [],
           long: 120,
           class: [],
+          course: '',
           autoMarking: false,
           randomOrder: false
         },
@@ -282,7 +290,8 @@ export default {
           title: [{ required: true, message: '请输入考试试卷标题' }],
           date: [{ required: true, message: '请选择考试时间' }],
           long: [{ required: true, message: '请输入考试时长' }],
-          class: [{ required: true, message: '请选择班级' }]
+          class: [{ required: true, message: '请选择班级' }],
+          course: [{ required: true, message: '请输入考试相关课程' }]
         }
       },
       questionList: [],
@@ -532,7 +541,7 @@ export default {
   },
   destroyed () {
     let appContent = this.$parent.$refs.appContent
-    appContent.removeEventListener('scroll', () => { })
+    appContent && appContent.removeEventListener('scroll', () => { })
   },
   directives: {
     focus: {

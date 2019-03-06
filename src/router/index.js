@@ -120,17 +120,6 @@ let adminRouter = [
       }
     ]
   }
-  // {
-  //   path: 'outer',
-  //   name: 'outer',
-  //   meta: {
-  //     label: 'outer',
-  //     iconClass: 'el-icon-document'
-  //   },
-  //   outer: {
-  //     outerUrl: 'http://www.baidu.com'
-  //   }
-  // }
 ]
 const router = new Router({
   routes: [
@@ -163,17 +152,6 @@ const router = new Router({
     }
   ]
 })
-// router.beforeEach((to, from, next) => {
-//   if (to.path == '/login') {
-//     next()
-//     return
-//   }
-//   if (sessionStorage.getItem('token')) {
-//     next()
-//   } else {
-//     Message.error('无法获取到用户状态，请重新登录')
-//     next('/login')
-//   }
-// })
+
 export default router
 export { adminRouter }

@@ -1,13 +1,14 @@
 import request from './index.js'
 
 export const config = {
+  login: {
+    url: '/login'
+  },
   getTeacherClassroom: {
-    url: '/getTeacherClassroom',
-    method: 'post'
+    url: '/getTeacherClassroom'
   },
   getStudentList: {
-    url: '/getStudentList',
-    method: 'post'
+    url: '/getStudentList'
   }
 }
 

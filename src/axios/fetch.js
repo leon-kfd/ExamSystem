@@ -2,7 +2,7 @@ import axios from 'axios'
 import qs from 'qs'
 import { Message } from 'element-ui'
 import promiseFinally from 'promise.prototype.finally'
-// import router from '@/router'
+import router from '@/router'
 
 promiseFinally.shim()
 /**
@@ -22,13 +22,9 @@ const instance = axios.create({
 })
 
 instance.interceptors.request.use((config) => {
-  // let token = sessionStorage.getItem('token')
-  let token = 'B3FA9AE026124082ADB9C4D84091AEFC'
+  let token = sessionStorage.getItem('token') || ''
   if (token) {
     if (config.data) {
-      config.data.token = token
-    } else {
-      config.data = {}
       config.data.token = token
     }
   }
