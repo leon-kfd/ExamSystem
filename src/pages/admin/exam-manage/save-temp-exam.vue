@@ -1,6 +1,14 @@
 <template>
   <div class="page"
        id="SaveTempTable">
+    <div class="h-operation clear">
+      <el-button type="primary"
+                 size="small"
+                 class="fr"
+                 icon="el-icon-refresh"
+                 :loading="loading"
+                 @click="getData">刷新</el-button>
+    </div>
     <div class="save-temp-table">
       <div class="table-main">
         <el-table :data="tableData"
@@ -47,9 +55,9 @@
       <div class="table-pagination">
         <el-pagination @size-change="handleSizeChange"
                        @current-change="handleCurrentChange"
-                       :current-page="current"
+                       :current-page="page"
                        :page-sizes="[10, 20, 30, 40]"
-                       :page-size="10"
+                       :page-size="pageSize"
                        layout="total, sizes, prev, pager, next, jumper"
                        :total="total">
         </el-pagination>
@@ -62,6 +70,7 @@ export default {
   name: 'SaveTempExam',
   data () {
     return {
+      loading: false,
       tableData: [
         {
           lastEditDate: '2016-05-03',
@@ -76,9 +85,13 @@ export default {
           questionCount: 20
         }
       ],
-      current: 1,
-      total: 10
+      page: 1,
+      pageSize: 10,
+      total: 0
     }
+  },
+  mounted () {
+    this.getData()
   },
   methods: {
     handleSizeChange (val) {
@@ -107,6 +120,18 @@ export default {
             done()
           }
         }
+      })
+    },
+    async getData () {
+      this.loading = true
+      await this.$api('getTeacherExamList', {
+        status: 0,
+        page: this.page,
+        pageSize: this.pageSize
+      }).then(data => {
+        console.log(data)
+      }).finally(_ => {
+        this.loading = false
       })
     }
   }

@@ -12,9 +12,10 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       // '/api': {
-      //   target: 'http://localhost/ExamSystemApi/public/api',
-      //   pathRewrite: {
-      //     '^/api': ''
+      //    target: 'http://localhost/ExamSystemApi/public/api',
+      //    pathRewrite: {
+      //      '^/api': ''
+      //     }
       // }
     },
 

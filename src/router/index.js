@@ -20,7 +20,7 @@ let adminRouter = [
     },
     children: [
       {
-        path: 'createExam',
+        path: 'createExam/:examId?',
         name: 'createExam',
         component: () => import('@/pages/admin/exam-manage/create-exam'),
         meta: {

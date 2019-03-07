@@ -4,6 +4,12 @@ export const config = {
   login: {
     url: '/login'
   },
+  saveExam: {
+    url: '/saveExam'
+  },
+  getTeacherExamList: {
+    url: '/getTeacherExamList'
+  },
   getTeacherClassroom: {
     url: '/getTeacherClassroom'
   },

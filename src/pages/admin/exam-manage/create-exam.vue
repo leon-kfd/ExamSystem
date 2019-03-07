@@ -37,6 +37,7 @@
           <el-button type="warning"
                      icon="el-icon-check"
                      @click="submitExam"
+                     :disabled="saveTempLoading"
                      :loading="submitExamLoading">发布考试</el-button>
         </div>
       </div>
@@ -65,6 +66,7 @@
                                 range-separator="至"
                                 start-placeholder="开始日期"
                                 end-placeholder="结束日期"
+                                value-format="yyyy-MM-dd HH:mm:ss"
                                 style="width: 450px">
                 </el-date-picker>
               </el-form-item>
@@ -99,10 +101,14 @@
                 <span style="margin-left: 8px;color: #889">分钟</span>
               </el-form-item>
               <el-form-item label="自动阅卷">
-                <el-switch v-model="examForm.fields.autoMarking"></el-switch>
+                <el-switch v-model="examForm.fields.autoMarking"
+                           :active-value="1"
+                           :inactive-value="0"></el-switch>
               </el-form-item>
               <el-form-item label="随机顺序">
-                <el-switch v-model="examForm.fields.randomOrder"></el-switch>
+                <el-switch v-model="examForm.fields.randomOrder"
+                           :active-value="1"
+                           :inactive-value="0"></el-switch>
               </el-form-item>
             </el-form>
           </div>
@@ -278,13 +284,16 @@ export default {
       ],
       examForm: {
         fields: {
+          examId: -1,
           title: '',
           date: [],
+          startTime: '',
+          endTime: '',
           long: 120,
           class: [],
           course: '',
-          autoMarking: false,
-          randomOrder: false
+          autoMarking: 0,
+          randomOrder: 0
         },
         rules: {
           title: [{ required: true, message: '请输入考试试卷标题' }],
@@ -336,6 +345,7 @@ export default {
     },
   },
   mounted () {
+    this.examId = this.$route.params.examId || -1
     let appContent = this.$parent.$refs.appContent
     appContent.addEventListener('scroll', debounce(() => {
       this.scrollLeft = appContent.scrollLeft
@@ -346,6 +356,12 @@ export default {
         this.showBackTop = false
       }
     }, 400))
+  },
+  watch: {
+    'examForm.fields.date' (val) {
+      this.examForm.fields.startTime = val ? val[0] : ''
+      this.examForm.fields.endTime = val ? val[1] : ''
+    }
   },
   methods: {
     QuestionMoveUp (questionIndex) {
@@ -496,13 +512,23 @@ export default {
         event.preventDefault()
       }
     },
-    saveTemp () {
-      this.saveTempLoading = true
-      setTimeout(_ => {
-        console.log(this.examForm.fields)
-        console.log(this.questionList)
-        this.saveTempLoading = false
-      }, 2000)
+    async saveTemp () {
+      if (this.examForm.fields.title) {
+        let params = {
+          ...this.examForm.fields,
+          questionList: this.questionList
+        }
+        delete params.date
+        this.saveTempLoading = true
+        await this.$api('saveExam', params).then(data => {
+          this.examForm.fields.examId = data.examId || -1
+          this.$message.success('操作成功')
+        }).finally(_ => {
+          this.saveTempLoading = false
+        })
+      } else {
+        this.$message.error('请填写考试题目再进行该操作....')
+      }
     },
     submitExam () {
       this.questionListFlag = false
