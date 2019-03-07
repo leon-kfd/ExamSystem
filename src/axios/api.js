@@ -10,6 +10,12 @@ export const config = {
   getTeacherExamList: {
     url: '/getTeacherExamList'
   },
+  deleteTempExam: {
+    url: '/deleteTempExam'
+  },
+  getExamInfoFromTeacher: {
+    url: '/getExamInfoFromTeacher'
+  },
   getTeacherClassroom: {
     url: '/getTeacherClassroom'
   },

@@ -44,7 +44,7 @@
     </div>
     <div class="container">
       <div class="create-exam-box"
-           v-loading="saveTempLoading||submitExamLoading">
+           v-loading="saveTempLoading||submitExamLoading||dataLoading">
         <h3 class="main-title"><span>考试信息</span></h3>
         <div class="exam-info-box clear">
           <div class="form fl">
@@ -311,6 +311,7 @@ export default {
       questionListFlag: false,
       saveTempLoading: false,
       submitExamLoading: false,
+      dataLoading: false,
       showBackTop: false
     }
   },
@@ -345,7 +346,11 @@ export default {
     },
   },
   mounted () {
-    this.examId = this.$route.params.examId || -1
+    if (this.$route.params.examId) {
+      this.examId = this.$route.params.examId
+      this.getData()
+    }
+    // 监听浏览器滚动
     let appContent = this.$parent.$refs.appContent
     appContent.addEventListener('scroll', debounce(() => {
       this.scrollLeft = appContent.scrollLeft
@@ -562,6 +567,16 @@ export default {
       this.$nextTick(_ => {
         const el = document.querySelector('.app-content')
         ScrollTo(0, 400, el)
+      })
+    },
+    async getData () {
+      this.dataLoading = true
+      await this.$api('getExamInfoFromTeacher', {
+        examId: this.examId
+      }).then(data => {
+        console.log(data)
+      }).finally(_ => {
+        this.dataLoading = false
       })
     }
   },

@@ -12,6 +12,7 @@
     <div class="save-temp-table">
       <div class="table-main">
         <el-table :data="tableData"
+                  v-loading="loading"
                   border
                   stripe
                   style="width: 100%">
@@ -21,7 +22,7 @@
                            min-width="150"
                            sortable>
           </el-table-column>
-          <el-table-column prop="id"
+          <el-table-column prop="examId"
                            label="ID"
                            align="center"
                            min-width="200">
@@ -30,11 +31,6 @@
                            label="题目"
                            align="center"
                            min-width="200">
-          </el-table-column>
-          <el-table-column prop="questionCount"
-                           align="center"
-                           label="已编辑题目量"
-                           width="120">
           </el-table-column>
           <el-table-column fixed="right"
                            label="操作"
@@ -71,20 +67,7 @@ export default {
   data () {
     return {
       loading: false,
-      tableData: [
-        {
-          lastEditDate: '2016-05-03',
-          id: 'F1455F6496FDA55D1E48E72BD99366B0',
-          title: 'Title01 abc',
-          questionCount: 20
-        },
-        {
-          lastEditDate: '2016-05-03',
-          id: 'F1455F6496FDA55D1E48E72BD99366B0',
-          title: 'Title01 abc',
-          questionCount: 20
-        }
-      ],
+      tableData: [],
       page: 1,
       pageSize: 10,
       total: 0
@@ -95,13 +78,21 @@ export default {
   },
   methods: {
     handleSizeChange (val) {
-      console.log(`每页 ${val} 条`)
+      this.page = 1
+      this.pageSize = val
+      this.getData()
     },
     handleCurrentChange (val) {
-      console.log(`当前页: ${val}`)
+      this.page = val
+      this.getData()
     },
     returnEdit (row) {
-      console.log('returnEdit')
+      this.$router.push({
+        name: 'createExam',
+        params: {
+          examId: row.examId
+        }
+      })
     },
     del (row) {
       this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
@@ -110,12 +101,18 @@ export default {
         type: 'warning',
         beforeClose: (action, instance, done) => {
           if (action === 'confirm') {
-            instance.confirmButtonLoading = true
-            setTimeout(() => {
-              instance.confirmButtonLoading = false
-              console.log('done')
-              done()
-            }, 3000)
+            (async () => {
+              instance.confirmButtonLoading = true
+              await this.$api('deleteTempExam', {
+                examId: row.examId
+              }).then(data => {
+                this.$message.success('删除成功')
+                this.getData()
+              }).finally(_ => {
+                instance.confirmButtonLoading = false
+                done()
+              })
+            })()
           } else {
             done()
           }
@@ -129,7 +126,9 @@ export default {
         page: this.page,
         pageSize: this.pageSize
       }).then(data => {
-        console.log(data)
+        this.tableData = data.items
+        this.page = data.page
+        this.total = data.total
       }).finally(_ => {
         this.loading = false
       })
