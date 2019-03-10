@@ -347,7 +347,7 @@ export default {
   },
   mounted () {
     if (this.$route.params.examId) {
-      this.examId = this.$route.params.examId
+      this.examForm.fields.examId = this.$route.params.examId
       this.getData()
     }
     // 监听浏览器滚动
@@ -572,9 +572,16 @@ export default {
     async getData () {
       this.dataLoading = true
       await this.$api('getExamInfoFromTeacher', {
-        examId: this.examId
+        examId: this.examForm.fields.examId
       }).then(data => {
-        console.log(data)
+        let { title, startTime, endTime, long, classroom, course, autoMarking, randomOrder } = data.examInfo
+        this.examForm.fields.title = title
+        this.examForm.fields.date = (startTime && endTime) ? [startTime, endTime] : []
+        this.examForm.fields.long = long
+        this.examForm.fields.class = classroom
+        this.examForm.fields.course = course
+        this.examForm.fields.autoMarking = autoMarking
+        this.examForm.fields.randomOrder = randomOrder
       }).finally(_ => {
         this.dataLoading = false
       })
