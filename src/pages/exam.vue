@@ -3,10 +3,6 @@
        id="Exam">
     <nav class="nav"></nav>
     <div class="container">
-      <!-- <header class="header">
-        <h1 class='m-title'>在线考试系统</h1>
-      </header>
-      <nav class="nav"></nav> -->
       <div class="page-body">
         <div class="left-box">
           <aside class='user-info'>
@@ -414,7 +410,8 @@ export default {
 <style lang="scss" scoped>
 @font-face {
   font-family: "number";
-  src: url("../assets/fonts/number.ttf");
+  // src: url("../assets/fonts/number.ttf");
+  src: url("https://fonts.font.im/css?family=Sunflower:300");
 }
 header,
 nav,

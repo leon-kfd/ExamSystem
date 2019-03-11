@@ -464,7 +464,6 @@ export default {
         case 4: this.questionList.push({
           type: 4,
           title: '',
-          answer: '',
           score: 5
         })
       }
