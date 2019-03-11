@@ -1,6 +1,7 @@
 <template>
   <div id="ClassManage">
-    <div class="classroom-box">
+    <div class="classroom-box"
+         v-loading="loading">
       <el-transfer :titles="['班级列表', '我的班级']"
                    filter-placeholder="请输入班级名"
                    v-model="myClass"
@@ -13,7 +14,8 @@
                      size="small"
                      v-model="ClassFilterValue">
             <el-option :value="1"
-                       :label="'aaa'">aaa</el-option>
+                       :label="'未开放'"
+                       disabled></el-option>
           </el-select>
         </div>
         <div slot="right-footer"
@@ -21,7 +23,9 @@
           <el-button size="small"
                      type="success"
                      style="width: 200px"
-                     plain>保存</el-button>
+                     :loading="btnSaveLoading"
+                     plain
+                     @click="saveClass">保存</el-button>
         </div>
       </el-transfer>
     </div>
@@ -32,21 +36,45 @@ export default {
   name: 'ClassManage',
   data () {
     return {
+      loading: false,
       myClass: [],
-      classList: [
-        {
-          label: '15信管',
-          key: 1
-        },
-        {
-          label: '15软件',
-          key: 2,
-        }
-      ],
-      ClassFilterValue: ''
+      classList: [],
+      ClassFilterValue: '',
+      btnSaveLoading: false
     }
   },
+  mounted () {
+    this.getData()
+  },
   methods: {
+    async getData () {
+      this.loading = true
+      await this.$api('getClassroomList').then(data => {
+        let temp = data.map(item => {
+          return {
+            label: item.label,
+            key: item.value
+          }
+        })
+        this.classList = temp
+      })
+      await this.$api('getTeacherClassroom').then(data => {
+        let temp = data.map(item => {
+          return item.value
+        })
+        this.myClass = temp
+      })
+      this.loading = false
+    },
+    async saveClass () {
+      this.btnSaveLoading = true
+      await this.$api('setTeacherClassroom', {
+        classroom: this.myClass
+      })
+      this.$message.success('班级设置成功..')
+      this.btnSaveLoading = false
+      this.getData()
+    }
   }
 }
 </script>

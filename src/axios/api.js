@@ -7,6 +7,18 @@ export const config = {
   saveExam: {
     url: '/saveExam'
   },
+
+  // 班级管理
+  getClassroomList: {
+    url: '/getClassroomList'
+  },
+  getTeacherClassroom: {
+    url: '/getTeacherClassroom'
+  },
+  setTeacherClassroom: {
+    url: '/setTeacherClassroom'
+  },
+
   getTeacherExamList: {
     url: '/getTeacherExamList'
   },
@@ -15,9 +27,6 @@ export const config = {
   },
   getExamInfoFromTeacher: {
     url: '/getExamInfoFromTeacher'
-  },
-  getTeacherClassroom: {
-    url: '/getTeacherClassroom'
   },
   getStudentList: {
     url: '/getStudentList'
