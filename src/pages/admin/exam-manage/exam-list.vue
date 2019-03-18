@@ -292,6 +292,14 @@ export default {
         }
       ]
     }
+  },
+  mounted () {
+    this.getData()
+  },
+  methods: {
+    async getData () {
+      console.log(await this.$api('getTeacherExamList'))
+    }
   }
 }
 </script>

@@ -19,6 +19,7 @@ export const config = {
     url: '/setTeacherClassroom'
   },
 
+  // 获取考试列表（教师）
   getTeacherExamList: {
     url: '/getTeacherExamList'
   },

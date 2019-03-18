@@ -581,6 +581,7 @@ export default {
         this.examForm.fields.course = course
         this.examForm.fields.autoMarking = autoMarking
         this.examForm.fields.randomOrder = randomOrder
+        this.questionList = data.questionList
       }).finally(_ => {
         this.dataLoading = false
       })
@@ -638,7 +639,7 @@ export default {
 }
 .header-operation {
   position: fixed;
-  z-index: 999;
+  z-index: 2000;
   top: 48px;
   left: 0;
   width: 100%;

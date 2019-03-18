@@ -105,7 +105,7 @@ export default {
     SendEmail () { },
     async getClassroomList () {
       this.loading = true
-      let { classList } = await this.$api('getTeacherClassroom')
+      let classList = await this.$api('getTeacherClassroom')
       this.classList = classList
       this.CurrentClass = classList ? classList[0].value : 0
     },

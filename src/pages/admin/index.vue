@@ -126,7 +126,7 @@ export default {
   bottom: 0;
   background: #fff;
   box-shadow: 0 0 10px 0 #ccc;
-  z-index: 1000;
+  z-index: 2001;
   overflow: hidden;
   overflow-y: auto;
   transition: all 0.4s;
