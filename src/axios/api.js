@@ -4,9 +4,6 @@ export const config = {
   login: {
     url: '/login'
   },
-  saveExam: {
-    url: '/saveExam'
-  },
 
   // 班级管理
   getClassroomList: {
@@ -31,6 +28,14 @@ export const config = {
   },
   getStudentList: {
     url: '/getStudentList'
+  },
+
+  // 临时保存试卷
+  saveExam: {
+    url: '/saveExam'
+  },
+  checkPublishExam: {
+    url: '/checkPublishExam'
   }
 }
 

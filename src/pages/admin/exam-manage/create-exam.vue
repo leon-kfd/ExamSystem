@@ -36,15 +36,15 @@
                      :loading="saveTempLoading">临时保存</el-button>
           <el-button type="warning"
                      icon="el-icon-check"
-                     @click="submitExam"
+                     @click="checkPublishExam"
                      :disabled="saveTempLoading"
-                     :loading="submitExamLoading">发布考试</el-button>
+                     :loading="checkPublishExamLoading">发布考试</el-button>
         </div>
       </div>
     </div>
     <div class="container">
       <div class="create-exam-box"
-           v-loading="saveTempLoading||submitExamLoading||dataLoading">
+           v-loading="saveTempLoading||checkPublishExamLoading||dataLoading">
         <h3 class="main-title"><span>考试信息</span></h3>
         <div class="exam-info-box clear">
           <div class="form fl">
@@ -310,7 +310,7 @@ export default {
       editScoreIndex: -1,
       questionListFlag: false,
       saveTempLoading: false,
-      submitExamLoading: false,
+      checkPublishExamLoading: false,
       dataLoading: false,
       showBackTop: false
     }
@@ -534,9 +534,9 @@ export default {
         this.$message.error('请填写考试题目再进行该操作....')
       }
     },
-    submitExam () {
+    async checkPublishExam () {
       this.questionListFlag = false
-      this.$refs['examForm'].validate((valid) => {
+      this.$refs['examForm'].validate(async (valid) => {
         if (valid) {
           let questionListFlag = false
           this.questionList.map((item) => {
@@ -550,12 +550,17 @@ export default {
             this.questionListFlag = questionListFlag
             this.$message.error('含有未编辑的考试题目或选项')
           } else {
-            this.submitExamLoading = true
-            setTimeout(_ => {
-              console.log(this.examForm.fields)
-              console.log(this.questionList)
-              this.submitExamLoading = false
-            }, 2000)
+            this.checkPublishExamLoading = true
+            let params = {
+              ...this.examForm.fields,
+              questionList: this.questionList
+            }
+            delete params.date
+            await this.$api('checkPublishExam', params).then(data => {
+              console.log(data)
+            }).finally(_ => {
+              this.checkPublishExamLoading = false
+            })
           }
         } else {
           this.backTop()
