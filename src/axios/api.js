@@ -34,8 +34,8 @@ export const config = {
   saveExam: {
     url: '/saveExam'
   },
-  checkPublishExam: {
-    url: '/checkPublishExam'
+  publishExam: {
+    url: '/publishExam'
   }
 }
 

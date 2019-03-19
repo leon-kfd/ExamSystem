@@ -543,7 +543,7 @@ export default {
             if (item.title.length == 0) {
               questionListFlag = true
             } else if (item.option) {
-              questionListFlag = questionListFlag || item.option.some((item1) => item1.text.length == 0)
+              questionListFlag = questionListFlag || item.option.some((item1) => item1.text && item1.text.length == 0)
             }
           })
           if (questionListFlag) {
@@ -556,7 +556,7 @@ export default {
               questionList: this.questionList
             }
             delete params.date
-            await this.$api('checkPublishExam', params).then(data => {
+            await this.$api('publishExam', params).then(data => {
               console.log(data)
             }).finally(_ => {
               this.checkPublishExamLoading = false
