@@ -37,14 +37,13 @@
           <el-button type="warning"
                      icon="el-icon-check"
                      @click="checkPublishExam"
-                     :disabled="saveTempLoading"
-                     :loading="checkPublishExamLoading">发布考试</el-button>
+                     :disabled="saveTempLoading">发布考试</el-button>
         </div>
       </div>
     </div>
     <div class="container">
       <div class="create-exam-box"
-           v-loading="saveTempLoading||checkPublishExamLoading||dataLoading">
+           v-loading="saveTempLoading||publishExamLoading||dataLoading">
         <h3 class="main-title"><span>考试信息</span></h3>
         <div class="exam-info-box clear">
           <div class="form fl">
@@ -255,6 +254,81 @@
           </div>
         </div>
       </div>
+      <el-dialog title="请确认当前考试信息"
+                 :visible.sync="checkExamDialog"
+                 width="500px">
+        <div class="check-exam-box">
+          <div class="info-listitem">
+            <div class="title">考试题目</div>
+            <div class="content">{{examForm.fields.title}}</div>
+          </div>
+          <div class="info-listitem">
+            <div class="title">考试时间</div>
+            <div class="content">{{examForm.fields.startTime}} ~ {{examForm.fields.endTime}}</div>
+          </div>
+          <div class="info-listitem">
+            <div class="title">考试班级</div>
+            <div class="content">{{examForm.fields.class.map(a=>classList.filter(b=>b.value==a)[0].label).join(',')}}</div>
+          </div>
+          <div class="info-listitem">
+            <div class="title">相关课程</div>
+            <div class="content">{{examForm.fields.course}}</div>
+          </div>
+          <div class="info-listitem">
+            <div class="title">考试时长</div>
+            <div class="content">{{examForm.fields.long}} 分钟</div>
+          </div>
+          <div class="info-listitem">
+            <div class="title">模式</div>
+            <div class="content">
+              <span style="margin-right: 25px"
+                    :class="{'text-success':examForm.fields.autoMarking}">自动阅卷 <i :class="examForm.fields.autoMarking ? 'el-icon-check':'el-icon-close'"></i></span>
+              <span :class="{'text-success':examForm.fields.randomOrder}">随机顺序 <i :class="examForm.fields.randomOrder ? 'el-icon-check':'el-icon-close'"></i></span>
+            </div>
+          </div>
+          <div class="info-listitem">
+            <div class="title">题量</div>
+            <div class="content">
+              <el-table :data="questionNum"
+                        style="width: 170px;display: inline-block;"
+                        size="small">
+                <el-table-column prop="radio"
+                                 label="单选"
+                                 width="42"
+                                 align="center">
+                </el-table-column>
+                <el-table-column prop="judge"
+                                 label="判断"
+                                 width="42"
+                                 align="center">
+                </el-table-column>
+                <el-table-column prop="checkbox"
+                                 label="多选"
+                                 width="42"
+                                 align="center">
+                </el-table-column>
+                <el-table-column prop="question"
+                                 label="问答"
+                                 width="42"
+                                 align="center">
+                </el-table-column>
+              </el-table>
+            </div>
+          </div>
+          <div class="info-listitem">
+            <div class="title">总分</div>
+            <div class="content"
+                 style="font-size: 18px;font-weight: bold">{{scoreCount}}</div>
+          </div>
+        </div>
+        <span slot="footer"
+              class="dialog-footer">
+          <el-button @click="checkExamDialog = false">取消</el-button>
+          <el-button type="primary"
+                     :loading="publishExamLoading"
+                     @click="publishExam">确定发布</el-button>
+        </span>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -310,9 +384,17 @@ export default {
       editScoreIndex: -1,
       questionListFlag: false,
       saveTempLoading: false,
-      checkPublishExamLoading: false,
+      publishExamLoading: false,
       dataLoading: false,
-      showBackTop: false
+      showBackTop: false,
+      checkExamDialog: false,
+      questionNum: [{
+        radio: 0,
+        judge: 0,
+        checkbox: 0,
+        question: 0,
+      }],
+      scoreCount: 0
     }
   },
   filters: {
@@ -543,28 +625,46 @@ export default {
             if (item.title.length == 0) {
               questionListFlag = true
             } else if (item.option) {
-              questionListFlag = questionListFlag || item.option.some((item1) => item1.text && item1.text.length == 0)
+              questionListFlag = questionListFlag || item.option.some((item1) => item1.text ? item1.text.length == 0 : true)
             }
           })
           if (questionListFlag) {
             this.questionListFlag = questionListFlag
             this.$message.error('含有未编辑的考试题目或选项')
           } else {
-            this.checkPublishExamLoading = true
-            let params = {
-              ...this.examForm.fields,
-              questionList: this.questionList
-            }
-            delete params.date
-            await this.$api('publishExam', params).then(data => {
-              console.log(data)
-            }).finally(_ => {
-              this.checkPublishExamLoading = false
+            this.checkExamDialog = true
+            let radio = 0, judge = 0, checkbox = 0, question = 0, score = 0
+            this.questionList.map(item => {
+              switch (item.type) {
+                case 1: radio++; break
+                case 2: judge++; break
+                case 3: checkbox++; break
+                case 4: question++; break
+              }
+              score += item.score
             })
+            this.questionNum = [{ radio, judge, checkbox, question }]
+            this.scoreCount = score
           }
         } else {
           this.backTop()
         }
+      })
+    },
+    async publishExam () {
+      this.publishExamLoading = true
+      let params = {
+        ...this.examForm.fields,
+        questionList: this.questionList
+      }
+      delete params.date
+      await this.$api('publishExam', params).then(data => {
+        if (data.examId) {
+          this.$message.success('考试发布成功!')
+          this.checkExamDialog = false
+        }
+      }).finally(_ => {
+        this.publishExamLoading = false
       })
     },
     backTop () {
@@ -868,6 +968,22 @@ export default {
     }
   }
 }
+.check-exam-box {
+  .info-listitem {
+    display: flex;
+    padding: 0 10px;
+    margin-bottom: 10px;
+    .title {
+      width: 80px;
+      text-align: right;
+      margin-right: 20px;
+    }
+    .content {
+      flex: 1;
+    }
+  }
+}
+
 .text-danger {
   color: #f56c6c !important;
 }
@@ -883,7 +999,7 @@ export default {
   font-size: 14px;
 }
 </style>
-<style>
+<style lang="scss">
 #CreateExam .el-textarea__inner {
   padding: 5px 8px;
   font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB",
@@ -897,5 +1013,12 @@ export default {
 #CreateExam .el-alert__title {
   font-size: 16px;
   line-height: 26px;
+}
+#CreateExam .el-table {
+  th,
+  td,
+  .cell {
+    padding: 0 3px;
+  }
 }
 </style>
