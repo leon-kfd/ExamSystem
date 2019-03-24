@@ -1,6 +1,11 @@
 <template>
   <div id="StudentHome">
-    <nav class="nav"></nav>
+    <nav class="nav">
+      <div class="container">
+        <img src="../assets/img/logo.svg"
+             style="height: 50px;width: auto">
+      </div>
+    </nav>
     <div class="container">
       <div class="page-body">
         <div class="left-box">
@@ -327,10 +332,9 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-header,
-nav,
-main,
+header main,
 aside,
+nav,
 footer {
   padding: 8px;
   background: #fff;
@@ -347,12 +351,13 @@ nav.nav {
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 999;
+  z-index: 10086;
+  padding: 0;
 }
 .container {
   width: 1160px;
   margin: 0 auto;
-  padding: 10px;
+  padding: 0 10px;
 }
 .page-body {
   background: #fff;

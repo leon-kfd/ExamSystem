@@ -1,7 +1,8 @@
 <template>
   <div class="page"
        id="ExamList">
-    <div class="exam-list-box">
+    <div class="exam-list-box"
+         v-loading="loading">
       <div class="exam-tab-select">
         <ul class="tab-list clear">
           <li :class="{active: tabActive==1}"
@@ -35,8 +36,12 @@
                   <dd>{{item.examLength}}</dd>
                 </dl>
                 <dl>
-                  <dt>考试时间</dt>
-                  <dd style="font-size: 13px;color: #445">{{item.startDate}} ~ {{item.endDate}}</dd>
+                  <dt>开始时间</dt>
+                  <dd style="font-size: 13px;color: #445">{{item.startDate}}</dd>
+                </dl>
+                <dl>
+                  <dt>结束时间</dt>
+                  <dd style="font-size: 13px;color: #445">{{item.endDate}}</dd>
                 </dl>
                 <dl>
                   <dt>考试班级</dt>
@@ -124,8 +129,12 @@
                 <dd>{{item.examLength}}</dd>
               </dl>
               <dl>
-                <dt>考试时间</dt>
-                <dd style="font-size: 13px;color: #445">{{item.startDate}} ~ {{item.endDate}}</dd>
+                <dt>开始时间</dt>
+                <dd style="font-size: 13px;color: #445">{{item.startDate}}</dd>
+              </dl>
+              <dl>
+                <dt>结束时间</dt>
+                <dd style="font-size: 13px;color: #445">{{item.endDate}}</dd>
               </dl>
               <dl>
                 <dt>考试班级</dt>
@@ -168,6 +177,7 @@ export default {
   name: 'ExamList',
   data () {
     return {
+      loading: false,
       tabActive: 1,
       evaluationStatuList: {
         0: {
@@ -298,7 +308,12 @@ export default {
   },
   methods: {
     async getData () {
-      console.log(await this.$api('getTeacherExamList'))
+      this.loading = true
+      await this.$api('getTeacherExamList').then(data => {
+        this.myExamList = data.items.filter(item => item.status != 0 && item.status != 4)
+      }).finally(_ => {
+        this.loading = false
+      })
     }
   }
 }

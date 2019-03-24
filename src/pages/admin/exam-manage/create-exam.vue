@@ -66,6 +66,7 @@
                                 start-placeholder="开始日期"
                                 end-placeholder="结束日期"
                                 value-format="yyyy-MM-dd HH:mm:ss"
+                                :picker-options="pickerBeginDateAfter"
                                 style="width: 450px">
                 </el-date-picker>
               </el-form-item>
@@ -378,6 +379,12 @@ export default {
         }
       },
       questionList: [],
+      pickerBeginDateAfter: {
+        disabledDate: (time) => {
+          let now = new Date()
+          return time.getTime() < now.getTime()
+        }
+      },
       currentTestIndex: -1,
       editTitleIndex: -1,
       editOptionIndex: -1,
