@@ -1,11 +1,5 @@
 <template>
   <div id="StudentHome">
-    <nav class="nav">
-      <div class="container">
-        <img src="../assets/img/logo.svg"
-             style="height: 50px;width: auto">
-      </div>
-    </nav>
     <div class="container">
       <div class="page-body">
         <div class="left-box">
@@ -43,7 +37,8 @@
             </p>
           </div>
         </div>
-        <div class="right-box">
+        <div class="right-box"
+             v-loading="myExamListLoading">
           <div class="exam-list-box">
             <div class="exam-tab-select">
               <ul class="tab-list clear">
@@ -82,8 +77,12 @@
                         <dd>{{item.examLength}}</dd>
                       </dl>
                       <dl>
-                        <dt>考试时间</dt>
-                        <dd style="font-size: 13px;color: #445">{{item.startDate}} ~ {{item.endDate}}</dd>
+                        <dt>开始时间</dt>
+                        <dd style="font-size: 13px;color: #445">{{item.startDate}}</dd>
+                      </dl>
+                      <dl>
+                        <dt>结束时间</dt>
+                        <dd style="font-size: 13px;color: #445">{{item.endDate}}</dd>
                       </dl>
                       <dl>
                         <dt>考试班级</dt>
@@ -126,13 +125,13 @@
                         <dt>当前状态</dt>
                         <dd>
                           <el-tag type="warning"
-                                  v-if="item.status==0"
+                                  v-if="item.status==1"
                                   size="small">未开始</el-tag>
                           <el-tag type="success"
-                                  v-if="item.status==1"
+                                  v-if="item.status==2"
                                   size="small">已开始</el-tag>
                           <el-tag type="danger"
-                                  v-if="item.status==2"
+                                  v-if="item.status==3"
                                   size="small">已结束</el-tag>
                         </dd>
                       </dl>
@@ -217,76 +216,7 @@ export default {
   data () {
     return {
       tabActive: 1,
-      myExamList: [
-        {
-          title: 'Temp',
-          publisher: 'Publisher',
-          examLength: '2小时',
-          startDate: '2019/01/01',
-          endDate: '2019/01/09',
-          class: '15信管',
-          course: '高等数学',
-          questionNum: [{
-            radio: 30,
-            judge: 10,
-            checkbox: 10,
-            question: 3,
-          }],
-          status: 0,
-          isNew: true
-        },
-        {
-          title: 'Lorem ipsum dolor, sit amet consectetur adipisicing elit. ',
-          publisher: 'Publisher',
-          examLength: '2小时',
-          startDate: '2019/01/01',
-          endDate: '2019/01/09',
-          class: '15信管',
-          course: '高等数学',
-          questionNum: [{
-            radio: 30,
-            judge: 10,
-            checkbox: 10,
-            question: 3,
-          }],
-          status: 1,
-          isNew: true
-        },
-        {
-          title: 'Temp',
-          publisher: 'Publisher',
-          examLength: '2小时',
-          startDate: '2019/01/01',
-          endDate: '2019/01/09',
-          class: '15信管',
-          course: '高等数学',
-          questionNum: [{
-            radio: 30,
-            judge: 10,
-            checkbox: 10,
-            question: 3,
-          }],
-          status: 2,
-          isNew: false
-        },
-        {
-          title: 'Temp',
-          publisher: 'Publisher',
-          examLength: '2小时',
-          startDate: '2019/01/01',
-          endDate: '2019/01/09',
-          class: '15信管',
-          course: '高等数学',
-          questionNum: [{
-            radio: 30,
-            judge: 10,
-            checkbox: 10,
-            question: 3,
-          }],
-          status: 2,
-          isNew: false
-        }
-      ],
+      myExamList: [],
       myExamFinishList: [
         {
           title: 'Temp',
@@ -312,7 +242,8 @@ export default {
           finishStatus: 2,
           myScore: 80
         }
-      ]
+      ],
+      myExamListLoading: false
     }
   },
   filters: {
@@ -328,13 +259,26 @@ export default {
       }
       return temp
     }
+  },
+  mounted () {
+    this.getExamList()
+  },
+  methods: {
+    async getExamList () {
+      this.myExamListLoading = true
+      await this.$api('getStudentExamList').then(data => {
+        this.myExamList = data
+        console.log(this.myExamList)
+      }).finally(_ => {
+        this.myExamListLoading = false
+      })
+    }
   }
 }
 </script>
 <style lang="scss" scoped>
 header main,
 aside,
-nav,
 footer {
   padding: 8px;
   background: #fff;
@@ -342,17 +286,6 @@ footer {
   box-shadow: 0 0 3px #aab;
   margin-bottom: 10px;
   min-height: 20px;
-}
-nav.nav {
-  width: 100%;
-  background: #fff;
-  height: 50px;
-  border-radius: 0;
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 10086;
-  padding: 0;
 }
 .container {
   width: 1160px;
@@ -366,6 +299,7 @@ nav.nav {
   margin-top: 60px;
   padding: 15px 10px;
   display: flex;
+  margin-bottom: 20px;
   .left-box {
     width: 300px;
     height: 100%;
@@ -580,6 +514,29 @@ nav.nav {
       i {
         display: inline;
       }
+    }
+  }
+}
+@media screen and (min-width: 820px) and (max-width: 1180px) {
+  .container {
+    width: 820px;
+  }
+  .page-body {
+    .left-box {
+      width: 230px;
+    }
+  }
+}
+@media screen and (max-width: 830px) {
+  .container {
+    width: 100%;
+  }
+  .page-body {
+    .left-box {
+      display: none;
+    }
+    .right-box {
+      border-left: none;
     }
   }
 }

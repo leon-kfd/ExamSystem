@@ -1,9 +1,10 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Exam from '@/pages/exam'
-import Admin from '@/pages/admin/index'
 import Login from '@/pages/login'
-import StudentHome from '@/pages/student-home'
+import Student from '@/pages/student'
+import StudentHome from '@/pages/student/student-home'
+import Exam from '@/pages/student/exam'
+import Admin from '@/pages/admin/index'
 import { Message } from 'element-ui'
 
 Vue.use(Router)
@@ -121,6 +122,19 @@ let adminRouter = [
     ]
   }
 ]
+
+let studentRouter = [
+  {
+    path: 'studentHome',
+    name: 'StudentHome',
+    component: StudentHome
+  },
+  {
+    path: 'exam',
+    name: 'Exam',
+    component: Exam
+  }
+]
 const router = new Router({
   routes: [
     {
@@ -134,21 +148,18 @@ const router = new Router({
       component: Login
     },
     {
-      path: '/StudentHome',
-      name: 'StudentHome',
-      component: StudentHome,
-    },
-    {
-      path: '/exam',
-      name: 'Exam',
-      component: Exam
-    },
-    {
       path: '/admin',
       name: 'admin',
       redirect: '/admin/examManage/createExam',
       component: Admin,
       children: adminRouter
+    },
+    {
+      path: '/student',
+      name: 'student',
+      redirect: '/student/studentHome',
+      component: Student,
+      children: studentRouter
     }
   ]
 })

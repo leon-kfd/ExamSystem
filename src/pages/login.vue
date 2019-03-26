@@ -114,7 +114,7 @@ export default {
           sessionStorage.setItem('token', data.token)
           this.$message.success('登录成功...')
           if (data.role == 1) {
-            this.$router.push('StudentHome')
+            this.$router.push('student')
           } else if (data.role == 2) {
             this.$router.push('admin')
           }

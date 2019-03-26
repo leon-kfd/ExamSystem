@@ -1,7 +1,5 @@
 <template>
-  <div class="page"
-       id="Exam">
-    <nav class="nav"></nav>
+  <div id="Exam">
     <div class="container">
       <div class="page-body">
         <div class="left-box">
@@ -197,7 +195,7 @@
   </div>
 </template>
 <script>
-import ItemSelector from './components/item-selector'
+import ItemSelector from '@/components/item-selector'
 import { ScrollTo } from '@/utils/animate'
 export default {
   name: 'Exam',
@@ -414,7 +412,6 @@ export default {
   src: url("https://fonts.font.im/css?family=Sunflower:300");
 }
 header,
-nav,
 main,
 aside,
 footer {
@@ -424,16 +421,6 @@ footer {
   box-shadow: 0 0 3px #aab;
   margin-bottom: 10px;
   min-height: 20px;
-}
-nav.nav {
-  width: 100%;
-  background: #fff;
-  height: 50px;
-  border-radius: 0;
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 999;
 }
 .container {
   width: 1160px;
