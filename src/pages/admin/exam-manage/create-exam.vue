@@ -71,7 +71,8 @@
                 </el-date-picker>
               </el-form-item>
               <el-form-item label="考试班级"
-                            prop="class">
+                            prop="class"
+                            class="relative">
                 <el-select v-model="examForm.fields.class"
                            multiple
                            placeholder="请选择"
@@ -82,6 +83,10 @@
                              :value="item.value">
                   </el-option>
                 </el-select>
+                <i :class="classroomLoading?'el-icon-loading':'el-icon-refresh'"
+                   :style="classroomLoading?'':'cursor:pointer'"
+                   style="position:absolute;right: -28px;top: 9px;font-size: 20px;"
+                   @click="getClassList"></i>
               </el-form-item>
               <el-form-item label="相关课程"
                             prop="course">
@@ -401,7 +406,8 @@ export default {
         checkbox: 0,
         question: 0,
       }],
-      scoreCount: 0
+      scoreCount: 0,
+      classroomLoading: false
     }
   },
   filters: {
@@ -438,6 +444,8 @@ export default {
     if (this.$route.params.examId) {
       this.examForm.fields.examId = this.$route.params.examId
       this.getData()
+    } else {
+      this.getClassList()
     }
     // 监听浏览器滚动
     let appContent = this.$parent.$refs.appContent
@@ -681,6 +689,7 @@ export default {
       })
     },
     async getData () {
+      await this.getClassList()
       this.dataLoading = true
       await this.$api('getExamInfoFromTeacher', {
         examId: this.examForm.fields.examId
@@ -696,6 +705,14 @@ export default {
         this.questionList = data.questionList
       }).finally(_ => {
         this.dataLoading = false
+      })
+    },
+    async getClassList () {
+      this.classroomLoading = true
+      await this.$api('getTeacherClassroom').then(data => {
+        this.classList = data
+      }).finally(_ => {
+        this.classroomLoading = false
       })
     }
   },
@@ -788,7 +805,7 @@ export default {
     }
     .tips {
       width: 450px;
-      margin-left: 30px;
+      margin-left: 45px;
       .tips-list {
         list-style-type: circle !important;
         li {
@@ -1004,6 +1021,9 @@ export default {
   text-align: center;
   color: #99a;
   font-size: 14px;
+}
+.relative {
+  position: relative;
 }
 </style>
 <style lang="scss">
