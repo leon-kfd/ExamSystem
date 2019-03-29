@@ -38,9 +38,12 @@ export const config = {
     url: '/publishExam'
   },
 
-  // 获取学生列表
+  // 获取学生考试列表
   getStudentExamList: {
     url: '/getStudentExamList'
+  },
+  getExamInfoFromStudent: {
+    url: '/getExamInfoFromStudent'
   }
 }
 

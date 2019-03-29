@@ -130,7 +130,7 @@ let studentRouter = [
     component: StudentHome
   },
   {
-    path: 'exam',
+    path: 'exam/:examId?',
     name: 'Exam',
     component: Exam
   }

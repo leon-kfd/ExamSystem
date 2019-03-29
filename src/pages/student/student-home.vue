@@ -137,7 +137,8 @@
                       </dl>
                     </div>
                     <div class="exam-info-footer">
-                      <button class="d-btn btn-enter btn-animate1">进入考试 <i class="el-icon-d-arrow-right"></i></button>
+                      <button class="d-btn btn-enter btn-animate1"
+                              @click="turnToExam(item.examId)">进入考试 <i class="el-icon-d-arrow-right"></i></button>
                     </div>
                   </el-card>
                 </el-badge>
@@ -272,6 +273,10 @@ export default {
       }).finally(_ => {
         this.myExamListLoading = false
       })
+    },
+    turnToExam (examId) {
+      this.$router.push({ name: 'Exam', params: { examId } })
+      console.log(examId)
     }
   }
 }

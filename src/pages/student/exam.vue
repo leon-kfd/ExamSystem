@@ -52,7 +52,9 @@
           </aside>
         </div>
         <div class="center-box">
-          <main class="exam-body">
+          <main class="exam-body"
+                v-loading="examInfoLoading"
+                style="min-height: 400px">
             <div class="exam-main">
               <h2 class="exam-title">Test Title01</h2>
               <div class="question-list">
@@ -205,9 +207,25 @@ export default {
   data () {
     return {
       questionList: [],
+      examInfo: {
+        autoMarking: 1,
+        checkboxCount: 1,
+        classroom: "1,2",
+        course: "test",
+        endTime: "2019-03-16 00:00:00",
+        essayCount: 0,
+        judgeCount: 1,
+        long: 120,
+        radioCount: 3,
+        randomOrder: 1,
+        startTime: "2019-03-01 00:00:00",
+        title: "Test1"
+      },
       examDuration: 7200,
       restDuration: 7200,
-      durationTimer: null
+      durationTimer: null,
+      examId: '',
+      examInfoLoading: false
     }
   },
   filters: {
@@ -269,123 +287,6 @@ export default {
     }
   },
   created () {
-    let question_data = [
-      {
-        questionId: 0,
-        type: 1,
-        title: 'title1',
-        option: [
-          {
-            text: 'aaa'
-          },
-          {
-            text: 'bbb'
-          },
-          {
-            text: 'ccc'
-          },
-          {
-            text: 'ddd'
-          }
-        ],
-        score: 5
-      },
-      {
-        questionId: 1,
-        type: 2,
-        title: 'title02',
-        score: 5
-      },
-      {
-        questionId: 2,
-        type: 3,
-        title: 'title03',
-        option: [
-          {
-            text: 'aaa'
-          },
-          {
-            text: 'bbb'
-          },
-          {
-            text: 'ccc'
-          },
-          {
-            text: 'ddd'
-          }
-        ],
-        score: 5
-      },
-      {
-        questionId: 3,
-        type: 4,
-        title: '',
-        score: 5
-      },
-      {
-        questionId: 4,
-        type: 1,
-        title: 'title1',
-        option: [
-          {
-            text: 'aaa'
-          },
-          {
-            text: 'bbb'
-          },
-          {
-            text: 'ccc'
-          },
-          {
-            text: 'ddd'
-          }
-        ],
-        score: 5
-      },
-      {
-        questionId: 5,
-        type: 2,
-        title: 'title02',
-        score: 5
-      },
-      {
-        questionId: 6,
-        type: 3,
-        title: 'title03',
-        option: [
-          {
-            text: 'aaa'
-          },
-          {
-            text: 'bbb'
-          },
-          {
-            text: 'ccc'
-          },
-          {
-            text: 'ddd'
-          }
-        ],
-        score: 5
-      },
-      {
-        questionId: 7,
-        type: 4,
-        title: '',
-        score: 5
-      }
-    ]
-    question_data.map((item, index) => {
-      switch (item.type) {
-        case 1: item.myAnswer = -1; break
-        case 2: item.myAnswer = -1; break
-        case 3: item.myAnswer = []; break
-        case 4: item.myAnswer = ''; break
-        default: item.myAnswer = ''
-      }
-    })
-    this.questionList = question_data
-
     // 计时器
     let _this = this
     this.timer = setInterval(_ => {
@@ -394,12 +295,35 @@ export default {
       }
       _this.restDuration--
     }, 1000)
+    this.getData()
   },
   methods: {
     TurnToQuestion (index) {
       let selector_str = `[data-question='${index}']`
       let top = document.querySelector(selector_str).offsetTop - 50
       ScrollTo(top, 500)
+    },
+    async getData () {
+      this.examId = this.$route.params.examId
+      this.examInfoLoading = true
+      await this.$api('getExamInfoFromStudent', {
+        examId: this.examId
+      }).then(data => {
+        let questionListData = data.questionList
+        questionListData.map((item, index) => {
+          switch (item.type) {
+            case 1: item.myAnswer = -1; break
+            case 2: item.myAnswer = -1; break
+            case 3: item.myAnswer = []; break
+            case 4: item.myAnswer = ''; break
+            default: item.myAnswer = ''
+          }
+        })
+        this.questionList = questionListData
+        console.log(this.questionList)
+      }).finally(_ => {
+        this.examInfoLoading = false
+      })
     }
   }
 }

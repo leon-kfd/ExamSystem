@@ -59,7 +59,7 @@ nav.nav {
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 1005;
+  z-index: 2005;
   padding: 0;
   .logo {
     height: 50px;
