@@ -25,28 +25,33 @@
               </div>
             </div>
           </aside>
-          <aside class="exam-info">
+          <aside class="exam-info"
+                 v-loading="examInfoLoading">
             <p class="title"><span>考试信息</span></p>
             <div class="exam-info-main">
               <dl class="info-itemlist type1">
                 <dt>试卷题目</dt>
-                <dd>全球化时代的思维技能</dd>
+                <dd>{{examInfo.title}}</dd>
               </dl>
-              <dl class="info-itemlist type1">
-                <dt>考试时间</dt>
-                <dd>2019/01/29 ~ 2019/01/30</dd>
+              <dl class="info-itemlist type2">
+                <dt>开始时间</dt>
+                <dd style="font-size: 14px">{{examInfo.startTime}}</dd>
+              </dl>
+              <dl class="info-itemlist type2">
+                <dt>结束时间</dt>
+                <dd style="font-size: 14px">{{examInfo.endTime}}</dd>
               </dl>
               <dl class="info-itemlist type2">
                 <dt>相关课程</dt>
-                <dd>创新思维与创新创业</dd>
+                <dd>{{examInfo.course}}</dd>
               </dl>
               <dl class="info-itemlist type2">
                 <dt>考试时长</dt>
-                <dd>2小时</dd>
+                <dd>{{examInfo.long}} 分钟</dd>
               </dl>
               <dl class="info-itemlist type2">
                 <dt>发布人</dt>
-                <dd>Teacher01</dd>
+                <dd>{{examInfo.publisher}}</dd>
               </dl>
             </div>
           </aside>
@@ -56,7 +61,7 @@
                 v-loading="examInfoLoading"
                 style="min-height: 400px">
             <div class="exam-main">
-              <h2 class="exam-title">Test Title01</h2>
+              <h2 class="exam-title">{{examInfo.title}}</h2>
               <div class="question-list">
                 <div class="question-listitem"
                      v-for="(item,index) in questionList"
@@ -154,28 +159,33 @@
             <item-selector :selector-list="selectorList"
                            @selector-click="TurnToQuestion"></item-selector>
           </aside>
-          <aside class='user-exam-info'>
+          <aside class='user-exam-info'
+                 v-loading="examInfoLoading">
             <p class="title"><span>考试信息 & 考生信息</span></p>
             <div class="user-exam-info-main">
               <dl class="info-itemlist">
                 <dt>试卷题目</dt>
-                <dd>全球化时代的思维技能</dd>
+                <dd>{{examInfo.title}}</dd>
               </dl>
               <dl class="info-itemlist">
-                <dt>考试时间</dt>
-                <dd>2019/01/29 - 2019/01/30</dd>
+                <dt>开始时间</dt>
+                <dd style="font-size: 14px">{{examInfo.startTime}}</dd>
+              </dl>
+              <dl class="info-itemlist">
+                <dt>结束时间</dt>
+                <dd style="font-size: 14px">{{examInfo.endTime}}</dd>
               </dl>
               <dl class="info-itemlist">
                 <dt>相关课程</dt>
-                <dd>创新思维与创新创业</dd>
+                <dd>{{examInfo.course}}</dd>
               </dl>
               <dl class="info-itemlist">
                 <dt>考试时长</dt>
-                <dd>2小时</dd>
+                <dd>{{examInfo.long}} 分钟</dd>
               </dl>
               <dl class="info-itemlist">
                 <dt>发布人</dt>
-                <dd>Teacher01</dd>
+                <dd>{{examInfo.publisher}}</dd>
               </dl>
               <dl class="info-itemlist">
                 <dt>姓名</dt>
@@ -210,18 +220,17 @@ export default {
       examInfo: {
         autoMarking: 1,
         checkboxCount: 1,
-        classroom: "1,2",
-        course: "test",
-        endTime: "2019-03-16 00:00:00",
+        classroom: "",
+        course: "",
+        endTime: "",
         essayCount: 0,
-        judgeCount: 1,
-        long: 120,
-        radioCount: 3,
+        judgeCount: 0,
+        long: 0,
+        radioCount: 0,
         randomOrder: 1,
-        startTime: "2019-03-01 00:00:00",
-        title: "Test1"
+        startTime: "",
+        title: ""
       },
-      examDuration: 7200,
       restDuration: 7200,
       durationTimer: null,
       examId: '',
@@ -287,14 +296,6 @@ export default {
     }
   },
   created () {
-    // 计时器
-    let _this = this
-    this.timer = setInterval(_ => {
-      if (_this.restDuration <= 1) {
-        clearInterval(_this.timer)
-      }
-      _this.restDuration--
-    }, 1000)
     this.getData()
   },
   methods: {
@@ -306,6 +307,7 @@ export default {
     async getData () {
       this.examId = this.$route.params.examId
       this.examInfoLoading = true
+      let _this = this
       await this.$api('getExamInfoFromStudent', {
         examId: this.examId
       }).then(data => {
@@ -320,7 +322,15 @@ export default {
           }
         })
         this.questionList = questionListData
-        console.log(this.questionList)
+        this.examInfo = data.examInfo
+
+        this.restDuration = data.examInfo.long * 60
+        this.timer = setInterval(_ => {
+          if (_this.restDuration <= 1) {
+            clearInterval(_this.timer)
+          }
+          _this.restDuration--
+        }, 1000)
       }).finally(_ => {
         this.examInfoLoading = false
       })
@@ -573,6 +583,7 @@ footer {
     dl {
       margin: 10px 0;
       display: flex;
+      line-height: 20px;
       dt {
         font-size: 14px;
         color: #889;
@@ -605,6 +616,7 @@ footer {
       dl {
         margin: 10px 0;
         display: flex;
+        line-height: 20px;
         dt {
           font-size: 14px;
           color: #889;
@@ -626,6 +638,7 @@ footer {
       display: flex;
       flex-wrap: wrap;
       margin: 10px 0;
+      line-height: 20px;
       dt {
         width: 70px;
         font-size: 14px;
