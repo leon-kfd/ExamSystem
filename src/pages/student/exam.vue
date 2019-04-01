@@ -159,6 +159,12 @@
             <item-selector :selector-list="selectorList"
                            @selector-click="TurnToQuestion"></item-selector>
           </aside>
+          <div class="submit-btn-box">
+            <el-button :type="canSubmitExam?'success':''"
+                       :disabled="!canSubmitExam"
+                       @click="submitExam"
+                       style="width:100%;margin-bottom:10px;">交卷</el-button>
+          </div>
           <aside class='user-exam-info'
                  v-loading="examInfoLoading">
             <p class="title"><span>考试信息 & 考生信息</span></p>
@@ -293,6 +299,9 @@ export default {
       let temp = this.restDuration - this.restHour * 3600 - this.restMinute * 60 + ''
       if (temp.length < 2) temp = '0' + temp
       return temp
+    },
+    canSubmitExam () {
+      return this.selectorList.every(item => item.status == 1)
     }
   },
   created () {
@@ -334,6 +343,10 @@ export default {
       }).finally(_ => {
         this.examInfoLoading = false
       })
+    },
+    submitExam () {
+      console.log('examId', this.examId)
+      console.log(this.questionList)
     }
   }
 }
@@ -390,7 +403,7 @@ footer {
       min-height: 80px;
     }
     .title-selection {
-      min-height: 200px;
+      min-height: 120px;
     }
     .user-exam-info {
       transform: translateX(100px);

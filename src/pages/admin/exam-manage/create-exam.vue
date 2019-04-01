@@ -636,16 +636,29 @@ export default {
       this.$refs['examForm'].validate(async (valid) => {
         if (valid) {
           let questionListFlag = false
-          this.questionList.map((item) => {
+          let answerListFlag = false
+          let wrongQuetsionIndex = 0
+          this.questionList.map((item, index) => {
+            // 检查是否含有未编辑的标题或选项
             if (item.title.length == 0) {
               questionListFlag = true
             } else if (item.option) {
               questionListFlag = questionListFlag || item.option.some((item1) => item1.text ? item1.text.length == 0 : true)
             }
+            // 检查是否全部已经设置了答案
+            if (typeof item.answer == 'number' && item.answer == -1) {
+              answerListFlag = true
+              wrongQuetsionIndex = index + 1
+            } else if (typeof item.answer == 'object' && item.answer.length == 0) {
+              answerListFlag = true
+              wrongQuetsionIndex = index + 1
+            }
           })
           if (questionListFlag) {
             this.questionListFlag = questionListFlag
             this.$message.error('含有未编辑的考试题目或选项')
+          } else if (answerListFlag) {
+            this.$message.error(`含有未设置答案的题目,位于大约第${wrongQuetsionIndex}题目附近`)
           } else {
             this.checkExamDialog = true
             let radio = 0, judge = 0, checkbox = 0, question = 0, score = 0
