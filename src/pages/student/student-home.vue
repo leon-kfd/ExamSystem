@@ -73,6 +73,10 @@
                         <dd>{{item.publisher}}</dd>
                       </dl>
                       <dl>
+                        <dt>发布时间</dt>
+                        <dd>{{item.publishDate}}</dd>
+                      </dl>
+                      <dl>
                         <dt>考试时长</dt>
                         <dd>{{item.examLength}}</dd>
                       </dl>
@@ -165,16 +169,20 @@
                       <dd>{{item.publisher}}</dd>
                     </dl>
                     <dl>
+                      <dt>发布时间</dt>
+                      <dd>{{item.publishDate}}</dd>
+                    </dl>
+                    <dl>
                       <dt>考试时长</dt>
                       <dd>{{item.examLength}}</dd>
                     </dl>
                     <dl>
-                      <dt>考试时间</dt>
-                      <dd style="font-size: 13px;color: #445">{{item.startDate}} ~ {{item.endDate}}</dd>
+                      <dt>开始时间</dt>
+                      <dd style="font-size: 13px;color: #445">{{item.startDate}}</dd>
                     </dl>
                     <dl>
-                      <dt>考试班级</dt>
-                      <dd>{{item.class}}</dd>
+                      <dt>结束时间</dt>
+                      <dd style="font-size: 13px;color: #445">{{item.endDate}}</dd>
                     </dl>
                     <dl>
                       <dt>相关课程</dt>

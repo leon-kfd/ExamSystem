@@ -240,7 +240,8 @@ export default {
       restDuration: 7200,
       durationTimer: null,
       examId: '',
-      examInfoLoading: false
+      examInfoLoading: false,
+      submitLoading: false
     }
   },
   filters: {
@@ -345,8 +346,35 @@ export default {
       })
     },
     submitExam () {
-      console.log('examId', this.examId)
-      console.log(this.questionList)
+      // this.submitLoading = true
+      // await this.$api('submitExam', {
+      //   examId: this.examId,
+      //   questionAnswerList: this.questionList
+      // }).then(data => {
+      //   console.log(data)
+      // }).finally(_ => {
+      //   this.submitLoading = false
+      // })
+      this.$confirm('此操作将不可返回, 确认执行该操作?', '提示', {
+        showCancelButton: true,
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+        beforeClose: (action, instance, done) => {
+          if (action === 'confirm') {
+            instance.confirmButtonLoading = true;
+            instance.confirmButtonText = '执行中...';
+            setTimeout(() => {
+              done();
+              setTimeout(() => {
+                instance.confirmButtonLoading = false;
+              }, 300);
+            }, 3000);
+          } else {
+            done();
+          }
+        }
+      })
     }
   }
 }

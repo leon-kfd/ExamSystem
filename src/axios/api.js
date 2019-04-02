@@ -44,6 +44,9 @@ export const config = {
   },
   getExamInfoFromStudent: {
     url: '/getExamInfoFromStudent'
+  },
+  submitExam: {
+    url: '/submitExam'
   }
 }
 
