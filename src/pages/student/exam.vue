@@ -209,9 +209,8 @@
           </aside>
         </div>
       </div>
-      <<<<<<< HEAD=======<el-dialog
-              :visible.sync="ScoreDialog"
-              custom-class="dialog-control">
+      <el-dialog :visible.sync="ScoreDialog"
+                 custom-class="dialog-control">
         <div class="exam-finish-box">
           <h2 class="title">交卷成功!</h2>
           <div class="auto-check-exam">
@@ -230,8 +229,7 @@
             <el-button>考试完成</el-button>
           </p>
         </div>
-        </el-dialog>
-        >>>>>>> 6be15565a009ae35538ed6d6b9a3a4cf23ab7a6c
+      </el-dialog>
     </div>
   </div>
 </template>

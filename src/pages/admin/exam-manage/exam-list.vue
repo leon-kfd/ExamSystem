@@ -97,9 +97,9 @@
               </div>
               <div class="exam-info-footer">
                 <button class="d-btn btn-enter btn-animate1"
-                        v-if="item.status==0">预览试卷 <i class="el-icon-d-arrow-right"></i></button>
+                        v-if="item.status==1">预览试卷 <i class="el-icon-d-arrow-right"></i></button>
                 <button class="d-btn btn-enter btn-animate1"
-                        v-if="item.status==1">查看详情 <i class="el-icon-d-arrow-right"></i></button>
+                        v-if="item.status==2">查看详情 <i class="el-icon-d-arrow-right"></i></button>
               </div>
             </el-card>
           </el-badge>
