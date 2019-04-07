@@ -84,13 +84,13 @@
                   <dt>当前状态</dt>
                   <dd>
                     <el-tag type="warning"
-                            v-if="item.status==0"
+                            v-if="item.status==1"
                             size="small">未开始</el-tag>
                     <el-tag type="success"
-                            v-if="item.status==1"
-                            size="small">已开始</el-tag>
-                    <!-- <el-tag type="danger"
                             v-if="item.status==2"
+                            size="small">已开始,进行中</el-tag>
+                    <!-- <el-tag type="danger"
+                            v-if="item.status==3"
                             size="small">已结束</el-tag> -->
                   </dd>
                 </dl>
@@ -180,15 +180,15 @@ export default {
       loading: false,
       tabActive: 1,
       evaluationStatuList: {
-        0: {
+        4: {
           color: '#409EFF',
           text: '自动阅卷，已完成'
         },
-        1: {
+        3: {
           color: '#e6a23c',
           text: '手动阅卷，未完成'
         },
-        2: {
+        5: {
           color: '#67C23A',
           text: '手动阅卷，全部完成'
         }
@@ -274,7 +274,7 @@ export default {
           course: '高等数学',
           finishNum: 20,
           classNum: 50,
-          evaluationStatus: 0
+          evaluationStatus: 3
         },
         {
           title: 'Temp',
@@ -286,7 +286,7 @@ export default {
           course: '高等数学',
           finishNum: 20,
           classNum: 50,
-          evaluationStatus: 1
+          evaluationStatus: 4
         },
         {
           title: 'Temp',
@@ -298,7 +298,7 @@ export default {
           course: '高等数学',
           finishNum: 20,
           classNum: 50,
-          evaluationStatus: 2
+          evaluationStatus: 5
         }
       ]
     }

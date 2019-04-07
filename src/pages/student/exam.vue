@@ -209,16 +209,41 @@
           </aside>
         </div>
       </div>
+      <<<<<<< HEAD=======<el-dialog
+              :visible.sync="ScoreDialog"
+              custom-class="dialog-control">
+        <div class="exam-finish-box">
+          <h2 class="title">交卷成功!</h2>
+          <div class="auto-check-exam">
+            <p class="text">自动阅卷已完成, 以下为你的考试结果信息</p>
+            <div class="exam-finish-detail">
+              <question-section-list :resultList="resultList"></question-section-list>
+            </div>
+            <p class="score clear">
+              <span class="fr">
+                <span style="color: #889;margin-right: 5px">得分</span>
+                <span style="font-size: 26px;color:#262626;font-weight:bold">{{resultScore}}</span>
+              </span>
+            </p>
+          </div>
+          <p style="text-align:center">
+            <el-button>考试完成</el-button>
+          </p>
+        </div>
+        </el-dialog>
+        >>>>>>> 6be15565a009ae35538ed6d6b9a3a4cf23ab7a6c
     </div>
   </div>
 </template>
 <script>
 import ItemSelector from '@/components/item-selector'
+import QuestionSectionList from '@/components/question-section-list'
 import { ScrollTo } from '@/utils/animate'
 export default {
   name: 'Exam',
   components: {
-    ItemSelector
+    ItemSelector,
+    QuestionSectionList
   },
   data () {
     return {
@@ -241,7 +266,10 @@ export default {
       durationTimer: null,
       examId: '',
       examInfoLoading: false,
-      submitLoading: false
+      submitLoading: false,
+      ScoreDialog: false,
+      resultList: [],
+      resultScore: 0
     }
   },
   filters: {
@@ -346,30 +374,32 @@ export default {
       })
     },
     submitExam () {
-      // this.submitLoading = true
-      // await this.$api('submitExam', {
-      //   examId: this.examId,
-      //   questionAnswerList: this.questionList
-      // }).then(data => {
-      //   console.log(data)
-      // }).finally(_ => {
-      //   this.submitLoading = false
-      // })
       this.$confirm('此操作将不可返回, 确认执行该操作?', '提示', {
         showCancelButton: true,
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning',
-        beforeClose: (action, instance, done) => {
+        beforeClose: async (action, instance, done) => {
           if (action === 'confirm') {
             instance.confirmButtonLoading = true;
-            instance.confirmButtonText = '执行中...';
-            setTimeout(() => {
-              done();
-              setTimeout(() => {
-                instance.confirmButtonLoading = false;
-              }, 300);
-            }, 3000);
+            instance.confirmButtonText = '执行中...'
+            // 计时器停止
+            clearInterval(this.timer)
+            // 提交试卷
+            this.submitLoading = true
+            await this.$api('submitExam', {
+              examId: this.examId,
+              questionAnswerList: this.questionList
+            }).then(data => {
+              console.log(data)
+              done()
+              instance.confirmButtonLoading = false
+              this.resultList = data.resultList
+              this.resultScore = data.score
+              this.ScoreDialog = true
+            }).finally(_ => {
+              this.submitLoading = false
+            })
           } else {
             done();
           }
@@ -694,6 +724,29 @@ footer {
     }
   }
 }
+.exam-finish-box {
+  .title {
+    text-align: center;
+    color: #67c23a;
+    margin-bottom: 15px;
+  }
+  .auto-check-exam {
+    .text {
+      text-align: center;
+      color: #667;
+      font-size: 13px;
+      padding-bottom: 20px;
+      margin-bottom: 10px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    .score {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid #e0e0e0;
+      margin-bottom: 30px;
+    }
+  }
+}
 </style>
 <style lang="scss">
 .el-radio.is-bordered,
@@ -731,6 +784,10 @@ footer {
 textarea {
   font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB",
     "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+}
+.dialog-control {
+  min-width: 280px;
+  max-width: 480px;
 }
 </style>
 
