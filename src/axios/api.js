@@ -47,6 +47,14 @@ export const config = {
   },
   submitExam: {
     url: '/submitExam'
+  },
+  // 获取学生成绩
+  getStudentScoreList: {
+    url: '/getStudentScoreList'
+  },
+  // 获取已完成考试列表
+  getTeacherFinishedExamList: {
+    url: '/getTeacherFinishedExamList'
   }
 }
 

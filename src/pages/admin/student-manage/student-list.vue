@@ -27,7 +27,7 @@
                   stripe
                   style="width: 100%"
                   v-loading="loading">
-          <el-table-column prop="studentNum"
+          <el-table-column prop="student_num"
                            label="学号"
                            align="center"
                            min-width="100"

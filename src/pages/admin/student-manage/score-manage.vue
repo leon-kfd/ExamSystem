@@ -4,6 +4,7 @@
     <div class="h-operation clear">
       <span class="h-operation-text">班级</span>
       <el-select v-model="CurrentClass"
+                 @change="ClassChange"
                  size="small">
         <el-option v-for="(item,index) in classList"
                    :key="index"
@@ -13,21 +14,18 @@
       <span class="h-operation-text"
             style="margin-left: 20px;">考试题目</span>
       <el-select v-model="CurrentExamTitle"
-                 size="small">
+                 size="small"
+                 @change="getData"
+                 v-loading="examTitleLoading">
         <el-option v-for="(item,index) in examTitleList"
                    :key="index"
                    :value="item.value"
                    :label="item.label"></el-option>
       </el-select>
-      <!-- <span class="h-operation-text"
-            style="margin-left: 20px;">课程</span>
-      <el-select v-model="CurrentCourse"
-                 size="small">
-        <el-option v-for="(item,index) in courseList"
-                   :key="index"
-                   :value="item.value"
-                   :label="item.label"></el-option>
-      </el-select> -->
+      <el-button style="margin-left:10px"
+                 type="text"
+                 size="small"
+                 @click="clear">清空条件</el-button>
       <el-button type="primary"
                  size="small"
                  class="fr"
@@ -108,64 +106,21 @@ export default {
   name: 'ScoreManage',
   data () {
     return {
-      classList: [
-        {
-          label: '15信管',
-          value: 1
-        },
-        {
-          label: '15软件',
-          value: 2,
-        }
-      ],
-      examTitleList: [
-        {
-          label: 'aaa',
-          value: 'EX1554129940560027306'
-        }
-      ],
-      // courseList: [
-      //   {
-      //     label: '高等数学',
-      //     value: 1
-      //   },
-      //   {
-      //     label: '计算机网络',
-      //     value: 2
-      //   }
-      // ],
+      loading: false,
+      classList: [],
+      examTitleList: [],
       CurrentClass: '',
-      CurrentCourse: '',
-      tableData: [
-        {
-          id: 1,
-          studentNum: '123',
-          name: 'XXX',
-          course: '高等数学',
-          submitTime: '2019-02-25 11:00',
-          score: 88
-        },
-        {
-          id: 1,
-          studentNum: '123',
-          name: 'XXX',
-          course: '高等数学',
-          submitTime: '2019-02-25 11:00',
-          score: 75
-        },
-        {
-          id: 1,
-          studentNum: '123',
-          name: 'XXX',
-          course: '高等数学',
-          submitTime: '2019-02-25 11:00',
-          score: 58
-        }
-      ],
+      CurrentExamTitle: '',
+      tableData: [],
       page: 1,
       pageSize: 10,
-      total: 0
+      total: 0,
+      examTitleLoading: false
     }
+  },
+  mounted () {
+    this.getClassList()
+    this.getData()
   },
   methods: {
     handleCurrentChange (val) {
@@ -176,7 +131,41 @@ export default {
       this.pageSize = val
       this.getData()
     },
-    getData () { }
+    async getClassList () {
+      await this.$api('getClassroomList').then(data => {
+        this.classList = data
+      })
+    },
+    async getData () {
+      this.loading = true
+      await this.$api('getStudentScoreList', {
+        examId: this.CurrentExamTitle || 0
+      }).then(data => {
+        this.tableData = data.items
+        this.page = data.page
+        this.total = data.total
+      }).finally(_ => {
+        this.loading = false
+      })
+    },
+    async getExamTitleList () {
+      this.examTitleLoading = true
+      await this.$api('getTeacherFinishedExamList', {
+      }).then(data => {
+        this.examTitleList = data
+      }).finally(_ => {
+        this.examTitleLoading = false
+      })
+    },
+    ClassChange () {
+      this.CurrentExamTitle = ''
+      this.getExamTitleList()
+    },
+    clear () {
+      this.CurrentClass = ''
+      this.CurrentExamTitle = ''
+      this.getData()
+    }
   }
 }
 </script>

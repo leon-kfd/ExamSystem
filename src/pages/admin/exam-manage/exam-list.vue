@@ -22,7 +22,7 @@
              v-for="(item,index) in myExamList"
              :key="index">
           <el-badge value="New"
-                    style="width: 100%"
+                    style="width: 100%;height:100%"
                     :hidden="!item.isNew">
             <el-card class="exam-info"
                      :body-style="{padding: '10px'}">
@@ -30,6 +30,10 @@
                 <dl>
                   <dt>试卷题目</dt>
                   <dd>{{item.title}}</dd>
+                </dl>
+                <dl>
+                  <dt>发布时间</dt>
+                  <dd>{{item.publishDate}}</dd>
                 </dl>
                 <dl>
                   <dt>考试时长</dt>
@@ -45,7 +49,12 @@
                 </dl>
                 <dl>
                   <dt>考试班级</dt>
-                  <dd>{{item.class}}</dd>
+                  <dd>
+                    <el-tag size="mini"
+                            type="info"
+                            v-for="item1 in  item.class.split(',')"
+                            :key="item1">{{item1}}</el-tag>
+                  </dd>
                 </dl>
                 <dl>
                   <dt>相关课程</dt>
@@ -89,9 +98,6 @@
                     <el-tag type="success"
                             v-if="item.status==2"
                             size="small">已开始,进行中</el-tag>
-                    <!-- <el-tag type="danger"
-                            v-if="item.status==3"
-                            size="small">已结束</el-tag> -->
                   </dd>
                 </dl>
               </div>
@@ -117,50 +123,61 @@
         <div class="exam-listitem"
              v-for="(item,index) in myExamFinishList"
              :key="index">
-          <el-card class="exam-info"
-                   :body-style="{padding: '10px'}">
-            <div class="exam-info-main">
-              <dl>
-                <dt>试卷题目</dt>
-                <dd>{{item.title}}</dd>
-              </dl>
-              <dl>
-                <dt>考试时长</dt>
-                <dd>{{item.examLength}}</dd>
-              </dl>
-              <dl>
-                <dt>开始时间</dt>
-                <dd style="font-size: 13px;color: #445">{{item.startDate}}</dd>
-              </dl>
-              <dl>
-                <dt>结束时间</dt>
-                <dd style="font-size: 13px;color: #445">{{item.endDate}}</dd>
-              </dl>
-              <dl>
-                <dt>考试班级</dt>
-                <dd>{{item.class}}</dd>
-              </dl>
-              <dl>
-                <dt>相关课程</dt>
-                <dd>{{item.course}}</dd>
-              </dl>
-              <dl>
-                <dt>完成情况</dt>
-                <dd>
-                  <span style="font-weight:bold">{{item.finishNum}}</span>
-                  <span style="margin: 0 2px">/</span>
-                  <span>{{item.classNum}}</span>
-                </dd>
-              </dl>
-              <dl>
-                <dt>阅卷</dt>
-                <dd :style="{color: evaluationStatuList[item.evaluationStatus].color }">{{evaluationStatuList[item.evaluationStatus].text}}</dd>
-              </dl>
-            </div>
-            <div class="exam-info-footer">
-              <button class="d-btn btn-enter btn-animate1">查看详情 <i class="el-icon-d-arrow-right"></i></button>
-            </div>
-          </el-card>
+          <div style="position:relative;width:100%;height:100%">
+            <el-card class="exam-info"
+                     :body-style="{padding: '10px'}">
+              <div class="exam-info-main">
+                <dl>
+                  <dt>试卷题目</dt>
+                  <dd>{{item.title}}</dd>
+                </dl>
+                <dl>
+                  <dt>发布时间</dt>
+                  <dd>{{item.publishDate}}</dd>
+                </dl>
+                <dl>
+                  <dt>考试时长</dt>
+                  <dd>{{item.examLength}}</dd>
+                </dl>
+                <dl>
+                  <dt>开始时间</dt>
+                  <dd style="font-size: 13px;color: #445">{{item.startDate}}</dd>
+                </dl>
+                <dl>
+                  <dt>结束时间</dt>
+                  <dd style="font-size: 13px;color: #445">{{item.endDate}}</dd>
+                </dl>
+                <dl>
+                  <dt>考试班级</dt>
+                  <dd>
+                    <el-tag size="mini"
+                            type="info"
+                            v-for="item1 in  item.class.split(',')"
+                            :key="item1">{{item1}}</el-tag>
+                  </dd>
+                </dl>
+                <dl>
+                  <dt>相关课程</dt>
+                  <dd>{{item.course}}</dd>
+                </dl>
+                <dl>
+                  <dt>完成情况</dt>
+                  <dd>
+                    <span style="font-weight:bold">{{item.examFinishedNum}}</span>
+                    <span style="margin: 0 2px">/</span>
+                    <span>{{item.classStudentCount}}</span>
+                  </dd>
+                </dl>
+                <dl>
+                  <dt>阅卷</dt>
+                  <dd :style="{color: evaluationStatuList[item.status].color }">{{evaluationStatuList[item.status].text}}</dd>
+                </dl>
+              </div>
+              <div class="exam-info-footer">
+                <button class="d-btn btn-enter btn-animate1">查看详情 <i class="el-icon-d-arrow-right"></i></button>
+              </div>
+            </el-card>
+          </div>
         </div>
         <div class="exam-listitem fake"></div>
         <div class="exam-listitem fake"></div>
@@ -193,76 +210,7 @@ export default {
           text: '手动阅卷，全部完成'
         }
       },
-      myExamList: [
-        {
-          title: 'Temp',
-          publisher: 'Publisher',
-          examLength: '2小时',
-          startDate: '2019/01/01',
-          endDate: '2019/01/09',
-          class: '15信管',
-          course: '高等数学',
-          questionNum: [{
-            radio: 30,
-            judge: 10,
-            checkbox: 10,
-            question: 3,
-          }],
-          status: 0,
-          isNew: true
-        },
-        {
-          title: 'Lorem ipsum dolor, sit amet consectetur adipisicing elit. ',
-          publisher: 'Publisher',
-          examLength: '2小时',
-          startDate: '2019/01/01',
-          endDate: '2019/01/09',
-          class: '15信管',
-          course: '高等数学',
-          questionNum: [{
-            radio: 30,
-            judge: 10,
-            checkbox: 10,
-            question: 3,
-          }],
-          status: 1,
-          isNew: true
-        },
-        {
-          title: 'Temp',
-          publisher: 'Publisher',
-          examLength: '2小时',
-          startDate: '2019/01/01',
-          endDate: '2019/01/09',
-          class: '15信管',
-          course: '高等数学',
-          questionNum: [{
-            radio: 30,
-            judge: 10,
-            checkbox: 10,
-            question: 3,
-          }],
-          status: 1,
-          isNew: false
-        },
-        {
-          title: 'Temp',
-          publisher: 'Publisher',
-          examLength: '2小时',
-          startDate: '2019/01/01',
-          endDate: '2019/01/09',
-          class: '15信管',
-          course: '高等数学',
-          questionNum: [{
-            radio: 30,
-            judge: 10,
-            checkbox: 10,
-            question: 3,
-          }],
-          status: 1,
-          isNew: false
-        }
-      ],
+      myExamList: [],
       myExamFinishList: [
         {
           title: 'Temp',
@@ -310,7 +258,8 @@ export default {
     async getData () {
       this.loading = true
       await this.$api('getTeacherExamList').then(data => {
-        this.myExamList = data.items.filter(item => item.status != 0 && item.status != 4)
+        this.myExamList = data.nowExamList
+        this.myExamFinishList = data.endExamList
       }).finally(_ => {
         this.loading = false
       })
@@ -367,6 +316,7 @@ export default {
       }
       .exam-info-main {
         padding-top: 5px;
+        padding-bottom: 60px;
         dl {
           margin-bottom: 10px;
           display: flex;
@@ -386,13 +336,16 @@ export default {
         }
       }
       .exam-info-footer {
+        position: absolute;
         height: 60px;
         background: #f9f9fd;
-        border-top: 1px solid #eee;
-        margin: -10px;
-        margin-top: 20px;
+        border: 1px solid #eee;
+        border-radius: 0 0 4px 4px;
         padding: 10px;
         text-align: center;
+        width: 100%;
+        bottom: 0;
+        left: 0;
       }
     }
   }
@@ -419,5 +372,11 @@ export default {
 }
 #ExamList #FinishExam .el-card:hover {
   box-shadow: 0 2px 20px #ccc;
+}
+#ExamList .el-tag--mini {
+  margin: 2px;
+}
+#ExamList .el-card {
+  height: 100%;
 }
 </style>

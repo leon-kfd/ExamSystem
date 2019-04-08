@@ -372,8 +372,8 @@ export default {
           long: 120,
           class: [],
           course: '',
-          autoMarking: 0,
-          randomOrder: 0
+          autoMarking: 1,
+          randomOrder: 1
         },
         rules: {
           title: [{ required: true, message: '请输入考试试卷标题' }],

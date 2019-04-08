@@ -59,7 +59,7 @@
                    v-for="(item,index) in myExamList"
                    :key="index">
                 <el-badge value="New"
-                          style="width: 100%"
+                          style="width: 100%;height:100%"
                           :hidden="!item.isNew">
                   <el-card class="exam-info"
                            :body-style="{padding: '10px'}">
@@ -90,7 +90,12 @@
                       </dl>
                       <dl>
                         <dt>考试班级</dt>
-                        <dd>{{item.class}}</dd>
+                        <dd>
+                          <el-tag size="mini"
+                                  type="info"
+                                  v-for="item1 in  item.class.split(',')"
+                                  :key="item1">{{item1}}</el-tag>
+                        </dd>
                       </dl>
                       <dl>
                         <dt>相关课程</dt>
@@ -142,7 +147,7 @@
                     </div>
                     <div class="exam-info-footer">
                       <button class="d-btn btn-enter btn-animate1"
-                              @click="turnToExam(item.examId)">进入考试 <i class="el-icon-d-arrow-right"></i></button>
+                              @click="turnToExam(item.examId, item.status)">进入考试 <i class="el-icon-d-arrow-right"></i></button>
                     </div>
                   </el-card>
                 </el-badge>
@@ -157,54 +162,52 @@
               <div class="exam-listitem"
                    v-for="(item,index) in myExamFinishList"
                    :key="index">
-                <el-card class="exam-info"
-                         :body-style="{padding: '10px'}">
-                  <div class="exam-info-main">
-                    <dl>
-                      <dt>试卷题目</dt>
-                      <dd>{{item.title}}</dd>
-                    </dl>
-                    <dl>
-                      <dt>出卷人</dt>
-                      <dd>{{item.publisher}}</dd>
-                    </dl>
-                    <dl>
-                      <dt>发布时间</dt>
-                      <dd>{{item.publishDate}}</dd>
-                    </dl>
-                    <dl>
-                      <dt>考试时长</dt>
-                      <dd>{{item.examLength}}</dd>
-                    </dl>
-                    <dl>
-                      <dt>开始时间</dt>
-                      <dd style="font-size: 13px;color: #445">{{item.startDate}}</dd>
-                    </dl>
-                    <dl>
-                      <dt>结束时间</dt>
-                      <dd style="font-size: 13px;color: #445">{{item.endDate}}</dd>
-                    </dl>
-                    <dl>
-                      <dt>相关课程</dt>
-                      <dd>{{item.course}}</dd>
-                    </dl>
-                    <dl>
-                      <dt>完成状态</dt>
-                      <dd :style="{color: item.finishStatus==1?'#409EFF':'#E6A23C'}">{{item.finishStatus==1?'全部完成':'超时强行提交，未完成'}}</dd>
-                    </dl>
-                    <dl>
-                      <dt>用时</dt>
-                      <dd>{{item.useTime | useTimeFilter}}</dd>
-                    </dl>
-                    <dl>
-                      <dt>得分</dt>
-                      <dd style="font-size: 20px;font-weight: bold">{{item.myScore}}</dd>
-                    </dl>
-                  </div>
-                  <div class="exam-info-footer">
-                    <button class="d-btn btn-enter btn-animate1">查看详情 <i class="el-icon-d-arrow-right"></i></button>
-                  </div>
-                </el-card>
+                <div style="position:relative;width:100%;height:100%">
+                  <el-card class="exam-info"
+                           :body-style="{padding: '10px'}">
+                    <div class="exam-info-main">
+                      <dl>
+                        <dt>试卷题目</dt>
+                        <dd>{{item.title}}</dd>
+                      </dl>
+                      <dl>
+                        <dt>出卷人</dt>
+                        <dd>{{item.publisher}}</dd>
+                      </dl>
+                      <dl>
+                        <dt>发布时间</dt>
+                        <dd>{{item.publishDate}}</dd>
+                      </dl>
+                      <dl>
+                        <dt>考试时长</dt>
+                        <dd>{{item.examLength}}</dd>
+                      </dl>
+                      <dl>
+                        <dt>交卷时间</dt>
+                        <dd style="font-size: 13px;color: #445">{{item.submitTime}}</dd>
+                      </dl>
+                      <dl>
+                        <dt>相关课程</dt>
+                        <dd>{{item.course}}</dd>
+                      </dl>
+                      <dl>
+                        <dt>完成状态</dt>
+                        <dd :style="{color: item.status==2?'#409EFF':'#E6A23C'}">{{item.status==2?'已完成':'超时强行提交，未完成'}}</dd>
+                      </dl>
+                      <dl>
+                        <dt>用时</dt>
+                        <dd>{{item.useTime}} 分钟</dd>
+                      </dl>
+                      <dl>
+                        <dt>得分</dt>
+                        <dd style="font-size: 20px;font-weight: bold">{{item.score}} <span style="font-size: 12px;color:#889">/{{item.scoreSum}}</span></dd>
+                      </dl>
+                    </div>
+                    <div class="exam-info-footer">
+                      <button class="d-btn btn-enter btn-animate1">查看详情 <i class="el-icon-d-arrow-right"></i></button>
+                    </div>
+                  </el-card>
+                </div>
               </div>
               <div class="exam-listitem fake"></div>
               <div class="exam-listitem fake"></div>
@@ -255,20 +258,6 @@ export default {
       myExamListLoading: false
     }
   },
-  filters: {
-    useTimeFilter (val) {
-      let temp, hour, minute
-      if (val > 3600) {
-        hour = Math.floor(val / 3600) + '小时'
-        minute = Math.floor((val - Math.floor(val / 3600) * 3600) / 60) + '分钟'
-        temp = hour + minute
-      } else {
-        minute = Math.floor(val / 60) + '分钟'
-        temp = minute
-      }
-      return temp
-    }
-  },
   mounted () {
     this.getExamList()
   },
@@ -276,15 +265,25 @@ export default {
     async getExamList () {
       this.myExamListLoading = true
       await this.$api('getStudentExamList').then(data => {
-        this.myExamList = data
-        console.log(this.myExamList)
+        this.myExamList = data.unFinishedExamList
+        this.myExamFinishList = data.finishedExamList
       }).finally(_ => {
         this.myExamListLoading = false
       })
     },
-    turnToExam (examId) {
-      this.$router.push({ name: 'Exam', params: { examId } })
-      console.log(examId)
+    turnToExam (examId, status) {
+      if (status == 2) {
+        this.$confirm('进入考试后开始计时, 是否确认开始考试?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$router.push({ name: 'Exam', params: { examId } })
+          console.log(examId)
+        }).catch({})
+      } else {
+        this.$message.warning('考试未开始...')
+      }
     }
   }
 }
@@ -444,6 +443,7 @@ footer {
       }
       .exam-info-main {
         padding-top: 5px;
+        padding-bottom: 60px;
         dl {
           margin-bottom: 10px;
           display: flex;
@@ -463,13 +463,16 @@ footer {
         }
       }
       .exam-info-footer {
+        position: absolute;
         height: 60px;
         background: #f9f9fd;
-        border-top: 1px solid #eee;
-        margin: -10px;
-        margin-top: 20px;
+        border: 1px solid #eee;
+        border-radius: 0 0 4px 4px;
         padding: 10px;
         text-align: center;
+        width: 100%;
+        bottom: 0;
+        left: 0;
       }
     }
   }
@@ -570,6 +573,12 @@ footer {
 }
 #StudentHome #FinishExam .el-card:hover {
   box-shadow: 0 2px 20px #ccc;
+}
+#StudentHome .el-tag--mini {
+  margin: 2px;
+}
+#StudentHome .el-card {
+  height: 100%;
 }
 </style>
 
