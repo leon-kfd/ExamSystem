@@ -11,6 +11,15 @@
                    :label="item.label"></el-option>
       </el-select>
       <span class="h-operation-text"
+            style="margin-left: 20px;">考试题目</span>
+      <el-select v-model="CurrentExamTitle"
+                 size="small">
+        <el-option v-for="(item,index) in examTitleList"
+                   :key="index"
+                   :value="item.value"
+                   :label="item.label"></el-option>
+      </el-select>
+      <!-- <span class="h-operation-text"
             style="margin-left: 20px;">课程</span>
       <el-select v-model="CurrentCourse"
                  size="small">
@@ -18,7 +27,7 @@
                    :key="index"
                    :value="item.value"
                    :label="item.label"></el-option>
-      </el-select>
+      </el-select> -->
       <el-button type="primary"
                  size="small"
                  class="fr"
@@ -109,16 +118,22 @@ export default {
           value: 2,
         }
       ],
-      courseList: [
+      examTitleList: [
         {
-          label: '高等数学',
-          value: 1
-        },
-        {
-          label: '计算机网络',
-          value: 2
+          label: 'aaa',
+          value: 'EX1554129940560027306'
         }
       ],
+      // courseList: [
+      //   {
+      //     label: '高等数学',
+      //     value: 1
+      //   },
+      //   {
+      //     label: '计算机网络',
+      //     value: 2
+      //   }
+      // ],
       CurrentClass: '',
       CurrentCourse: '',
       tableData: [
