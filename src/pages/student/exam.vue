@@ -1,133 +1,131 @@
 <template>
   <div id="Exam">
-    <div class="container">
-      <div class="page-body">
-        <div class="left-box">
-          <aside class='user-info'>
-            <p class="title"><span>考生信息</span></p>
-            <div class="user-info-main">
-              <div class="portrait-box">
-                <img src="@/assets/img/user.jpg">
-              </div>
-              <div class="text-box">
-                <dl>
-                  <dt>姓名</dt>
-                  <dd>Student01</dd>
-                </dl>
-                <dl>
-                  <dt>班级</dt>
-                  <dd>15信息管理与信息系统</dd>
-                </dl>
-                <dl>
-                  <dt>学号</dt>
-                  <dd>2015034843000</dd>
-                </dl>
-              </div>
+    <div class="page-body">
+      <div class="left-box">
+        <aside class='user-info'>
+          <p class="title"><span>考生信息</span></p>
+          <div class="user-info-main">
+            <div class="portrait-box">
+              <img src="@/assets/img/user.jpg">
             </div>
-          </aside>
-          <aside class="exam-info"
-                 v-loading="examInfoLoading">
-            <p class="title"><span>考试信息</span></p>
-            <div class="exam-info-main">
-              <dl class="info-itemlist type1">
-                <dt>试卷题目</dt>
-                <dd>{{examInfo.title}}</dd>
+            <div class="text-box">
+              <dl>
+                <dt>姓名</dt>
+                <dd>Student01</dd>
               </dl>
-              <dl class="info-itemlist type2">
-                <dt>开始时间</dt>
-                <dd style="font-size: 14px">{{examInfo.startTime}}</dd>
+              <dl>
+                <dt>班级</dt>
+                <dd>15信息管理与信息系统</dd>
               </dl>
-              <dl class="info-itemlist type2">
-                <dt>结束时间</dt>
-                <dd style="font-size: 14px">{{examInfo.endTime}}</dd>
-              </dl>
-              <dl class="info-itemlist type2">
-                <dt>相关课程</dt>
-                <dd>{{examInfo.course}}</dd>
-              </dl>
-              <dl class="info-itemlist type2">
-                <dt>考试时长</dt>
-                <dd>{{examInfo.long}} 分钟</dd>
-              </dl>
-              <dl class="info-itemlist type2">
-                <dt>发布人</dt>
-                <dd>{{examInfo.publisher}}</dd>
+              <dl>
+                <dt>学号</dt>
+                <dd>2015034843000</dd>
               </dl>
             </div>
-          </aside>
-        </div>
-        <div class="center-box">
-          <main class="exam-body"
-                v-loading="examInfoLoading"
-                style="min-height: 400px">
-            <div class="exam-main">
-              <h2 class="exam-title">{{examInfo.title}}</h2>
-              <div class="question-list">
-                <div class="question-listitem"
-                     v-for="(item,index) in questionList"
-                     :key="index"
-                     :data-question="index">
-                  <div class="test-item">
-                    <div class="test-title">
-                      <span class="t-number">{{index+1}}</span>
-                      <el-tag class="t-type">{{item.type | questionType}} <span class="score-text">{{item.score}}</span>分</el-tag>
-                      <span class="t-info">{{item.title}}</span>
-                    </div>
-                    <div class="test-answer">
-                      <div class="type-radio"
-                           v-if="item.type==1">
-                        <el-radio-group class="answer"
-                                        v-model="item.myAnswer">
-                          <el-radio v-for="(optionItem, optionIndex) in item.option"
-                                    :key="optionIndex"
-                                    class="radio-item"
-                                    :label="optionIndex+1"
-                                    border>
-                            <span class="a-options">{{optionIndex | questionOption}}</span>
-                            <span class="a-info">{{optionItem.text}}</span>
-                          </el-radio>
-                        </el-radio-group>
-                      </div>
-                      <div class="type-judge"
-                           v-if="item.type==2">
-                        <el-radio-group class="answer"
-                                        v-model="item.myAnswer">
-                          <el-radio :label="1"
-                                    class="judge-item"
-                                    border>
-                            <span class="a-options"><i class="el-icon-check"></i></span>
-                          </el-radio>
-                          <el-radio :label="0"
-                                    class="judge-item"
-                                    border>
-                            <span class="a-options"><i class="el-icon-close"></i></span>
-                          </el-radio>
-                        </el-radio-group>
-                      </div>
-                      <div class="type-checkbox"
-                           v-if="item.type==3">
-                        <el-checkbox-group class="answer"
-                                           v-model="item.myAnswer">
-                          <el-checkbox class="checkbox-item"
-                                       border
-                                       v-for="(optionItem, optionIndex) in item.option"
-                                       :key="optionIndex"
-                                       :label="optionIndex+1">
-                            <span class="a-options">{{optionIndex | questionOption}}</span>
-                            <span class="a-info">{{optionItem.text}}</span>
-                          </el-checkbox>
-                        </el-checkbox-group>
-                      </div>
-                      <div class="type-question"
-                           v-if="item.type==4">
-                        <div class="answer">
-                          <div class="question-item">
-                            <el-input type="textarea"
-                                      :autosize="{ minRows: 3, maxRows: 8}"
-                                      placeholder="请在此处输入答案"
+          </div>
+        </aside>
+        <aside class="exam-info"
+               v-loading="examInfoLoading">
+          <p class="title"><span>考试信息</span></p>
+          <div class="exam-info-main">
+            <dl class="info-itemlist type1">
+              <dt>试卷题目</dt>
+              <dd>{{examInfo.title}}</dd>
+            </dl>
+            <dl class="info-itemlist type2">
+              <dt>开始时间</dt>
+              <dd style="font-size: 14px">{{examInfo.startTime}}</dd>
+            </dl>
+            <dl class="info-itemlist type2">
+              <dt>结束时间</dt>
+              <dd style="font-size: 14px">{{examInfo.endTime}}</dd>
+            </dl>
+            <dl class="info-itemlist type2">
+              <dt>相关课程</dt>
+              <dd>{{examInfo.course}}</dd>
+            </dl>
+            <dl class="info-itemlist type2">
+              <dt>考试时长</dt>
+              <dd>{{examInfo.long}} 分钟</dd>
+            </dl>
+            <dl class="info-itemlist type2">
+              <dt>发布人</dt>
+              <dd>{{examInfo.publisher}}</dd>
+            </dl>
+          </div>
+        </aside>
+      </div>
+      <div class="center-box">
+        <main class="exam-body"
+              v-loading="examInfoLoading"
+              style="min-height: 400px">
+          <div class="exam-main">
+            <h2 class="exam-title">{{examInfo.title}}</h2>
+            <div class="question-list">
+              <div class="question-listitem"
+                   v-for="(item,index) in questionList"
+                   :key="index"
+                   :data-question="index">
+                <div class="test-item">
+                  <div class="test-title">
+                    <span class="t-number">{{index+1}}</span>
+                    <el-tag class="t-type">{{item.type | questionType}} <span class="score-text">{{item.score}}</span>分</el-tag>
+                    <span class="t-info">{{item.title}}</span>
+                  </div>
+                  <div class="test-answer">
+                    <div class="type-radio"
+                         v-if="item.type==1">
+                      <el-radio-group class="answer"
                                       v-model="item.myAnswer">
-                            </el-input>
-                          </div>
+                        <el-radio v-for="(optionItem, optionIndex) in item.option"
+                                  :key="optionIndex"
+                                  class="radio-item"
+                                  :label="optionIndex+1"
+                                  border>
+                          <span class="a-options">{{optionIndex | questionOption}}</span>
+                          <span class="a-info">{{optionItem.text}}</span>
+                        </el-radio>
+                      </el-radio-group>
+                    </div>
+                    <div class="type-judge"
+                         v-if="item.type==2">
+                      <el-radio-group class="answer"
+                                      v-model="item.myAnswer">
+                        <el-radio :label="1"
+                                  class="judge-item"
+                                  border>
+                          <span class="a-options"><i class="el-icon-check"></i></span>
+                        </el-radio>
+                        <el-radio :label="0"
+                                  class="judge-item"
+                                  border>
+                          <span class="a-options"><i class="el-icon-close"></i></span>
+                        </el-radio>
+                      </el-radio-group>
+                    </div>
+                    <div class="type-checkbox"
+                         v-if="item.type==3">
+                      <el-checkbox-group class="answer"
+                                         v-model="item.myAnswer">
+                        <el-checkbox class="checkbox-item"
+                                     border
+                                     v-for="(optionItem, optionIndex) in item.option"
+                                     :key="optionIndex"
+                                     :label="optionIndex+1">
+                          <span class="a-options">{{optionIndex | questionOption}}</span>
+                          <span class="a-info">{{optionItem.text}}</span>
+                        </el-checkbox>
+                      </el-checkbox-group>
+                    </div>
+                    <div class="type-question"
+                         v-if="item.type==4">
+                      <div class="answer">
+                        <div class="question-item">
+                          <el-input type="textarea"
+                                    :autosize="{ minRows: 3, maxRows: 8}"
+                                    placeholder="请在此处输入答案"
+                                    v-model="item.myAnswer">
+                          </el-input>
                         </div>
                       </div>
                     </div>
@@ -135,102 +133,102 @@
                 </div>
               </div>
             </div>
-          </main>
-        </div>
-        <div class="right-box">
-          <aside class="exam-timer">
-            <p class="title"><span>考试计时器</span></p>
-            <div class="timer-box">
-              <div class="hour-box timer-item">
-                <div class="text">{{this.restHour}}</div>
-                <div class="tip">Hour</div>
-              </div>
-              <div class="minute-box timer-item">
-                <div class="text">{{this.restMinute}}</div>
-                <div class="tip">Minute</div>
-              </div>
-              <div class="second-box timer-item">
-                <div class="text">{{this.restSecond}}</div>
-                <div class="tip">Second</div>
-              </div>
-            </div>
-          </aside>
-          <aside class="title-selection">
-            <item-selector :selector-list="selectorList"
-                           @selector-click="TurnToQuestion"></item-selector>
-          </aside>
-          <div class="submit-btn-box">
-            <el-button :type="canSubmitExam?'success':''"
-                       :disabled="!canSubmitExam"
-                       @click="submitExam"
-                       style="width:100%;margin-bottom:10px;">交卷</el-button>
           </div>
-          <aside class='user-exam-info'
-                 v-loading="examInfoLoading">
-            <p class="title"><span>考试信息 & 考生信息</span></p>
-            <div class="user-exam-info-main">
-              <dl class="info-itemlist">
-                <dt>试卷题目</dt>
-                <dd>{{examInfo.title}}</dd>
-              </dl>
-              <dl class="info-itemlist">
-                <dt>开始时间</dt>
-                <dd style="font-size: 14px">{{examInfo.startTime}}</dd>
-              </dl>
-              <dl class="info-itemlist">
-                <dt>结束时间</dt>
-                <dd style="font-size: 14px">{{examInfo.endTime}}</dd>
-              </dl>
-              <dl class="info-itemlist">
-                <dt>相关课程</dt>
-                <dd>{{examInfo.course}}</dd>
-              </dl>
-              <dl class="info-itemlist">
-                <dt>考试时长</dt>
-                <dd>{{examInfo.long}} 分钟</dd>
-              </dl>
-              <dl class="info-itemlist">
-                <dt>发布人</dt>
-                <dd>{{examInfo.publisher}}</dd>
-              </dl>
-              <dl class="info-itemlist">
-                <dt>姓名</dt>
-                <dd>Student01</dd>
-              </dl>
-              <dl class="info-itemlist">
-                <dt>班级</dt>
-                <dd>15信息管理与信息系统</dd>
-              </dl>
-              <dl class="info-itemlist">
-                <dt>学号</dt>
-                <dd>2015034843000</dd>
-              </dl>
-            </div>
-          </aside>
-        </div>
+        </main>
       </div>
-      <el-dialog :visible.sync="ScoreDialog"
-                 custom-class="dialog-control">
-        <div class="exam-finish-box">
-          <h2 class="title">交卷成功!</h2>
-          <div class="auto-check-exam">
-            <p class="text">自动阅卷已完成, 以下为你的考试结果信息</p>
-            <div class="exam-finish-detail">
-              <question-section-list :resultList="resultList"></question-section-list>
+      <div class="right-box">
+        <aside class="exam-timer">
+          <p class="title"><span>考试计时器</span></p>
+          <div class="timer-box">
+            <div class="hour-box timer-item">
+              <div class="text">{{this.restHour}}</div>
+              <div class="tip">Hour</div>
             </div>
-            <p class="score clear">
-              <span class="fr">
-                <span style="color: #889;margin-right: 5px">得分</span>
-                <span style="font-size: 26px;color:#262626;font-weight:bold">{{resultScore}}</span>
-              </span>
-            </p>
+            <div class="minute-box timer-item">
+              <div class="text">{{this.restMinute}}</div>
+              <div class="tip">Minute</div>
+            </div>
+            <div class="second-box timer-item">
+              <div class="text">{{this.restSecond}}</div>
+              <div class="tip">Second</div>
+            </div>
           </div>
-          <p style="text-align:center">
-            <el-button>考试完成</el-button>
+        </aside>
+        <aside class="title-selection">
+          <item-selector :selector-list="selectorList"
+                         @selector-click="TurnToQuestion"></item-selector>
+        </aside>
+        <div class="submit-btn-box">
+          <el-button :type="canSubmitExam?'success':''"
+                     :disabled="!canSubmitExam"
+                     @click="submitExam"
+                     style="width:100%;margin-bottom:10px;">交卷</el-button>
+        </div>
+        <aside class='user-exam-info'
+               v-loading="examInfoLoading">
+          <p class="title"><span>考试信息 & 考生信息</span></p>
+          <div class="user-exam-info-main">
+            <dl class="info-itemlist">
+              <dt>试卷题目</dt>
+              <dd>{{examInfo.title}}</dd>
+            </dl>
+            <dl class="info-itemlist">
+              <dt>开始时间</dt>
+              <dd style="font-size: 14px">{{examInfo.startTime}}</dd>
+            </dl>
+            <dl class="info-itemlist">
+              <dt>结束时间</dt>
+              <dd style="font-size: 14px">{{examInfo.endTime}}</dd>
+            </dl>
+            <dl class="info-itemlist">
+              <dt>相关课程</dt>
+              <dd>{{examInfo.course}}</dd>
+            </dl>
+            <dl class="info-itemlist">
+              <dt>考试时长</dt>
+              <dd>{{examInfo.long}} 分钟</dd>
+            </dl>
+            <dl class="info-itemlist">
+              <dt>发布人</dt>
+              <dd>{{examInfo.publisher}}</dd>
+            </dl>
+            <dl class="info-itemlist">
+              <dt>姓名</dt>
+              <dd>Student01</dd>
+            </dl>
+            <dl class="info-itemlist">
+              <dt>班级</dt>
+              <dd>15信息管理与信息系统</dd>
+            </dl>
+            <dl class="info-itemlist">
+              <dt>学号</dt>
+              <dd>2015034843000</dd>
+            </dl>
+          </div>
+        </aside>
+      </div>
+    </div>
+    <el-dialog :visible.sync="ScoreDialog"
+               custom-class="dialog-control">
+      <div class="exam-finish-box">
+        <h2 class="title">交卷成功!</h2>
+        <div class="auto-check-exam">
+          <p class="text">自动阅卷已完成, 以下为你的考试结果信息</p>
+          <div class="exam-finish-detail">
+            <question-section-list :resultList="resultList"></question-section-list>
+          </div>
+          <p class="score clear">
+            <span class="fr">
+              <span style="color: #889;margin-right: 5px">得分</span>
+              <span style="font-size: 26px;color:#262626;font-weight:bold">{{resultScore}}</span>
+            </span>
           </p>
         </div>
-      </el-dialog>
-    </div>
+        <p style="text-align:center">
+          <el-button @click="finishExam">考试完成</el-button>
+        </p>
+      </div>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -395,6 +393,9 @@ export default {
               this.resultList = data.resultList
               this.resultScore = data.score
               this.ScoreDialog = true
+            }, data => {
+              done()
+              instance.confirmButtonLoading = false
             }).finally(_ => {
               this.submitLoading = false
             })
@@ -403,6 +404,9 @@ export default {
           }
         }
       })
+    },
+    finishExam () {
+      this.$router.push({ name: 'StudentHome' })
     }
   }
 }
@@ -424,11 +428,6 @@ footer {
   box-shadow: 0 0 3px #aab;
   margin-bottom: 10px;
   min-height: 20px;
-}
-.container {
-  width: 1160px;
-  margin: 0 auto;
-  padding: 10px;
 }
 .page-body {
   position: relative;
@@ -469,7 +468,7 @@ footer {
     }
   }
   .center-box {
-    margin: 0 240px 10px;
+    margin: 10px 240px 10px;
     padding: 10px;
   }
 }

@@ -1,223 +1,222 @@
 <template>
   <div id="StudentHome">
-    <div class="container">
-      <div class="page-body">
-        <div class="left-box">
-          <div class="user-info">
-            <div class="portrait-box">
-              <img src="@/assets/img/user.jpg">
-            </div>
-            <div class="text-box">
-              <p class="student-name">Student Name</p>
-              <p class="student-number">2015034843000</p>
-              <p class="student-classname">15信息管理与信息系统</p>
-              <p class="d-btn-viewmore-box">
-                <button class="d-btn btn-viewmore btn-animate1">查看更多 <i class="el-icon-d-arrow-right"></i></button>
-              </p>
-            </div>
+    <div class="page-body">
+      <div class="left-box">
+        <div class="user-info">
+          <div class="portrait-box">
+            <img src="@/assets/img/user.jpg">
           </div>
-          <div class="notice-box">
-            <p class="title"><span>公告消息</span></p>
-            <div class="notice-list">
-              <div class="notice-listitem">
-                <p class="notice-title ellipsis">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Autem asperiores itaque ullam blanditiis eaque! Dolorem corrupti adipisci cum. Maxime exercitationem quibusdam aliquid veritatis doloremque dignissimos adipisci atque iure aut laboriosam.</p>
-                <p class="notice-bottom clear"><span class="notice-publisher fl">Publisher.01</span><span class="notice-date fr">2019/01/31</span></p>
-              </div>
-              <div class="notice-listitem">
-                <p class="notice-title ellipsis">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Autem asperiores itaque ullam blanditiis eaque! Dolorem corrupti adipisci cum. Maxime exercitationem quibusdam aliquid veritatis doloremque dignissimos adipisci atque iure aut laboriosam.</p>
-                <p class="notice-bottom clear"><span class="notice-publisher fl">Publisher.01</span><span class="notice-date fr">2019/01/31</span></p>
-              </div>
-              <div class="notice-listitem">
-                <p class="notice-title ellipsis">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Autem asperiores itaque ullam blanditiis eaque! Dolorem corrupti adipisci cum. Maxime exercitationem quibusdam aliquid veritatis doloremque dignissimos adipisci atque iure aut laboriosam.</p>
-                <p class="notice-bottom clear"><span class="notice-publisher fl">Publisher.01</span><span class="notice-date fr">2019/01/31</span></p>
-              </div>
-            </div>
-            <p class="btn-viewmore-box">
+          <div class="text-box">
+            <p class="student-name">Student Name</p>
+            <p class="student-number">2015034843000</p>
+            <p class="student-classname">15信息管理与信息系统</p>
+            <p class="d-btn-viewmore-box">
               <button class="d-btn btn-viewmore btn-animate1">查看更多 <i class="el-icon-d-arrow-right"></i></button>
             </p>
           </div>
         </div>
-        <div class="right-box"
-             v-loading="myExamListLoading">
-          <div class="exam-list-box">
-            <div class="exam-tab-select">
-              <ul class="tab-list clear">
-                <li :class="{active: tabActive==1}"
-                    class="fl"
-                    @click="tabActive=1">我的考试</li>
-                <li :class="{active: tabActive==2}"
-                    class="fl"
-                    @click="tabActive=2">已完成</li>
-                <span class="line"
-                      :style="{left: `${10+(tabActive-1)*90}px`}"></span>
-              </ul>
+        <div class="notice-box">
+          <p class="title"><span>公告消息</span></p>
+          <div class="notice-list">
+            <div class="notice-listitem">
+              <p class="notice-title ellipsis">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Autem asperiores itaque ullam blanditiis eaque! Dolorem corrupti adipisci cum. Maxime exercitationem quibusdam aliquid veritatis doloremque dignissimos adipisci atque iure aut laboriosam.</p>
+              <p class="notice-bottom clear"><span class="notice-publisher fl">Publisher.01</span><span class="notice-date fr">2019/01/31</span></p>
             </div>
-            <div class="my-exam-box tab1"
-                 v-if="tabActive==1"
-                 id="MyExam">
-              <div class="exam-listitem"
-                   v-for="(item,index) in myExamList"
-                   :key="index">
-                <el-badge value="New"
-                          style="width: 100%;height:100%"
-                          :hidden="!item.isNew">
-                  <el-card class="exam-info"
-                           :body-style="{padding: '10px'}">
-                    <div class="exam-info-main">
-                      <dl>
-                        <dt>试卷题目</dt>
-                        <dd>{{item.title}}</dd>
-                      </dl>
-                      <dl>
-                        <dt>出卷人</dt>
-                        <dd>{{item.publisher}}</dd>
-                      </dl>
-                      <dl>
-                        <dt>发布时间</dt>
-                        <dd>{{item.publishDate}}</dd>
-                      </dl>
-                      <dl>
-                        <dt>考试时长</dt>
-                        <dd>{{item.examLength}}</dd>
-                      </dl>
-                      <dl>
-                        <dt>开始时间</dt>
-                        <dd style="font-size: 13px;color: #445">{{item.startDate}}</dd>
-                      </dl>
-                      <dl>
-                        <dt>结束时间</dt>
-                        <dd style="font-size: 13px;color: #445">{{item.endDate}}</dd>
-                      </dl>
-                      <dl>
-                        <dt>考试班级</dt>
-                        <dd>
-                          <el-tag size="mini"
-                                  type="info"
-                                  v-for="item1 in  item.class.split(',')"
-                                  :key="item1">{{item1}}</el-tag>
-                        </dd>
-                      </dl>
-                      <dl>
-                        <dt>相关课程</dt>
-                        <dd>{{item.course}}</dd>
-                      </dl>
-                      <dl>
-                        <dt>题量</dt>
-                        <dd>
-                          <el-table :data="item.questionNum"
-                                    style="width: 170px;display: inline-block;"
-                                    size="small">
-                            <el-table-column prop="radio"
-                                             label="单选"
-                                             width="42"
-                                             align="center">
-                            </el-table-column>
-                            <el-table-column prop="judge"
-                                             label="判断"
-                                             width="42"
-                                             align="center">
-                            </el-table-column>
-                            <el-table-column prop="checkbox"
-                                             label="多选"
-                                             width="42"
-                                             align="center">
-                            </el-table-column>
-                            <el-table-column prop="question"
-                                             label="问答"
-                                             width="42"
-                                             align="center">
-                            </el-table-column>
-                          </el-table>
-                        </dd>
-                      </dl>
-                      <dl>
-                        <dt>当前状态</dt>
-                        <dd>
-                          <el-tag type="warning"
-                                  v-if="item.status==1"
-                                  size="small">未开始</el-tag>
-                          <el-tag type="success"
-                                  v-if="item.status==2"
-                                  size="small">已开始</el-tag>
-                          <el-tag type="danger"
-                                  v-if="item.status==3"
-                                  size="small">已结束</el-tag>
-                        </dd>
-                      </dl>
-                    </div>
-                    <div class="exam-info-footer">
-                      <button class="d-btn btn-enter btn-animate1"
-                              @click="turnToExam(item.examId, item.status)">进入考试 <i class="el-icon-d-arrow-right"></i></button>
-                    </div>
-                  </el-card>
-                </el-badge>
-              </div>
-              <div class="exam-listitem fake"></div>
-              <div class="exam-listitem fake"></div>
-              <div class="exam-listitem fake"></div>
+            <div class="notice-listitem">
+              <p class="notice-title ellipsis">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Autem asperiores itaque ullam blanditiis eaque! Dolorem corrupti adipisci cum. Maxime exercitationem quibusdam aliquid veritatis doloremque dignissimos adipisci atque iure aut laboriosam.</p>
+              <p class="notice-bottom clear"><span class="notice-publisher fl">Publisher.01</span><span class="notice-date fr">2019/01/31</span></p>
             </div>
-            <div class="finish-exam-box tab2"
-                 id="FinishExam"
-                 v-if="tabActive==2">
-              <div class="exam-listitem"
-                   v-for="(item,index) in myExamFinishList"
-                   :key="index">
-                <div style="position:relative;width:100%;height:100%">
-                  <el-card class="exam-info"
-                           :body-style="{padding: '10px'}">
-                    <div class="exam-info-main">
-                      <dl>
-                        <dt>试卷题目</dt>
-                        <dd>{{item.title}}</dd>
-                      </dl>
-                      <dl>
-                        <dt>出卷人</dt>
-                        <dd>{{item.publisher}}</dd>
-                      </dl>
-                      <dl>
-                        <dt>发布时间</dt>
-                        <dd>{{item.publishDate}}</dd>
-                      </dl>
-                      <dl>
-                        <dt>考试时长</dt>
-                        <dd>{{item.examLength}}</dd>
-                      </dl>
-                      <dl>
-                        <dt>交卷时间</dt>
-                        <dd style="font-size: 13px;color: #445">{{item.submitTime}}</dd>
-                      </dl>
-                      <dl>
-                        <dt>相关课程</dt>
-                        <dd>{{item.course}}</dd>
-                      </dl>
-                      <dl>
-                        <dt>完成状态</dt>
-                        <dd :style="{color: item.status==2?'#409EFF':'#E6A23C'}">{{item.status==2?'已完成':'超时强行提交，未完成'}}</dd>
-                      </dl>
-                      <dl>
-                        <dt>用时</dt>
-                        <dd>{{item.useTime}} 分钟</dd>
-                      </dl>
-                      <dl>
-                        <dt>得分</dt>
-                        <dd style="font-size: 20px;font-weight: bold">{{item.score}} <span style="font-size: 12px;color:#889">/{{item.scoreSum}}</span></dd>
-                      </dl>
-                    </div>
-                    <div class="exam-info-footer">
-                      <button class="d-btn btn-enter btn-animate1">查看详情 <i class="el-icon-d-arrow-right"></i></button>
-                    </div>
-                  </el-card>
-                </div>
-              </div>
-              <div class="exam-listitem fake"></div>
-              <div class="exam-listitem fake"></div>
-              <div class="exam-listitem fake"></div>
+            <div class="notice-listitem">
+              <p class="notice-title ellipsis">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Autem asperiores itaque ullam blanditiis eaque! Dolorem corrupti adipisci cum. Maxime exercitationem quibusdam aliquid veritatis doloremque dignissimos adipisci atque iure aut laboriosam.</p>
+              <p class="notice-bottom clear"><span class="notice-publisher fl">Publisher.01</span><span class="notice-date fr">2019/01/31</span></p>
             </div>
           </div>
-          <!-- <div class="exam-public-box">
+          <p class="btn-viewmore-box">
+            <button class="d-btn btn-viewmore btn-animate1">查看更多 <i class="el-icon-d-arrow-right"></i></button>
+          </p>
+        </div>
+      </div>
+      <div class="right-box"
+           v-loading="myExamListLoading">
+        <div class="exam-list-box">
+          <div class="exam-tab-select">
+            <ul class="tab-list clear">
+              <li :class="{active: tabActive==1}"
+                  class="fl"
+                  @click="tabActive=1">我的考试</li>
+              <li :class="{active: tabActive==2}"
+                  class="fl"
+                  @click="tabActive=2">已完成</li>
+              <span class="line"
+                    :style="{left: `${10+(tabActive-1)*90}px`}"></span>
+            </ul>
+          </div>
+          <div class="my-exam-box tab1"
+               v-if="tabActive==1"
+               id="MyExam">
+            <div class="exam-listitem"
+                 v-for="(item,index) in myExamList"
+                 :key="index">
+              <el-badge value="New"
+                        style="width: 100%;height:100%"
+                        :hidden="!item.isNew">
+                <el-card class="exam-info"
+                         :body-style="{padding: '10px'}">
+                  <div class="exam-info-main">
+                    <dl>
+                      <dt>试卷题目</dt>
+                      <dd>{{item.title}}</dd>
+                    </dl>
+                    <dl>
+                      <dt>出卷人</dt>
+                      <dd>{{item.publisher}}</dd>
+                    </dl>
+                    <dl>
+                      <dt>发布时间</dt>
+                      <dd>{{item.publishDate}}</dd>
+                    </dl>
+                    <dl>
+                      <dt>考试时长</dt>
+                      <dd>{{item.examLength}}</dd>
+                    </dl>
+                    <dl>
+                      <dt>开始时间</dt>
+                      <dd style="font-size: 13px;color: #445">{{item.startDate}}</dd>
+                    </dl>
+                    <dl>
+                      <dt>结束时间</dt>
+                      <dd style="font-size: 13px;color: #445">{{item.endDate}}</dd>
+                    </dl>
+                    <dl>
+                      <dt>考试班级</dt>
+                      <dd>
+                        <el-tag size="mini"
+                                type="info"
+                                v-for="item1 in  item.class.split(',')"
+                                :key="item1">{{item1}}</el-tag>
+                      </dd>
+                    </dl>
+                    <dl>
+                      <dt>相关课程</dt>
+                      <dd>{{item.course}}</dd>
+                    </dl>
+                    <dl>
+                      <dt>题量</dt>
+                      <dd>
+                        <el-table :data="item.questionNum"
+                                  style="width: 170px;display: inline-block;"
+                                  size="small">
+                          <el-table-column prop="radio"
+                                           label="单选"
+                                           width="42"
+                                           align="center">
+                          </el-table-column>
+                          <el-table-column prop="judge"
+                                           label="判断"
+                                           width="42"
+                                           align="center">
+                          </el-table-column>
+                          <el-table-column prop="checkbox"
+                                           label="多选"
+                                           width="42"
+                                           align="center">
+                          </el-table-column>
+                          <el-table-column prop="question"
+                                           label="问答"
+                                           width="42"
+                                           align="center">
+                          </el-table-column>
+                        </el-table>
+                      </dd>
+                    </dl>
+                    <dl>
+                      <dt>当前状态</dt>
+                      <dd>
+                        <el-tag type="warning"
+                                v-if="item.status==1"
+                                size="small">未开始</el-tag>
+                        <el-tag type="success"
+                                v-if="item.status==2"
+                                size="small">已开始</el-tag>
+                        <el-tag type="danger"
+                                v-if="item.status==3"
+                                size="small">已结束</el-tag>
+                      </dd>
+                    </dl>
+                  </div>
+                  <div class="exam-info-footer">
+                    <button class="d-btn btn-enter btn-animate1"
+                            @click="turnToExam(item.examId, item.status)">进入考试 <i class="el-icon-d-arrow-right"></i></button>
+                  </div>
+                </el-card>
+              </el-badge>
+            </div>
+            <div class="exam-listitem fake"></div>
+            <div class="exam-listitem fake"></div>
+            <div class="exam-listitem fake"></div>
+          </div>
+          <div class="finish-exam-box tab2"
+               id="FinishExam"
+               v-if="tabActive==2">
+            <div class="exam-listitem"
+                 v-for="(item,index) in myExamFinishList"
+                 :key="index">
+              <div style="position:relative;width:100%;height:100%">
+                <el-card class="exam-info"
+                         :body-style="{padding: '10px'}">
+                  <div class="exam-info-main">
+                    <dl>
+                      <dt>试卷题目</dt>
+                      <dd>{{item.title}}</dd>
+                    </dl>
+                    <dl>
+                      <dt>出卷人</dt>
+                      <dd>{{item.publisher}}</dd>
+                    </dl>
+                    <dl>
+                      <dt>发布时间</dt>
+                      <dd>{{item.publishDate}}</dd>
+                    </dl>
+                    <dl>
+                      <dt>考试时长</dt>
+                      <dd>{{item.examLength}}</dd>
+                    </dl>
+                    <dl>
+                      <dt>交卷时间</dt>
+                      <dd style="font-size: 13px;color: #445">{{item.submitTime}}</dd>
+                    </dl>
+                    <dl>
+                      <dt>相关课程</dt>
+                      <dd>{{item.course}}</dd>
+                    </dl>
+                    <dl>
+                      <dt>完成状态</dt>
+                      <dd :style="{color: item.status==2?'#409EFF':'#E6A23C'}">{{item.status==2?'已完成':'超时强行提交，未完成'}}</dd>
+                    </dl>
+                    <dl>
+                      <dt>用时</dt>
+                      <dd>{{item.useTime}} 分钟</dd>
+                    </dl>
+                    <dl>
+                      <dt>得分</dt>
+                      <dd style="font-size: 20px;font-weight: bold">{{item.score}} <span style="font-size: 12px;color:#889">/{{item.scoreSum}}</span></dd>
+                    </dl>
+                  </div>
+                  <div class="exam-info-footer">
+                    <button class="d-btn btn-enter btn-animate1"
+                            @click="turnToDetail(item.examId)">查看详情 <i class="el-icon-d-arrow-right"></i></button>
+                  </div>
+                </el-card>
+              </div>
+            </div>
+            <div class="exam-listitem fake"></div>
+            <div class="exam-listitem fake"></div>
+            <div class="exam-listitem fake"></div>
+          </div>
+        </div>
+        <!-- <div class="exam-public-box">
             <p class="title">公共题库</p>
           </div> -->
-        </div>
       </div>
     </div>
   </div>
@@ -284,31 +283,19 @@ export default {
       } else {
         this.$message.warning('考试未开始...')
       }
+    },
+    turnToDetail (examId) {
+      this.$router.push({ name: 'ExamResult', params: { examId } })
     }
   }
 }
 </script>
 <style lang="scss" scoped>
-header main,
-aside,
-footer {
-  padding: 8px;
-  background: #fff;
-  border-radius: 4px;
-  box-shadow: 0 0 3px #aab;
-  margin-bottom: 10px;
-  min-height: 20px;
-}
-.container {
-  width: 1160px;
-  margin: 0 auto;
-  padding: 0 10px;
-}
 .page-body {
   background: #fff;
   border-radius: 4px;
   box-shadow: 0 0 10px #ccc;
-  margin-top: 60px;
+  margin-top: 70px;
   padding: 15px 10px;
   display: flex;
   margin-bottom: 20px;

@@ -1,11 +1,13 @@
 <template>
   <div class="main">
     <div class="question-section-box">
-      <span class="item" v-for="(item,index) in resultList" :key="index" 
-        :class="{'q-true': item.answer, 'q-false': !item.answer}">{{item.index}}</span>
-        <span class="item fake"
-          v-for="item in 5"
-          :key="item+'fake'"></span>
+      <span class="item"
+            v-for="(item,index) in resultList"
+            :key="index"
+            :class="{'q-true': item.answer, 'q-false': !item.answer}">{{item.index}}</span>
+      <span class="item fake"
+            v-for="item in 5"
+            :key="item+'fake'"></span>
     </div>
   </div>
 </template>
@@ -40,7 +42,7 @@ export default {
     background: #fff;
     cursor: pointer;
     margin: 4px;
-    position:relative;
+    position: relative;
     &.fake {
       height: 0;
       visibility: hidden;
@@ -49,9 +51,9 @@ export default {
       color: #67c23a;
       border-color: #67c23a;
       &:after {
-        font-family: element-icons!important;
+        font-family: element-icons !important;
         content: "\E611";
-        position:absolute;
+        position: absolute;
         top: -6px;
         right: -4px;
         display: block;
@@ -61,16 +63,15 @@ export default {
         font-size: 18px;
         color: #67c23a;
         background: #fff;
-        vertical-align: baseline;
       }
     }
     &.q-false {
       color: #f56c6c;
       border-color: #f56c6c;
       &:after {
-        font-family: element-icons!important;
+        font-family: element-icons !important;
         content: "\E60F";
-        position:absolute;
+        position: absolute;
         top: -6px;
         right: -4px;
         display: block;
@@ -80,7 +81,6 @@ export default {
         font-size: 18px;
         color: #f56c6c;
         background: #fff;
-        vertical-align: baseline;
       }
     }
   }

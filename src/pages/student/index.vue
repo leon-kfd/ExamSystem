@@ -21,7 +21,11 @@
         </div>
       </div>
     </nav>
-    <router-view />
+    <div class="student-main">
+      <div class="container">
+        <router-view />
+      </div>
+    </div>
   </div>
 </template>
 

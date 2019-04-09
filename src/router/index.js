@@ -133,6 +133,11 @@ let studentRouter = [
     path: 'exam/:examId?',
     name: 'Exam',
     component: Exam
+  },
+  {
+    path: 'examResult/:examId?',
+    name: 'ExamResult',
+    component: () => import('@/pages/student/exam-result')
   }
 ]
 const router = new Router({
