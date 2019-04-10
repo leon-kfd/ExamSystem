@@ -55,6 +55,11 @@ export const config = {
   // 获取已完成考试列表
   getTeacherFinishedExamList: {
     url: '/getTeacherFinishedExamList'
+  },
+
+  // 学生获取考试结果详情
+  getExamResultInfoFromStudent: {
+    url: '/getExamResultInfoFromStudent'
   }
 }
 
