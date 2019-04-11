@@ -34,5 +34,13 @@ export default {
   // 更改学生信息
   updateStudentInfo: {
     url: '/updateStudentInfo'
+  },
+  // 获取公告列表
+  getStudentNoticeList: {
+    url: '/getStudentNoticeList'
+  },
+  // 获取公告详情
+  getNoticeDetailFromStudent: {
+    url: '/getNoticeDetailFromStudent'
   }
 }

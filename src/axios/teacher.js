@@ -38,5 +38,25 @@ export default {
   // 获取学生答卷信息
   getStudentExamResultInfo: {
     url: '/getStudentExamResultInfo'
+  },
+  // 获取教师公告列表
+  getNoticeListFromTeacher: {
+    url: '/getNoticeListFromTeacher'
+  },
+  // 发布公告
+  publishOrEditNotice: {
+    url: '/publishOrEditNotice'
+  },
+  // 删除公告
+  deleteNotice: {
+    url: '/deleteNotice'
+  },
+  // 获取公告详情
+  getNoticeDetailFromTeacher: {
+    url: '/getNoticeDetailFromTeacher'
+  },
+  // 获取教师信息
+  getTeacherInfo: {
+    url: '/getTeacherInfo'
   }
 }

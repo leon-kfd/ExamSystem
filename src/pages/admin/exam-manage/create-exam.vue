@@ -392,7 +392,7 @@ export default {
       pickerBeginDateAfter: {
         disabledDate: (time) => {
           let now = new Date()
-          return time.getTime() < now.getTime()
+          return time.getTime() < (now.getTime() - 24 * 60 * 60 * 1000)
         }
       },
       currentTestIndex: -1,

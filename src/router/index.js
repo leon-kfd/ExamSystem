@@ -110,6 +110,7 @@ let adminRouter = [
   {
     path: 'setNotice',
     name: 'setNotice',
+    component: () => import('@/pages/admin/index'),
     meta: {
       label: '公告管理',
       iconClass: 'el-icon-bell'

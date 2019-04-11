@@ -63,8 +63,8 @@
         <el-dropdown>
           <div>
             <img class="user-img"
-                 src="http://placem.at/people?w=64&h=64">
-            <span class="username">Username</span>
+                 :src="userImg">
+            <span class="username">{{username}}</span>
           </div>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item>个人中心</el-dropdown-item>
@@ -87,7 +87,9 @@ export default {
   data () {
     return {
       isCollapse: false,
-      adminRouterList: []
+      adminRouterList: [],
+      username: '',
+      userImg: ''
     }
   },
   computed: {
@@ -103,6 +105,9 @@ export default {
       return temp
     }
   },
+  mounted () {
+    this.getTeacherInfo()
+  },
   methods: {
     open (url) {
       window.open(url)
@@ -111,6 +116,15 @@ export default {
       sessionStorage.removeItem('token')
       this.$message.success('退出登录....')
       this.$router.push('/')
+    },
+    async getTeacherInfo () {
+      this.$api('getTeacherInfo').then(data => {
+        this.username = data.teacher_name
+        this.userImg = REQUEST_URL + data.portrait_address || '../../static/img/user.jpg'
+      }, data => {
+        this.username = '未知'
+        this.userImg = '../../static/img/user.jpg'
+      })
     }
   }
 }
@@ -182,7 +196,7 @@ export default {
   .user-info-box {
     height: 48px;
     line-height: 48px;
-    padding: 0 10px;
+    padding: 0 20px;
     cursor: pointer;
     img {
       width: 36px;
@@ -198,6 +212,7 @@ export default {
       color: #778;
       font-weight: bold;
       margin-left: 3px;
+      text-transform: capitalize;
     }
   }
 }

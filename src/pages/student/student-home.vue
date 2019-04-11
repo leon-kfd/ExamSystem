@@ -19,18 +19,17 @@
         </div>
         <div class="notice-box">
           <p class="title"><span>公告消息</span></p>
-          <div class="notice-list">
-            <div class="notice-listitem">
-              <p class="notice-title ellipsis">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Autem asperiores itaque ullam blanditiis eaque! Dolorem corrupti adipisci cum. Maxime exercitationem quibusdam aliquid veritatis doloremque dignissimos adipisci atque iure aut laboriosam.</p>
-              <p class="notice-bottom clear"><span class="notice-publisher fl">Publisher.01</span><span class="notice-date fr">2019/01/31</span></p>
-            </div>
-            <div class="notice-listitem">
-              <p class="notice-title ellipsis">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Autem asperiores itaque ullam blanditiis eaque! Dolorem corrupti adipisci cum. Maxime exercitationem quibusdam aliquid veritatis doloremque dignissimos adipisci atque iure aut laboriosam.</p>
-              <p class="notice-bottom clear"><span class="notice-publisher fl">Publisher.01</span><span class="notice-date fr">2019/01/31</span></p>
-            </div>
-            <div class="notice-listitem">
-              <p class="notice-title ellipsis">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Autem asperiores itaque ullam blanditiis eaque! Dolorem corrupti adipisci cum. Maxime exercitationem quibusdam aliquid veritatis doloremque dignissimos adipisci atque iure aut laboriosam.</p>
-              <p class="notice-bottom clear"><span class="notice-publisher fl">Publisher.01</span><span class="notice-date fr">2019/01/31</span></p>
+          <div class="notice-list"
+               v-loading="noticeListLoading">
+            <div class="notice-listitem"
+                 v-for="(item,index) in noticeList"
+                 :key="index"
+                 @click="showNoticeDetail(item.id)">
+              <p class="notice-title ellipsis">{{item.title}}</p>
+              <p class="notice-bottom clear">
+                <span class="notice-publisher fl">{{item.publisher || '未知'}}</span>
+                <span class="notice-date fr">{{item.showTime.split(" ")[0]}}</span>
+              </p>
             </div>
           </div>
           <p class="btn-viewmore-box">
@@ -220,6 +219,18 @@
             <p class="title">公共题库</p>
           </div> -->
       </div>
+      <el-dialog :visible.sync="noticeDialog"
+                 title="公告详情">
+        <div class="notice-detail-box"
+             v-loading="noticeDetailLoading">
+          <h2 class="title">{{noticeDetail.title}}</h2>
+          <p class="text1"><span class="show-time">{{noticeDetail.showTime}}</span><span class="publisher">{{noticeDetail.publisher}}</span></p>
+          <div class="ql-snow">
+            <div class="content ql-editor"
+                 v-html="noticeDetail.content"></div>
+          </div>
+        </div>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -231,19 +242,30 @@ export default {
       tabActive: 1,
       myExamList: [],
       myExamFinishList: [],
+      noticeList: [],
       studentInfo: {
         username: '',
         number: '',
         classname: '',
         portrait: ''
       },
+      noticeDialog: false,
+      noticeDetail: {
+        title: '',
+        publisher: '',
+        showTime: '',
+        content: ''
+      },
       myExamListLoading: false,
-      studentInfoLoading: false
+      studentInfoLoading: false,
+      noticeListLoading: false,
+      noticeDetailLoading: false
     }
   },
   mounted () {
     this.getStudentInfo()
     this.getExamList()
+    this.getNoticeList()
   },
   methods: {
     async getExamList () {
@@ -282,6 +304,38 @@ export default {
     },
     turnToDetail (examId) {
       this.$router.push({ name: 'ExamResult', params: { examId } })
+    },
+    showNoticeDetail (id) {
+      this.noticeDialog = true
+      this.noticeDetail = {
+        title: '',
+        publisher: '',
+        showTime: '',
+        content: ''
+      }
+      this.getNoticeDetail(id)
+    },
+    async getNoticeList () {
+      this.noticeListLoading = true
+      await this.$api('getStudentNoticeList').then(data => {
+        this.noticeList = data
+      }).finally(_ => {
+        this.noticeListLoading = false
+      })
+    },
+    async getNoticeDetail (id) {
+      this.noticeDetailLoading = true
+      await this.$api('getNoticeDetailFromStudent', {
+        id
+      }).then(data => {
+        console.log(data)
+        this.noticeDetail.title = data.notice_title
+        this.noticeDetail.publisher = data.teacher_name,
+          this.noticeDetail.showTime = data.show_time
+        this.noticeDetail.content = data.notice_content
+      }).finally(_ => {
+        this.noticeDetailLoading = false
+      })
     }
   }
 }
@@ -347,6 +401,7 @@ export default {
   }
   .notice-list {
     padding: 10px 0;
+    min-height: 200px;
     .notice-listitem {
       &:not(:last-child) {
         border-bottom: 1px solid #eee;
@@ -515,6 +570,28 @@ export default {
         display: inline;
       }
     }
+  }
+}
+.notice-detail-box {
+  padding: 10px;
+  .title {
+    margin: -20px 0 10px;
+  }
+  .text1 {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 8px;
+    margin-bottom: 8px;
+    .show-time {
+      color: #667;
+    }
+    .publisher {
+      margin-left: 20px;
+      color: #667;
+      font-weight: bold;
+    }
+  }
+  .content {
+    min-height: 200px;
   }
 }
 @media screen and (min-width: 820px) and (max-width: 1180px) {
