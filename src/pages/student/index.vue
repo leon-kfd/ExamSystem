@@ -10,8 +10,8 @@
           <el-dropdown>
             <div>
               <img class="user-img"
-                   src="http://placem.at/people?w=64&h=64">
-              <span class="username">Username</span>
+                   :src="userImg">
+              <span class="username">{{username}}</span>
             </div>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item>个人中心</el-dropdown-item>
@@ -34,14 +34,24 @@ export default {
   name: 'Student',
   data () {
     return {
-
+      username: '',
+      userImg: ''
     }
+  },
+  mounted () {
+    this.getUserInfo()
   },
   methods: {
     toLogout () {
       sessionStorage.removeItem('token')
       this.$message.success('成功注销..')
       this.$router.push('/')
+    },
+    async getUserInfo () {
+      this.$api('getStudentInfo').then(data => {
+        this.username = data.student_name
+        this.userImg = REQUEST_URL + data.portrait_address || '../../static/img/user.jpg'
+      })
     }
   }
 }
@@ -88,6 +98,7 @@ nav.nav {
       color: #778;
       font-weight: bold;
       margin-left: 3px;
+      text-transform: capitalize;
     }
   }
 }

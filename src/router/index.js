@@ -17,7 +17,7 @@ let adminRouter = [
     component: () => import('@/pages/admin/index'),
     meta: {
       label: '考试管理',
-      iconClass: 'el-icon-document'
+      iconClass: 'el-icon-edit'
     },
     children: [
       {
@@ -58,9 +58,10 @@ let adminRouter = [
     path: 'studentManage',
     name: 'studentManage',
     redirect: 'studentManage/studentList',
+    component: () => import('@/pages/admin/index'),
     meta: {
       label: '学生管理',
-      iconClass: 'el-icon-picture-outline'
+      iconClass: 'el-icon-document'
     },
     children: [
       {
@@ -92,9 +93,10 @@ let adminRouter = [
   {
     path: 'classManage',
     name: 'classManage',
+    component: () => import('@/pages/admin/index'),
     meta: {
       label: '班级管理',
-      iconClass: 'el-icon-location'
+      iconClass: 'el-icon-date'
     },
     redirect: 'classManage/index',
     noChildren: true,
@@ -109,8 +111,8 @@ let adminRouter = [
     path: 'setNotice',
     name: 'setNotice',
     meta: {
-      label: '发布公告',
-      iconClass: 'el-icon-location'
+      label: '公告管理',
+      iconClass: 'el-icon-bell'
     },
     redirect: 'setNotice/index',
     noChildren: true,
@@ -138,6 +140,11 @@ let studentRouter = [
     path: 'examResult/:examId?',
     name: 'ExamResult',
     component: () => import('@/pages/student/exam-result')
+  },
+  {
+    path: 'studentPersonal',
+    name: 'StudentPersonal',
+    component: () => import('@/pages/student/student-personal')
   }
 ]
 const router = new Router({

@@ -99,11 +99,22 @@
         </el-pagination>
       </div>
     </div>
+    <el-dialog title="学生答卷信息"
+               :visible.sync="studentAnswerDialog"
+               top="5vh">
+      <div class="student-answer-box"
+           v-loading="studentAnswerLoading">
+        <student-exam :exam-info="examInfo"
+                      :question-list="questionList"></student-exam>
+      </div>
+    </el-dialog>
   </div>
 </template>
 <script>
+import StudentExam from '@/components/student-exam'
 export default {
   name: 'ScoreManage',
+  components: { StudentExam },
   data () {
     return {
       loading: false,
@@ -115,7 +126,21 @@ export default {
       page: 1,
       pageSize: 10,
       total: 0,
-      examTitleLoading: false
+      examTitleLoading: false,
+      studentAnswerDialog: false,
+      examInfo: {
+        autoMarking: 1,
+        classroom: '',
+        course: '',
+        endTime: '',
+        long: 120,
+        publisher: '',
+        randomOrder: 1,
+        startTime: '',
+        title: ''
+      },
+      questionList: [],
+      studentAnswerLoading: false
     }
   },
   mounted () {
@@ -165,10 +190,31 @@ export default {
       this.CurrentClass = ''
       this.CurrentExamTitle = ''
       this.getData()
+    },
+    detail (row) {
+      this.studentAnswerDialog = true
+      this.studentAnswerLoading = true
+      this.$api('getStudentExamResultInfo', {
+        examId: row.examId,
+        studentId: row.studentId
+      }).then(data => {
+        this.examInfo = data.examInfo
+        this.questionList = data.questionList
+      }).finally(_ => {
+        this.studentAnswerLoading = false
+      })
     }
   }
 }
 </script>
 <style lang="scss" scoped>
+.student-answer-box {
+  min-height: 300px;
+}
+</style>
+<style>
+#ScoreManage .el-dialog__body {
+  padding: 10px 20px;
+}
 </style>
 

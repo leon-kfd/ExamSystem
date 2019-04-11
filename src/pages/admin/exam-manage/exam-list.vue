@@ -174,7 +174,8 @@
                 </dl>
               </div>
               <div class="exam-info-footer">
-                <button class="d-btn btn-enter btn-animate1">查看详情 <i class="el-icon-d-arrow-right"></i></button>
+                <button class="d-btn btn-enter btn-animate1"
+                        @click="turnToScoreManage">查看详情 <i class="el-icon-d-arrow-right"></i></button>
               </div>
             </el-card>
           </div>
@@ -263,6 +264,9 @@ export default {
       }).finally(_ => {
         this.loading = false
       })
+    },
+    turnToScoreManage () {
+      this.$router.push({ name: 'scoreManage' })
     }
   }
 }

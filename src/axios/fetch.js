@@ -11,6 +11,7 @@ promiseFinally.shim()
 var devURL = 'http://localhost/ExamSystemApi/public/api/'
 // var baseURL = process.env.NODE_ENV === 'production' ? devURL : 'http://localhost:8080/'
 var baseURL = devURL
+window.REQUEST_URL = baseURL.slice(devURL, -4)
 
 const instance = axios.create({
   baseURL,

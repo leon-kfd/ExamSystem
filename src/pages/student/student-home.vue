@@ -2,16 +2,18 @@
   <div id="StudentHome">
     <div class="page-body">
       <div class="left-box">
-        <div class="user-info">
+        <div class="user-info"
+             v-loading="studentInfoLoading">
           <div class="portrait-box">
-            <img src="@/assets/img/user.jpg">
+            <img :src="studentInfo.portrait">
           </div>
           <div class="text-box">
-            <p class="student-name">Student Name</p>
-            <p class="student-number">2015034843000</p>
-            <p class="student-classname">15信息管理与信息系统</p>
+            <p class="student-name">{{studentInfo.username}}</p>
+            <p class="student-number">{{studentInfo.number}}</p>
+            <p class="student-classname">{{studentInfo.classname}}</p>
             <p class="d-btn-viewmore-box">
-              <button class="d-btn btn-viewmore btn-animate1">查看更多 <i class="el-icon-d-arrow-right"></i></button>
+              <button class="d-btn btn-viewmore btn-animate1"
+                      @click="$router.push({name: 'StudentPersonal'})">查看更多 <i class="el-icon-d-arrow-right"></i></button>
             </p>
           </div>
         </div>
@@ -228,36 +230,19 @@ export default {
     return {
       tabActive: 1,
       myExamList: [],
-      myExamFinishList: [
-        {
-          title: 'Temp',
-          publisher: 'Publisher',
-          examLength: '2小时',
-          startDate: '2019/01/01',
-          endDate: '2019/01/09',
-          class: '15信管',
-          course: '高等数学',
-          useTime: 5400,
-          finishStatus: 1,
-          myScore: 80
-        },
-        {
-          title: 'Temp',
-          publisher: 'Publisher',
-          examLength: '2小时',
-          startDate: '2019/01/01',
-          endDate: '2019/01/09',
-          class: '15信管',
-          course: '高等数学',
-          useTime: 2730,
-          finishStatus: 2,
-          myScore: 80
-        }
-      ],
-      myExamListLoading: false
+      myExamFinishList: [],
+      studentInfo: {
+        username: '',
+        number: '',
+        classname: '',
+        portrait: ''
+      },
+      myExamListLoading: false,
+      studentInfoLoading: false
     }
   },
   mounted () {
+    this.getStudentInfo()
     this.getExamList()
   },
   methods: {
@@ -270,9 +255,20 @@ export default {
         this.myExamListLoading = false
       })
     },
+    async getStudentInfo () {
+      this.studentInfoLoading = true
+      await this.$api('getStudentInfo').then(data => {
+        this.studentInfo.username = data.student_name || data.student_account
+        this.studentInfo.number = data.student_num || '-未设置学号-'
+        this.studentInfo.classname = data.class_fullname || data.class_name || '-未设置班级-'
+        this.studentInfo.portrait = REQUEST_URL + data.portrait_address || '../../static/img/user.jpg'
+      }).finally(_ => {
+        this.studentInfoLoading = false
+      })
+    },
     turnToExam (examId, status) {
       if (status == 2) {
-        this.$confirm('进入考试后开始计时, 是否确认开始考试?', '提示', {
+        this.$confirm('进入考试后开始计时, 不可暂停，是否确认开始考试?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
@@ -480,7 +476,7 @@ export default {
     overflow: hidden;
     margin: 10px auto;
     img {
-      width: 144px;
+      width: 160px;
       height: auto;
     }
   }
@@ -491,6 +487,7 @@ export default {
       color: #363640;
       font-weight: bold;
       margin: 10px 0;
+      text-transform: capitalize;
     }
     .student-number {
       font-size: 13px;

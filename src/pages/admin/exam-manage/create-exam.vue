@@ -55,12 +55,14 @@
               <el-form-item label="考试题目"
                             prop="title">
                 <el-input v-model="examForm.fields.title"
+                          size="small"
                           placeholder="请输入试卷标题"
                           style="width: 450px"></el-input>
               </el-form-item>
               <el-form-item label="考试时间"
                             prop="date">
                 <el-date-picker v-model="examForm.fields.date"
+                                size="small"
                                 type="datetimerange"
                                 range-separator="至"
                                 start-placeholder="开始日期"
@@ -76,6 +78,7 @@
                 <el-select v-model="examForm.fields.class"
                            multiple
                            placeholder="请选择"
+                           size="small"
                            style="width: 450px">
                   <el-option v-for="item in classList"
                              :key="item.value"
@@ -91,6 +94,7 @@
               <el-form-item label="相关课程"
                             prop="course">
                 <el-input v-model="examForm.fields.course"
+                          size="small"
                           placeholder="请输入考试相关课程"
                           style="width: 450px">
                 </el-input>
@@ -98,6 +102,7 @@
               <el-form-item label="考试时长"
                             prop="long">
                 <el-input-number v-model="examForm.fields.long"
+                                 size="small"
                                  controls-position="right"
                                  :step="10"
                                  :min="10"
