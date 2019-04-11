@@ -70,7 +70,8 @@
     </div>
     <el-dialog :visible.sync="addDialog"
                title="发布公告"
-               top="5vh">
+               top="5vh"
+               width="650px">
       <div class="add-notice-box">
         <el-form ref="addForm"
                  :rules="addForm.rules"
@@ -131,7 +132,8 @@
     </el-dialog>
     <el-dialog :visible.sync="editDialog"
                title="编辑公告"
-               top="5vh">
+               top="5vh"
+               width="650px">
       <div class="edit-notice-box"
            v-loading="noticeDetailLoading">
         <el-form ref="editForm"

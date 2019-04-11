@@ -33,7 +33,8 @@
             </div>
           </div>
           <p class="btn-viewmore-box">
-            <button class="d-btn btn-viewmore btn-animate1">查看更多 <i class="el-icon-d-arrow-right"></i></button>
+            <button class="d-btn btn-viewmore btn-animate1"
+                    @click="turnToNoticeList">查看更多 <i class="el-icon-d-arrow-right"></i></button>
           </p>
         </div>
       </div>
@@ -304,6 +305,9 @@ export default {
     },
     turnToDetail (examId) {
       this.$router.push({ name: 'ExamResult', params: { examId } })
+    },
+    turnToNoticeList () {
+      this.$router.push({ name: 'NoticeList' })
     },
     showNoticeDetail (id) {
       this.noticeDialog = true

@@ -42,5 +42,9 @@ export default {
   // 获取公告详情
   getNoticeDetailFromStudent: {
     url: '/getNoticeDetailFromStudent'
+  },
+  // 获取全部公告列表
+  getStudentAllNoticeList: {
+    url: '/getStudentAllNoticeList'
   }
 }

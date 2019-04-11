@@ -146,6 +146,11 @@ let studentRouter = [
     path: 'studentPersonal',
     name: 'StudentPersonal',
     component: () => import('@/pages/student/student-personal')
+  },
+  {
+    path: 'noticeList',
+    name: 'NoticeList',
+    component: () => import('@/pages/student/notice-list')
   }
 ]
 const router = new Router({

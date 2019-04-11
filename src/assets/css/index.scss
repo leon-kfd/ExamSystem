@@ -247,3 +247,21 @@ $borderRadius: 4px;
 .text-warning {
   color: #E6A23C;
 }
+
+// element-ui modify
+.el-dialog {
+  min-width: 300px;
+}
+.el-dialog__title {
+  position: relative;
+  margin-left: 5px;
+  &:after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 20px;
+    border-left: 4px solid #409EFF;
+    top: 0;
+    left: -12px;
+  }
+}
