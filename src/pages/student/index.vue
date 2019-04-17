@@ -1,25 +1,27 @@
 <template>
   <div class="student-frame">
     <nav class="nav">
-      <div class="container">
-        <router-link to="StudentHome">
-          <img src="@/assets/img/logo.svg"
-               class="logo">
-        </router-link>
-        <div class="user-info-box fr">
-          <el-dropdown>
-            <div>
-              <img class="user-img"
-                   :src="userImg">
-              <span class="username">{{username}}</span>
-            </div>
-            <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item>个人中心</el-dropdown-item>
-              <el-dropdown-item @click.native="toLogout">退出系统</el-dropdown-item>
-            </el-dropdown-menu>
-          </el-dropdown>
+      <keep-alive>
+        <div class="container">
+          <router-link to="StudentHome">
+            <img src="@/assets/img/logo.svg"
+                 class="logo">
+          </router-link>
+          <div class="user-info-box fr">
+            <el-dropdown>
+              <div>
+                <img class="user-img"
+                     :src="userImg">
+                <span class="username">{{username}}</span>
+              </div>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item>个人中心</el-dropdown-item>
+                <el-dropdown-item @click.native="toLogout">退出系统</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+          </div>
         </div>
-      </div>
+      </keep-alive>
     </nav>
     <div class="student-main">
       <div class="container">

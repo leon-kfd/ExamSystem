@@ -213,16 +213,23 @@
       <div class="exam-finish-box">
         <h2 class="title">交卷成功!</h2>
         <div class="auto-check-exam">
-          <p class="text">自动阅卷已完成, 以下为你的考试结果信息</p>
+          <p class="text"><span v-show="hasEssay">客观题</span>自动阅卷已完成, 以下为你的考试结果信息</p>
           <div class="exam-finish-detail">
             <question-section-list :resultList="resultList"></question-section-list>
           </div>
           <p class="score clear">
             <span class="fr">
-              <span style="color: #889;margin-right: 5px">得分</span>
-              <span style="font-size: 26px;color:#262626;font-weight:bold">{{resultScore}}</span>
+              <span style="color: #889;margin-right: 5px"><span v-show="hasEssay">客观题</span>得分</span>
+              <span style="font-size: 26px;color:#262626;font-weight:bold;padding-right: 8px">{{resultScore}}</span>
             </span>
           </p>
+          <el-alert v-show="hasEssay"
+                    :closable="false"
+                    title="该考试含有问答题，请等待老师阅卷评卷"
+                    type="warning"
+                    show-icon
+                    style="margin-bottom: 10px">
+          </el-alert>
         </div>
         <p style="text-align:center">
           <el-button @click="finishExam">考试完成</el-button>
@@ -265,7 +272,8 @@ export default {
       submitLoading: false,
       ScoreDialog: false,
       resultList: [],
-      resultScore: 0
+      resultScore: 0,
+      hasEssay: false
     }
   },
   filters: {
@@ -392,6 +400,7 @@ export default {
               instance.confirmButtonLoading = false
               this.resultList = data.resultList
               this.resultScore = data.score
+              this.hasEssay = data.hasEssay
               this.ScoreDialog = true
             }, data => {
               done()
@@ -406,6 +415,7 @@ export default {
       })
     },
     finishExam () {
+      this.ScoreDialog = false
       this.$router.push({ name: 'StudentHome' })
     }
   }

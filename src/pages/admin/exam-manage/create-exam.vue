@@ -695,6 +695,7 @@ export default {
         if (data.examId) {
           this.$message.success('考试发布成功!')
           this.checkExamDialog = false
+          this.$router.push({ name: 'examList' })
         }
       }).finally(_ => {
         this.publishExamLoading = false

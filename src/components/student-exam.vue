@@ -61,8 +61,10 @@
                  v-if="item.type==4">
               <div class="answer">
                 <div class="question-item">
-                  <div class="essay-answer">{{item.answer}}</div>
+                  <div class="essay-answer">{{item.studentAnswer}}</div>
                 </div>
+                <div class="essay-result"
+                     v-if="item.essayStatus">- 已批阅，得分： <span class="student-score">{{item.essayScore}}</span><span> / {{item.score}}</span></div>
               </div>
             </div>
           </div>
@@ -199,8 +201,17 @@ export default {
         }
       }
       .question-item {
-        padding: 5px 10px;
-        border-radius: 4px;
+        display: flex;
+        width: 95%;
+        margin-left: 8px;
+        .essay-answer {
+          width: 100%;
+          padding: 10px;
+          background: #f0f0f0;
+          border-radius: 4px;
+          border: 1px solid #ccc;
+          color: #667;
+        }
       }
       .radio-item,
       .judge-item,
@@ -252,6 +263,16 @@ export default {
         span {
           color: #262626;
           font-weight: bold;
+        }
+      }
+      .essay-result {
+        color: #667;
+        margin: 5px 0;
+        padding-left: 10px;
+        .student-score {
+          color: #262626;
+          font-weight: bold;
+          font-size: 18px;
         }
       }
     }

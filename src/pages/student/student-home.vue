@@ -192,8 +192,8 @@
                       <dd>{{item.course}}</dd>
                     </dl>
                     <dl>
-                      <dt>完成状态</dt>
-                      <dd :style="{color: item.status==2?'#409EFF':'#E6A23C'}">{{item.status==2?'已完成':'超时强行提交，未完成'}}</dd>
+                      <dt>当前状态</dt>
+                      <dd :style="{color: statusList[item.status].color}">{{statusList[item.status].text}}</dd>
                     </dl>
                     <dl>
                       <dt>用时</dt>
@@ -201,7 +201,11 @@
                     </dl>
                     <dl>
                       <dt>得分</dt>
-                      <dd style="font-size: 20px;font-weight: bold">{{item.score}} <span style="font-size: 12px;color:#889">/{{item.scoreSum}}</span></dd>
+                      <dd style="font-size: 20px;font-weight: bold">{{item.score}}
+                        <span v-if="item.status==3"> + ? </span>
+                        <span v-if="item.status==4"> + {{item.essayScore}} </span>
+                        <span style="font-size: 12px;color:#889">/ {{item.scoreSum}}</span>
+                      </dd>
                     </dl>
                   </div>
                   <div class="exam-info-footer">
@@ -240,6 +244,20 @@ export default {
   name: 'StudentHome',
   data () {
     return {
+      statusList: {
+        2: {
+          text: '自动阅卷完成',
+          color: '#67C23A'
+        },
+        3: {
+          text: '等待老师手动阅卷',
+          color: '#E6A23C'
+        },
+        4: {
+          text: '老师手动阅卷已完成',
+          color: '#67C23A'
+        }
+      },
       tabActive: 1,
       myExamList: [],
       myExamFinishList: [],

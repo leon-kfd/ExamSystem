@@ -58,5 +58,17 @@ export default {
   // 获取教师信息
   getTeacherInfo: {
     url: '/getTeacherInfo'
+  },
+  // 获取阅卷评卷列表
+  getEvaluationList: {
+    url: '/getEvaluationList'
+  },
+  // 获取评卷的信息
+  getEvaluationDetail: {
+    url: '/getEvaluationDetail'
+  },
+  // 评卷
+  setEvaluation: {
+    url: '/setEvaluation'
   }
 }

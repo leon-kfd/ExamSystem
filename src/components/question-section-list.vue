@@ -4,7 +4,9 @@
       <span class="item"
             v-for="(item,index) in resultList"
             :key="index"
-            :class="{'q-true': item.answer, 'q-false': !item.answer}">{{item.index}}</span>
+            :class="{'q-true': typeof item.answer == 'boolean' && item.answer, 
+            'q-false': !item.answer, 
+            'q-unkonwn':typeof item.answer == 'string' && item.answer=='unknown'}">{{item.index}}</span>
       <span class="item fake"
             v-for="item in 5"
             :key="item+'fake'"></span>
@@ -80,6 +82,24 @@ export default {
         line-height: 18px;
         font-size: 18px;
         color: #f56c6c;
+        background: #fff;
+      }
+    }
+    &.q-unkonwn {
+      color: #e6a23c;
+      border-color: #e6a23c;
+      &:after {
+        font-family: element-icons !important;
+        content: "\e634";
+        position: absolute;
+        top: -6px;
+        right: -4px;
+        display: block;
+        width: 18px;
+        height: 18px;
+        line-height: 18px;
+        font-size: 18px;
+        color: #e6a23c;
         background: #fff;
       }
     }
