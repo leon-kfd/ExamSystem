@@ -11,8 +11,8 @@
             <el-dropdown>
               <div>
                 <img class="user-img"
-                     :src="userImg">
-                <span class="username">{{username}}</span>
+                     :src="studentInfo.portrait">
+                <span class="username">{{studentInfo.username}}</span>
               </div>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item>个人中心</el-dropdown-item>
@@ -36,8 +36,12 @@ export default {
   name: 'Student',
   data () {
     return {
-      username: '',
-      userImg: ''
+      studentInfo: {
+        username: '',
+        number: '',
+        classname: '',
+        portrait: ''
+      }
     }
   },
   mounted () {
@@ -50,10 +54,19 @@ export default {
       this.$router.push('/')
     },
     async getUserInfo () {
-      this.$api('getStudentInfo').then(data => {
-        this.username = data.student_name
-        this.userImg = REQUEST_URL + data.portrait_address || '../../static/img/user.jpg'
-      })
+      if (this.$store.state.studentInfo.username) {
+        this.studentInfo = this.$store.state.studentInfo
+      } else {
+        this.$api('getStudentInfo').then(data => {
+          this.studentInfo = {
+            username: data.student_name || data.student_account,
+            number: data.student_num || '-未设置学号-',
+            classname: data.class_fullname || data.class_name || '-未设置班级-',
+            portrait: REQUEST_URL + data.portrait_address || '../../static/img/user.jpg'
+          }
+          this.$store.commit('updateStudentInfo', this.studentInfo)
+        })
+      }
     }
   }
 }

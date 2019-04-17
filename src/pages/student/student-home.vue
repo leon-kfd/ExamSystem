@@ -48,7 +48,7 @@
                   @click="tabActive=1">我的考试</li>
               <li :class="{active: tabActive==2}"
                   class="fl"
-                  @click="tabActive=2">已完成</li>
+                  @click="tabActive=2;getFinishedExamList()">已完成</li>
               <span class="line"
                     :style="{left: `${10+(tabActive-1)*90}px`}"></span>
             </ul>
@@ -201,9 +201,11 @@
                     </dl>
                     <dl>
                       <dt>得分</dt>
-                      <dd style="font-size: 20px;font-weight: bold">{{item.score}}
-                        <span v-if="item.status==3"> + ? </span>
-                        <span v-if="item.status==4"> + {{item.essayScore}} </span>
+                      <dd style="font-size: 20px;font-weight: bold">
+                        <span v-if="item.status==2 || item.status==4"
+                              :class="(item.score + item.essayScore)/item.scoreSum >= 0.8 ? 'text-success':
+                                        (item.score + item.essayScore)/item.scoreSum >= 0.6 ? 'text-info': 'text-danger'">{{item.score + item.essayScore}}</span>
+                        <span v-if="item.status==3">{{item.score}} + ? </span>
                         <span style="font-size: 12px;color:#889">/ {{item.scoreSum}}</span>
                       </dd>
                     </dl>
@@ -283,29 +285,53 @@ export default {
   },
   mounted () {
     this.getStudentInfo()
-    this.getExamList()
+    // this.getExamList()
     this.getNoticeList()
+    this.getCurrentExamList()
   },
   methods: {
-    async getExamList () {
+    // async getExamList () {
+    //   this.myExamListLoading = true
+    //   await this.$api('getStudentExamList').then(data => {
+    //     this.myExamList = data.unFinishedExamList
+    //     this.myExamFinishList = data.finishedExamList
+    //   }).finally(_ => {
+    //     this.myExamListLoading = false
+    //   })
+    // },
+    async getCurrentExamList () {
       this.myExamListLoading = true
-      await this.$api('getStudentExamList').then(data => {
-        this.myExamList = data.unFinishedExamList
-        this.myExamFinishList = data.finishedExamList
+      await this.$api('getStudentCurrentExamList').then(data => {
+        this.myExamList = data.items
+      }).finally(_ => {
+        this.myExamListLoading = false
+      })
+    },
+    async getFinishedExamList () {
+      this.myExamListLoading = true
+      await this.$api('getStudentFinishedExamList').then(data => {
+        this.myExamFinishList = data.items
       }).finally(_ => {
         this.myExamListLoading = false
       })
     },
     async getStudentInfo () {
-      this.studentInfoLoading = true
-      await this.$api('getStudentInfo').then(data => {
-        this.studentInfo.username = data.student_name || data.student_account
-        this.studentInfo.number = data.student_num || '-未设置学号-'
-        this.studentInfo.classname = data.class_fullname || data.class_name || '-未设置班级-'
-        this.studentInfo.portrait = REQUEST_URL + data.portrait_address || '../../static/img/user.jpg'
-      }).finally(_ => {
-        this.studentInfoLoading = false
-      })
+      if (this.$store.state.studentInfo.username) {
+        this.studentInfo = this.$store.state.studentInfo
+      } else {
+        this.studentInfoLoading = true
+        await this.$api('getStudentInfo').then(data => {
+          this.studentInfo = {
+            username: data.student_name || data.student_account,
+            number: data.student_num || '-未设置学号-',
+            classname: data.class_fullname || data.class_name || '-未设置班级-',
+            portrait: REQUEST_URL + data.portrait_address || '../../static/img/user.jpg'
+          }
+          this.$store.commit('updateStudentInfo', this.studentInfo)
+        }).finally(_ => {
+          this.studentInfoLoading = false
+        })
+      }
     },
     turnToExam (examId, status) {
       if (status == 2) {

@@ -3,6 +3,14 @@ export default {
   getStudentExamList: {
     url: '/getStudentExamList'
   },
+  // 获取学生已完成考试列表
+  getStudentFinishedExamList: {
+    url: '/getStudentFinishedExamList'
+  },
+  // 获取学生当前考试列表
+  getStudentCurrentExamList: {
+    url: '/getStudentCurrentExamList'
+  },
   // 获取考试信息
   getExamInfoFromStudent: {
     url: '/getExamInfoFromStudent'

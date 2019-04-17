@@ -58,19 +58,28 @@
                            align="center"
                            label="交卷时间">
           </el-table-column>
+          <el-table-column prop="status"
+                           align="center"
+                           label="状态">
+            <template slot-scope="scope">
+              <span :style="{color: statusList[scope.row.status].color}">{{statusList[scope.row.status].text}}</span>
+            </template>
+          </el-table-column>
           <el-table-column prop="score"
                            align="center"
-                           label="分数"
+                           label="得分 / 总分"
                            fixed="right">
             <template slot-scope="scope">
               <span class="bold"
                     style="font-size: 18px"
-                    :class="{
-                      'text-success': scope.row.score >= 80, 
-                      'text-info': scope.row.score >= 60 && scope.row.score < 80,
-                      'text-danger': scope.row.score < 60  
-                    }">{{scope.row.score}}
+                    v-if="scope.row.status == 2 || scope.row.status == 4"
+                    :class="((scope.row.score+scope.row.essayScore) / scope.row.scoreSum) >= 0.8 ? 'text-success' :
+                              ((scope.row.score+scope.row.essayScore) / scope.row.scoreSum) >= 0.6 ? 'text-info' : 'text-danger'">{{scope.row.score+scope.row.essayScore}}
               </span>
+              <span class="bold"
+                    style="font-size: 18px"
+                    v-if="scope.row.status == 3">{{scope.row.score}} + ?</span>
+              <span style="font-size: 14px;color: #778"> / {{scope.row.scoreSum}}</span>
             </template>
           </el-table-column>
           <el-table-column fixed="right"
@@ -78,12 +87,13 @@
                            align="center"
                            width="200">
             <template slot-scope="scope">
+              <el-button @click="turnToEvaluation(scope.row)"
+                         v-if="scope.row.status == 3"
+                         type="text">评卷</el-button>
               <el-button @click="detail(scope.row)"
-                         type="text"
-                         size="small">查看试卷</el-button>
+                         type="text">查看试卷</el-button>
               <el-button @click="setScore(scope.row)"
-                         type="text"
-                         size="small">更改分数</el-button>
+                         type="text">更改分数</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -117,6 +127,20 @@ export default {
   components: { StudentExam },
   data () {
     return {
+      statusList: {
+        2: {
+          text: '自动阅卷完成',
+          color: '#67C23A'
+        },
+        3: {
+          text: '等待评卷',
+          color: '#E6A23C'
+        },
+        4: {
+          text: '手动评卷已完成',
+          color: '#67C23A'
+        }
+      },
       loading: false,
       classList: [],
       examTitleList: [],
@@ -203,6 +227,10 @@ export default {
       }).finally(_ => {
         this.studentAnswerLoading = false
       })
+    },
+    setScore () { },
+    turnToEvaluation () {
+      this.$router.push({ name: 'ExamEvaluation' })
     }
   }
 }

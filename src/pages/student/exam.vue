@@ -6,20 +6,20 @@
           <p class="title"><span>考生信息</span></p>
           <div class="user-info-main">
             <div class="portrait-box">
-              <img src="@/assets/img/user.jpg">
+              <img :src="studentInfo.portrait">
             </div>
             <div class="text-box">
               <dl>
                 <dt>姓名</dt>
-                <dd>Student01</dd>
+                <dd>{{studentInfo.username}}</dd>
               </dl>
               <dl>
                 <dt>班级</dt>
-                <dd>15信息管理与信息系统</dd>
+                <dd>{{studentInfo.classname}}</dd>
               </dl>
               <dl>
                 <dt>学号</dt>
-                <dd>2015034843000</dd>
+                <dd>{{studentInfo.number}}</dd>
               </dl>
             </div>
           </div>
@@ -250,6 +250,12 @@ export default {
   },
   data () {
     return {
+      studentInfo: {
+        username: '',
+        number: '',
+        classname: '',
+        portrait: ''
+      },
       questionList: [],
       examInfo: {
         autoMarking: 1,
@@ -337,10 +343,29 @@ export default {
       return this.selectorList.every(item => item.status == 1)
     }
   },
-  created () {
+  mounted () {
+    this.getStudentInfo()
     this.getData()
   },
   methods: {
+    async getStudentInfo () {
+      if (this.$store.state.studentInfo.username) {
+        this.studentInfo = this.$store.state.studentInfo
+      } else {
+        this.studentInfoLoading = true
+        await this.$api('getStudentInfo').then(data => {
+          this.studentInfo = {
+            username: data.student_name || data.student_account,
+            number: data.student_num || '-未设置学号-',
+            classname: data.class_fullname || data.class_name || '-未设置班级-',
+            portrait: REQUEST_URL + data.portrait_address || '../../static/img/user.jpg'
+          }
+          this.$store.commit('updateStudentInfo', this.studentInfo)
+        }).finally(_ => {
+          this.studentInfoLoading = false
+        })
+      }
+    },
     TurnToQuestion (index) {
       let selector_str = `[data-question='${index}']`
       let top = document.querySelector(selector_str).offsetTop - 50
