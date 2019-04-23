@@ -10,7 +10,15 @@
               @click="tabActive=1">当前考试</li>
           <li :class="{active: tabActive==2}"
               class="fl"
-              @click="tabActive=2">已结束</li>
+              @click="tabActive=2;getMyExamFinishList()">已结束</li>
+          <li class="fr">
+            <el-button size="mini"
+                       type="primary"
+                       style="width:90px;"
+                       icon="el-icon-refresh"
+                       :loading="loading"
+                       @click="getData">刷新</el-button>
+          </li>
           <span class="line"
                 :style="{left: `${10+(tabActive-1)*90}px`}"></span>
         </ul>
@@ -187,6 +195,17 @@
         <div class="exam-listitem fake"></div>
         <div class="exam-listitem fake"></div>
       </div>
+      <div class="pagination-box clear">
+        <el-pagination class="fr"
+                       @size-change="handleSizeChange"
+                       @current-change="handleCurrentChange"
+                       :current-page="this.tabActive == 1 ? page1: page2"
+                       :page-sizes="[10, 15, 30, 60]"
+                       :page-size="this.tabActive == 1 ? pageSize1: pageSize2"
+                       layout="total, sizes, prev, pager, next, jumper"
+                       :total="this.tabActive == 1 ? total1: total2">
+        </el-pagination>
+      </div>
     </div>
   </div>
 </template>
@@ -211,59 +230,85 @@ export default {
           text: '手动阅卷，全部完成'
         }
       },
+      finishLoadFlag: false,
       myExamList: [],
-      myExamFinishList: [
-        {
-          title: 'Temp',
-          publisher: 'Publisher',
-          examLength: '2小时',
-          startDate: '2019/01/01',
-          endDate: '2019/01/09',
-          class: '15信管',
-          course: '高等数学',
-          finishNum: 20,
-          classNum: 50,
-          evaluationStatus: 3
-        },
-        {
-          title: 'Temp',
-          publisher: 'Publisher',
-          examLength: '2小时',
-          startDate: '2019/01/01',
-          endDate: '2019/01/09',
-          class: '15信管',
-          course: '高等数学',
-          finishNum: 20,
-          classNum: 50,
-          evaluationStatus: 4
-        },
-        {
-          title: 'Temp',
-          publisher: 'Publisher',
-          examLength: '2小时',
-          startDate: '2019/01/01',
-          endDate: '2019/01/09',
-          class: '15信管',
-          course: '高等数学',
-          finishNum: 20,
-          classNum: 50,
-          evaluationStatus: 5
-        }
-      ]
+      myExamFinishList: [],
+      page1: 1,
+      pageSize1: 10,
+      total1: 0,
+      page2: 1,
+      pageSize2: 10,
+      total2: 0
     }
   },
   mounted () {
-    this.getData()
+    this.getMyExamList()
   },
   methods: {
-    async getData () {
+    async getMyExamList () {
       this.loading = true
-      await this.$api('getTeacherExamList').then(data => {
-        this.myExamList = data.nowExamList
-        this.myExamFinishList = data.endExamList
+      await this.$api('getTeacherExamList', {
+        mode: 1,
+        page: this.page1,
+        pageSize: this.pageSize1
+      }).then(data => {
+        this.myExamList = data.items
+        this.total1 = data.total
       }).finally(_ => {
         this.loading = false
       })
+    },
+    async getMyExamFinishList () {
+      if (!this.finishLoadFlag) {
+        this.loading = true
+        await this.$api('getTeacherExamList', {
+          mode: 2,
+          page: this.page2,
+          pageSize: this.pageSize2
+        }).then(data => {
+          this.myExamFinishList = data.items
+          this.total2 = data.total
+          this.finishLoadFlag = true
+        }).finally(_ => {
+          this.loading = false
+        })
+      }
+    },
+    async getData (refresh) {
+      this.loading = true
+      await this.$api('getTeacherExamList', {
+        mode: this.tabActive == 1 ? 1 : 2,
+        page: this.tabActive == 1 ? this.page1 : this.page2,
+        pageSize: this.tabActive == 1 ? this.pageSize2 : this.pageSize2
+      }).then(data => {
+        if (this.tabActive == 1) {
+          this.myExamList = data.items
+          this.total1 = data.total
+        } else {
+          this.myExamFinishList = data.items
+          this.total2 = data.total
+        }
+      }).finally(_ => {
+        this.loading = false
+      })
+    },
+    handleSizeChange (val) {
+      if (this.tabActive == 1) {
+        this.pageSize1 = val
+        this.page1 = 1
+      } else {
+        this.pageSize2 = val
+        this.page2 = 1
+      }
+      this.getData()
+    },
+    handleCurrentChange (val) {
+      if (this.tabActive == 1) {
+        this.page1 = val
+      } else {
+        this.page2 = val
+      }
+      this.getData()
     },
     turnToScoreManage () {
       this.$router.push({ name: 'scoreManage' })
