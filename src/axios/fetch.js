@@ -8,10 +8,10 @@ promiseFinally.shim()
  * axios 实例
  */
 
-var devURL = 'http://localhost/ExamSystemApi/public/api/'
-// var baseURL = process.env.NODE_ENV === 'production' ? devURL : 'http://localhost:8080/'
-var baseURL = devURL
-window.REQUEST_URL = baseURL.slice(devURL, -4)
+// var devURL = 'http://localhost/ExamSystemApi/public/api/'
+var baseURL = process.env.NODE_ENV === 'production' ? './api' : './api/api'
+window.REQUEST_URL = process.env.NODE_ENV === 'production' ? '.' : baseURL.slice(-4)
+console.log(window.REQUEST_URL)
 
 const instance = axios.create({
   baseURL,

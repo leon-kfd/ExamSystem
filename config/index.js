@@ -11,12 +11,13 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-      // '/api': {
-      //    target: 'http://localhost/ExamSystemApi/public/api',
-      //    pathRewrite: {
-      //      '^/api': ''
-      //     }
-      // }
+      '/api': {
+        target: 'http://localhost/ExamSystemApi/public',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/api': ''
+        }
+      }
     },
 
     // Various Dev Server settings
@@ -50,7 +51,7 @@ module.exports = {
     // Paths
     assetsRoot: path.resolve(__dirname, '../dist'),
     assetsSubDirectory: 'static',
-    assetsPublicPath: '/',
+    assetsPublicPath: '/ExamSystemApi/public/',
 
     /**
      * Source Maps
