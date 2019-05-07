@@ -165,7 +165,9 @@ $theme-color: #573896;
   &.login-active {
     .left-box {
       width: 40%;
-      background: #a0a0b0;
+      // background: #a0a0b0;
+      background: url('../../static/img/img02.jpg') center center;
+      background-size: cover;
     }
     .right-box {
       width: 60%;
@@ -179,7 +181,9 @@ $theme-color: #573896;
     }
     .right-box {
       width: 40%;
-      background: #a0a0b0;
+      // background: #a0a0b0;
+      background: url('../../static/img/img03.jpg') center center;
+      background-size: cover;
     }
   }
 }
@@ -221,6 +225,7 @@ $theme-color: #573896;
 .btn-transparent {
   background: transparent;
   color: #fff;
+  font-weight: bold;
   &:hover {
     border: 1px solid #fff;
   }
