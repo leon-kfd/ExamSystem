@@ -68,6 +68,7 @@
           <el-table-column prop="score"
                            align="center"
                            label="得分 / 总分"
+                           min-width="120px"
                            fixed="right">
             <template slot-scope="scope">
               <span class="bold"
@@ -92,8 +93,8 @@
                          type="text">评卷</el-button>
               <el-button @click="detail(scope.row)"
                          type="text">查看试卷</el-button>
-              <el-button @click="setScore(scope.row)"
-                         type="text">更改分数</el-button>
+              <!-- <el-button @click="setScore(scope.row)"
+                         type="text">更改分数</el-button> -->
             </template>
           </el-table-column>
         </el-table>

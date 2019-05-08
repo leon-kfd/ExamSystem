@@ -353,20 +353,6 @@ export default {
     return {
       scrollLeft: 0,
       typeList: ['单选题', '判断题', '多选题', '问答题'],
-      classList: [
-        {
-          label: '15信管',
-          value: 1
-        },
-        {
-          label: '15计本',
-          value: 2
-        },
-        {
-          label: '15软件',
-          value: 3
-        }
-      ],
       examForm: {
         fields: {
           examId: -1,
@@ -444,13 +430,14 @@ export default {
     randomOrder () {
       return this.examForm.fields.randomOrder
     },
+    classList () {
+      return this.$store.state.classList
+    }
   },
   mounted () {
     if (this.$route.params.examId) {
       this.examForm.fields.examId = this.$route.params.examId
       this.getData()
-    } else {
-      this.getClassList()
     }
     // 监听浏览器滚动
     let appContent = this.$parent.$refs.appContent
@@ -708,7 +695,6 @@ export default {
       })
     },
     async getData () {
-      await this.getClassList()
       this.dataLoading = true
       await this.$api('getExamInfoFromTeacher', {
         examId: this.examForm.fields.examId
@@ -729,7 +715,7 @@ export default {
     async getClassList () {
       this.classroomLoading = true
       await this.$api('getTeacherClassroom').then(data => {
-        this.classList = data
+        this.$store.commit('updateClassList', this.classList)
       }).finally(_ => {
         this.classroomLoading = false
       })
