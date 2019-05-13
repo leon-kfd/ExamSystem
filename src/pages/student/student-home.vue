@@ -652,7 +652,8 @@ export default {
     margin: 10px auto;
     img {
       width: 160px;
-      height: auto;
+      height: 160px;
+      object-fit: cover;
     }
   }
   .text-box {

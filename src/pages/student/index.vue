@@ -15,7 +15,7 @@
                 <span class="username">{{studentInfo.username}}</span>
               </div>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item>个人中心</el-dropdown-item>
+                <el-dropdown-item @click.native="$router.push({name: 'StudentPersonal'})">个人中心</el-dropdown-item>
                 <el-dropdown-item @click.native="toLogout">退出系统</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
@@ -107,6 +107,7 @@ nav.nav {
       border-radius: 50%;
       display: inline-block;
       vertical-align: middle;
+      object-fit: cover;
     }
     .username {
       font-size: 14px;
