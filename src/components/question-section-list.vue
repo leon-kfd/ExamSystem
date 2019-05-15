@@ -72,7 +72,7 @@ export default {
       border-color: #f56c6c;
       &:after {
         font-family: element-icons !important;
-        content: "\E60F";
+        content: "\e6da";
         position: absolute;
         top: -6px;
         right: -4px;
@@ -90,7 +90,7 @@ export default {
       border-color: #e6a23c;
       &:after {
         font-family: element-icons !important;
-        content: "\e634";
+        content: "\e6db";
         position: absolute;
         top: -6px;
         right: -4px;

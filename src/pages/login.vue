@@ -7,8 +7,38 @@
         <div class="register-box"
              v-if="!active">
           <h2 class="title"><span>Register</span></h2>
-          <div class="form-box">
-            <p style="height: 200px;line-height: 200px;color: #889;text-align:center;font-size: 14px;">Function Not Open..</p>
+          <div class="form-box"
+               id="registerForm"
+               style="padding-top: 20px;">
+            <!-- <p style="height: 200px;line-height: 200px;color: #889;text-align:center;font-size: 14px;">Function Not Open..</p> -->
+            <el-form label-width="80px"
+                     label-position="top"
+                     :model="registerForm.fields"
+                     ref="registerForm"
+                     :rules="registerForm.rules">
+              <el-form-item label="用户名"
+                            prop="account">
+                <el-input v-model="registerForm.fields.account"
+                          size="small"></el-input>
+              </el-form-item>
+              <el-form-item label="密码"
+                            prop="password">
+                <el-input v-model="registerForm.fields.password"
+                          type="password"
+                          size="small"></el-input>
+              </el-form-item>
+              <el-form-item label="Email"
+                            prop="email">
+                <el-input v-model="registerForm.fields.email"
+                          size="small"></el-input>
+              </el-form-item>
+              <el-form-item style="margin-top: 25px;">
+                <el-button size="small"
+                           plain
+                           :loading="btnRegisterLoading"
+                           @click="toRegister">注册</el-button>
+              </el-form-item>
+            </el-form>
           </div>
         </div>
         <!-- </transition> -->
@@ -92,7 +122,29 @@ export default {
         password: '',
         role: 1
       },
-      btnLoginLoading: false
+      registerForm: {
+        fields: {
+          account: '',
+          password: '',
+          email: '',
+          role: 1
+        },
+        rules: {
+          account: [
+            { required: true, message: '请输入用户名', trigger: 'blur' },
+            { min: 4, max: 12, message: '长度在 4 到 12 个字符', trigger: 'blur' }
+          ],
+          password: [
+            { required: true, message: '请输入密码', trigger: 'blur' },
+            { min: 6, max: 12, message: '长度在 6 到 12 个字符', trigger: 'blur' }
+          ],
+          email: [
+            { type: 'email', required: true, message: '请输入正确邮箱', trigger: 'blur' }
+          ]
+        }
+      },
+      btnLoginLoading: false,
+      btnRegisterLoading: false
     }
   },
   computed: {
@@ -102,6 +154,7 @@ export default {
   },
   mounted () {
     sessionStorage.removeItem('token')
+    this.$store.commit('updateStudentRefresh', true)
   },
   methods: {
     async toLogin () {
@@ -122,6 +175,23 @@ export default {
           this.btnLoginLoading = false
         })
       }
+    },
+    toRegister () {
+      this.$refs.registerForm.validate((valid) => {
+        if (valid) {
+          this.btnRegisterLoading = true
+          let { account, password, email, role } = this.registerForm.fields
+          this.$api('register', {
+            account, password, email, role
+          }).then(data => {
+            console.log(data)
+            this.$message.success('注册成功...')
+            this.active = true
+          }).finally(_ => {
+            this.btnRegisterLoading = false
+          })
+        }
+      })
     }
   }
 }
@@ -166,7 +236,7 @@ $theme-color: #573896;
     .left-box {
       width: 40%;
       // background: #a0a0b0;
-      background: url('../../static/img/img02.jpg') center center;
+      background: url("../../static/img/img02.jpg") center center;
       background-size: cover;
     }
     .right-box {
@@ -182,7 +252,7 @@ $theme-color: #573896;
     .right-box {
       width: 40%;
       // background: #a0a0b0;
-      background: url('../../static/img/img03.jpg') center center;
+      background: url("../../static/img/img03.jpg") center center;
       background-size: cover;
     }
   }
@@ -335,6 +405,9 @@ $theme-color: #573896;
 }
 #Login .el-radio-button__inner:hover {
   color: #573896;
+}
+#registerForm .el-form-item__label {
+  line-height: 28px;
 }
 </style>
 

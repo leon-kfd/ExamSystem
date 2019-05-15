@@ -344,18 +344,20 @@ export default {
       }
     },
     handleCurrentChange (val) {
+      console.log('a')
       if (this.tabActive == 1) {
         this.page1 = val
         this.getCurrentExamList()
       } else {
         this.page2 = val
+        this.myExamFinishListFlag = false
         this.getFinishedExamList()
       }
     },
-    async getCurrentExamList () {
+    getCurrentExamList () {
       if (!this.myExamListFlag) {
         this.myExamListLoading = true
-        await this.$api('getStudentCurrentExamList', {
+        this.$api('getStudentCurrentExamList', {
           page: this.page1,
           pageSize: this.pageSize1
         }).then(data => {
@@ -367,10 +369,10 @@ export default {
         })
       }
     },
-    async getFinishedExamList () {
+    getFinishedExamList () {
       if (!this.myExamFinishListFlag) {
         this.myExamListLoading = true
-        await this.$api('getStudentFinishedExamList', {
+        this.$api('getStudentFinishedExamList', {
           page: this.page2,
           pageSize: this.pageSize2
         }).then(data => {
@@ -382,19 +384,24 @@ export default {
         })
       }
     },
-    async getStudentInfo () {
-      if (this.$store.state.studentInfo.username) {
+    getStudentInfo () {
+      if (this.$store.state.studentInfo.username && !this.$store.state.studentRefresh) {
         this.studentInfo = this.$store.state.studentInfo
       } else {
         this.studentInfoLoading = true
-        await this.$api('getStudentInfo').then(data => {
+        this.$api('getStudentInfo').then(data => {
           this.studentInfo = {
             username: data.student_name || data.student_account,
             number: data.student_num || '-未设置学号-',
             classname: data.class_fullname || data.class_name || '-未设置班级-',
-            portrait: REQUEST_URL + data.portrait_address || '../../static/img/user.jpg'
+            portrait: data.portrait_address ? REQUEST_URL + data.portrait_address : '../../static/img/user.jpg'
+          }
+          if (!data.student_num) {
+            this.$message.warning('检测到未绑定用户信息，请先绑定学生账号')
+            this.$router.push({ name: 'StudentPersonal' })
           }
           this.$store.commit('updateStudentInfo', this.studentInfo)
+          this.$store.commit('updateStudentRefresh', false)
         }).finally(_ => {
           this.studentInfoLoading = false
         })

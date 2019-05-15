@@ -62,7 +62,7 @@
                   <span class="a-options"><i class="el-icon-check"></i></span>
                 </div>
                 <div class="judge-item"
-                     :class="{'true': (item.studentAnswer == 2) && item.answer, 'false': (item.studentAnswer == 1) && !item.answer}">
+                     :class="{'true': (item.studentAnswer == 2) && item.answer, 'false': (item.studentAnswer == 0) && !item.answer}">
                   <span class="a-options"><i class="el-icon-close"></i></span>
                 </div>
               </div>
@@ -267,7 +267,7 @@ export default {
           border: 1px solid #67c23a;
           &:after {
             font-family: element-icons !important;
-            content: "\E611";
+            content: "\e6da";
             position: absolute;
             top: -10px;
             left: -8px;
@@ -284,7 +284,7 @@ export default {
           border: 1px solid #f56c6c;
           &:after {
             font-family: element-icons !important;
-            content: "\E60F";
+            content: "\e6db";
             position: absolute;
             top: -10px;
             left: -8px;

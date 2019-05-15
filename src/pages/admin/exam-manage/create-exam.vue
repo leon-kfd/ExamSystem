@@ -115,11 +115,11 @@
                            :active-value="1"
                            :inactive-value="0"></el-switch>
               </el-form-item>
-              <el-form-item label="随机顺序">
+              <!-- <el-form-item label="随机顺序">
                 <el-switch v-model="examForm.fields.randomOrder"
                            :active-value="1"
                            :inactive-value="0"></el-switch>
-              </el-form-item>
+              </el-form-item> -->
             </el-form>
           </div>
           <div class="tips fl">
@@ -130,8 +130,8 @@
               <slot>
                 <ul class="tips-list">
                   <li>考试班级可多选，若无相应班级，请老师先在班级管理页面添加自己的班级</li>
-                  <li>当考试为纯选择题题型时可以开启自动阅卷功能，考试结束自动计算考试得分，问答题不可进行自动阅卷</li>
-                  <li>当开启了自动阅卷功能时，可以开启随机顺序功能，考试时题目顺序随机，选项顺序随机，选项会进行自动阅卷，编辑试题时不需再进行试题与选项的顺序更改</li>
+                  <li>当考试为纯选择题题型时可以开启自动阅卷功能，考试结束自动计算考试得分，问答题不会进行自动阅卷，含有问答题的考试需要老师进行手动阅卷</li>
+                  <li>请设置合理地考试时长，学生进入考试后开始计时，学生需要在考试时长时间内完成试卷</li>
                   <li>添加题目后记得设置题目相应的分数，请尽量将总分控制在100分</li>
                   <li>考虑到不可控因素，当考试题量较多时，请多使用临时保存功能，以防数据丢失。可以在临时保存页面找到自己保存的试题继续进行编辑。</li>
                 </ul>
@@ -815,6 +815,7 @@ export default {
         list-style-type: circle !important;
         li {
           margin: 10px 0;
+          font-size: 14px;
           list-style-type: circle !important;
         }
       }

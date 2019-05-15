@@ -16,13 +16,13 @@
               <div class="left-block">
                 <el-form-item label="姓名">
                   <el-input v-model="form.name"
-                            disabled
+                            :disabled="!isNotSetting"
                             placeholder="请输入姓名"
                             size="small"></el-input>
                 </el-form-item>
                 <el-form-item label="学号">
                   <el-input v-model="form.number"
-                            disabled
+                            :disabled="!isNotSetting"
                             placeholder="请输入学号"
                             size="small"></el-input>
                 </el-form-item>
@@ -70,7 +70,7 @@
                         size="small"></el-input>
             </el-form-item>
             <el-form-item label="邮箱">
-              <el-input v-model="form.number"
+              <el-input v-model="form.email"
                         placeholder="请输入邮箱"
                         size="small"></el-input>
             </el-form-item>
@@ -90,6 +90,7 @@ export default {
   name: 'StudentPersonal',
   data () {
     return {
+      isNotSetting: false,
       loading: false,
       classSearchloading: false,
       classList: [],
@@ -130,10 +131,12 @@ export default {
       }
       return isJPG && isLt2M;
     },
-    async getData () {
+    getData () {
       this.loading = true
-      await this.$api('getStudentInfo').then(data => {
-        console.log(data)
+      this.$api('getStudentInfo').then(data => {
+        if (!data.student_name || !data.student_num) {
+          this.isNotSetting = true
+        }
         this.form.name = data.student_name
         this.form.number = data.student_num
         this.form.classroom = data.class_name
@@ -141,15 +144,15 @@ export default {
         this.form.sex = data.sex
         this.form.tel = data.student_tel
         this.form.portraitAddress = data.portrait_address
-        this.imgUrl = REQUEST_URL + this.form.portraitAddress
+        this.imgUrl = this.form.portraitAddress ? REQUEST_URL + this.form.portraitAddress : '../../static/img/user.jpg'
       }).finally(_ => {
         this.loading = false
       })
     },
-    async remoteMethod (query) {
+    remoteMethod (query) {
       if (query !== '') {
         this.classSearchloading = true
-        await this.$api('getClassroomByQueryStr', {
+        this.$api('getClassroomByQueryStr', {
           queryStr: query
         }).then(data => {
           this.classList = data
@@ -160,17 +163,19 @@ export default {
         this.classList = []
       }
     },
-    async saveStudentInfo () {
+    saveStudentInfo () {
       this.btnSaveLoading = true
-      await this.$api('updateStudentInfo', {
+      this.$api('updateStudentInfo', {
         name: this.form.name,
         number: this.form.number,
+        account: this.$store.state.studentInfo.username,
         tel: this.form.tel,
         sex: this.form.sex,
         classId: typeof this.form.classroom == 'string' ? this.form.classId : this.form.classroom,
         portraitAddress: this.form.portraitAddress
       }).then(data => {
         this.$message.success('保存成功,若修改了头像请刷新浏览器..')
+        this.$store.commit('updateStudentRefresh', true)
         this.getData()
       }).finally(_ => {
         this.btnSaveLoading = false
