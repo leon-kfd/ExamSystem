@@ -107,6 +107,7 @@ export default {
   },
   mounted () {
     this.getTeacherInfo()
+    this.getClassList()
   },
   methods: {
     open (url) {
@@ -124,6 +125,11 @@ export default {
       }, data => {
         this.username = '未知'
         this.userImg = '../../static/img/user.jpg'
+      })
+    },
+    async getClassList () {
+      await this.$api('getTeacherClassroom').then(data => {
+        this.$store.commit('updateClassList', data)
       })
     }
   }

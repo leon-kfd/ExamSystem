@@ -49,6 +49,14 @@
               <li :class="{active: tabActive==2}"
                   class="fl"
                   @click="tabActive=2;getFinishedExamList()">已完成</li>
+              <li class="fr">
+                <el-button size="mini"
+                           type="primary"
+                           style="width:90px;"
+                           icon="el-icon-refresh"
+                           :loading="myExamListLoading"
+                           @click="getData">刷新</el-button>
+              </li>
               <span class="line"
                     :style="{left: `${10+(tabActive-1)*90}px`}"></span>
             </ul>
@@ -156,6 +164,8 @@
             <div class="exam-listitem fake"></div>
             <div class="exam-listitem fake"></div>
             <div class="exam-listitem fake"></div>
+            <p class="no-data"
+               v-if="myExamList.length == 0">没有找到需要进行的考试...</p>
           </div>
           <div class="finish-exam-box tab2"
                id="FinishExam"
@@ -220,6 +230,20 @@
             <div class="exam-listitem fake"></div>
             <div class="exam-listitem fake"></div>
             <div class="exam-listitem fake"></div>
+            <p class="no-data"
+               v-if="myExamFinishList.length == 0">没有找到数据...</p>
+          </div>
+          <div class="pagination-box clear"
+               v-if="(tabActive==1 && myExamList.length!=0) || (tabActive==2 && myExamFinishList.length != 0)">
+            <el-pagination class="fr"
+                           @size-change="handleSizeChange"
+                           @current-change="handleCurrentChange"
+                           :current-page="this.tabActive == 1 ? page1: page2"
+                           :page-sizes="[6,12,24,36]"
+                           :page-size="this.tabActive == 1 ? pageSize1: pageSize2"
+                           layout="total, sizes, prev, pager, next, jumper"
+                           :total="this.tabActive == 1 ? total1: total2">
+            </el-pagination>
           </div>
         </div>
         <!-- <div class="exam-public-box">
@@ -227,7 +251,8 @@
           </div> -->
       </div>
       <el-dialog :visible.sync="noticeDialog"
-                 title="公告详情">
+                 title="公告详情"
+                 top="5vh">
         <div class="notice-detail-box"
              v-loading="noticeDetailLoading">
           <h2 class="title">{{noticeDetail.title}}</h2>
@@ -263,6 +288,8 @@ export default {
       tabActive: 1,
       myExamList: [],
       myExamFinishList: [],
+      myExamListFlag: false,
+      myExamFinishListFlag: false,
       noticeList: [],
       studentInfo: {
         username: '',
@@ -277,6 +304,12 @@ export default {
         showTime: '',
         content: ''
       },
+      page1: 1,
+      pageSize1: 6,
+      total1: 0,
+      page2: 1,
+      pageSize2: 6,
+      total2: 0,
       myExamListLoading: false,
       studentInfoLoading: false,
       noticeListLoading: false,
@@ -299,35 +332,76 @@ export default {
     //     this.myExamListLoading = false
     //   })
     // },
-    async getCurrentExamList () {
-      this.myExamListLoading = true
-      await this.$api('getStudentCurrentExamList').then(data => {
-        this.myExamList = data.items
-      }).finally(_ => {
-        this.myExamListLoading = false
-      })
+    handleSizeChange (val) {
+      if (this.tabActive == 1) {
+        this.pageSize1 = val
+        this.page1 = 1
+        this.getCurrentExamList()
+      } else {
+        this.pageSize2 = val
+        this.page2 = 1
+        this.getFinishedExamList()
+      }
     },
-    async getFinishedExamList () {
-      this.myExamListLoading = true
-      await this.$api('getStudentFinishedExamList').then(data => {
-        this.myExamFinishList = data.items
-      }).finally(_ => {
-        this.myExamListLoading = false
-      })
+    handleCurrentChange (val) {
+      console.log('a')
+      if (this.tabActive == 1) {
+        this.page1 = val
+        this.getCurrentExamList()
+      } else {
+        this.page2 = val
+        this.myExamFinishListFlag = false
+        this.getFinishedExamList()
+      }
     },
-    async getStudentInfo () {
-      if (this.$store.state.studentInfo.username) {
+    getCurrentExamList () {
+      if (!this.myExamListFlag) {
+        this.myExamListLoading = true
+        this.$api('getStudentCurrentExamList', {
+          page: this.page1,
+          pageSize: this.pageSize1
+        }).then(data => {
+          this.myExamList = data.items
+          this.total1 = data.total
+          this.myExamListFlag = true
+        }).finally(_ => {
+          this.myExamListLoading = false
+        })
+      }
+    },
+    getFinishedExamList () {
+      if (!this.myExamFinishListFlag) {
+        this.myExamListLoading = true
+        this.$api('getStudentFinishedExamList', {
+          page: this.page2,
+          pageSize: this.pageSize2
+        }).then(data => {
+          this.myExamFinishList = data.items
+          this.total2 = data.total
+          this.myExamFinishListFlag = true
+        }).finally(_ => {
+          this.myExamListLoading = false
+        })
+      }
+    },
+    getStudentInfo () {
+      if (this.$store.state.studentInfo.username && !this.$store.state.studentRefresh) {
         this.studentInfo = this.$store.state.studentInfo
       } else {
         this.studentInfoLoading = true
-        await this.$api('getStudentInfo').then(data => {
+        this.$api('getStudentInfo').then(data => {
           this.studentInfo = {
             username: data.student_name || data.student_account,
             number: data.student_num || '-未设置学号-',
             classname: data.class_fullname || data.class_name || '-未设置班级-',
-            portrait: REQUEST_URL + data.portrait_address || '../../static/img/user.jpg'
+            portrait: data.portrait_address ? REQUEST_URL + data.portrait_address : '../../static/img/user.jpg'
+          }
+          if (!data.student_num) {
+            this.$message.warning('检测到未绑定用户信息，请先绑定学生账号')
+            this.$router.push({ name: 'StudentPersonal' })
           }
           this.$store.commit('updateStudentInfo', this.studentInfo)
+          this.$store.commit('updateStudentRefresh', false)
         }).finally(_ => {
           this.studentInfoLoading = false
         })
@@ -384,6 +458,11 @@ export default {
       }).finally(_ => {
         this.noticeDetailLoading = false
       })
+    },
+    getData () {
+      this.myExamListFlag = false
+      this.myExamFinishListFlag = false
+      this.tabActive == 1 ? this.getCurrentExamList() : this.getFinishedExamList()
     }
   }
 }
@@ -580,7 +659,8 @@ export default {
     margin: 10px auto;
     img {
       width: 160px;
-      height: auto;
+      height: 160px;
+      object-fit: cover;
     }
   }
   .text-box {
@@ -664,6 +744,13 @@ export default {
       border-left: none;
     }
   }
+}
+.no-data {
+  line-height: 250px;
+  text-align: center;
+  font-size: 12px;
+  color: #99a;
+  width: 100%;
 }
 </style>
 <style lang="scss">

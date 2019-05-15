@@ -6,6 +6,9 @@ const config = {
   login: {
     url: '/login'
   },
+  register: {
+    url: '/register'
+  },
   ...student,
   ...teacher
 }

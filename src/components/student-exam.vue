@@ -1,6 +1,33 @@
 <template>
   <div id="StudentExam">
     <p class="exam-title">{{examInfo.title}}</p>
+    <div class="exam-detail"
+         v-if="showExamDetail">
+      <div class="info-listitem">
+        <div class="title">考试时间</div>
+        <div class="content">{{examInfo.startTime}} ~ {{examInfo.endTime}}</div>
+      </div>
+      <div class="info-listitem">
+        <div class="title">考试班级</div>
+        <div class="content">{{examInfo.classroom.map(a=>classList.filter(b=>b.value==a)[0].label).join(',')}}</div>
+      </div>
+      <div class="info-listitem">
+        <div class="title">相关课程</div>
+        <div class="content">{{examInfo.course}}</div>
+      </div>
+      <div class="info-listitem">
+        <div class="title">考试时长</div>
+        <div class="content">{{examInfo.long}} 分钟</div>
+      </div>
+      <div class="info-listitem">
+        <div class="title">模式</div>
+        <div class="content">
+          <span style="margin-right: 25px"
+                :class="{'text-success':examInfo.autoMarking}">自动阅卷 <i :class="examInfo.autoMarking ? 'el-icon-check':'el-icon-close'"></i></span>
+          <span :class="{'text-success':examInfo.randomOrder}">随机顺序 <i :class="examInfo.randomOrder ? 'el-icon-check':'el-icon-close'"></i></span>
+        </div>
+      </div>
+    </div>
     <div class="question-list">
       <div class="question-listitem"
            v-for="(item,index) in questionList"
@@ -35,7 +62,7 @@
                   <span class="a-options"><i class="el-icon-check"></i></span>
                 </div>
                 <div class="judge-item"
-                     :class="{'true': (item.studentAnswer == 2) && item.answer, 'false': (item.studentAnswer == 1) && !item.answer}">
+                     :class="{'true': (item.studentAnswer == 2) && item.answer, 'false': (item.studentAnswer == 0) && !item.answer}">
                   <span class="a-options"><i class="el-icon-close"></i></span>
                 </div>
               </div>
@@ -58,7 +85,7 @@
               </div>
             </div>
             <div class="type-essay"
-                 v-if="item.type==4">
+                 v-if="item.type==4 && item.studentAnswer != 'none'">
               <div class="answer">
                 <div class="question-item">
                   <div class="essay-answer">{{item.studentAnswer}}</div>
@@ -76,9 +103,24 @@
 <script>
 export default {
   name: 'StudentExam',
-  props: ['examInfo', 'questionList'],
+  props: {
+    examInfo: {
+      require: true
+    },
+    questionList: {
+      require: true
+    },
+    showExamDetail: {
+      default: false
+    }
+  },
   data () {
     return {
+    }
+  },
+  computed: {
+    classList () {
+      return this.$store.state.classList
     }
   },
   filters: {
@@ -225,7 +267,7 @@ export default {
           border: 1px solid #67c23a;
           &:after {
             font-family: element-icons !important;
-            content: "\E611";
+            content: "\e6da";
             position: absolute;
             top: -10px;
             left: -8px;
@@ -242,7 +284,7 @@ export default {
           border: 1px solid #f56c6c;
           &:after {
             font-family: element-icons !important;
-            content: "\E60F";
+            content: "\e6db";
             position: absolute;
             top: -10px;
             left: -8px;
@@ -275,6 +317,25 @@ export default {
           font-size: 18px;
         }
       }
+    }
+  }
+}
+.exam-detail {
+  background: #f5f6f7;
+  border: 1px solid #ccc;
+  margin-bottom: 15px;
+  border-radius: 4px;
+  .info-listitem {
+    display: flex;
+    padding: 0 10px;
+    margin: 10px 0;
+    .title {
+      width: 80px;
+      text-align: right;
+      margin-right: 20px;
+    }
+    .content {
+      flex: 1;
     }
   }
 }

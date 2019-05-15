@@ -113,6 +113,7 @@
                 <button class="d-btn btn-enter btn-animate1"
                         v-if="item.status==1">预览试卷 <i class="el-icon-d-arrow-right"></i></button>
                 <button class="d-btn btn-enter btn-animate1"
+                        @click="viewExamDetail(item.examId)"
                         v-if="item.status==2">查看详情 <i class="el-icon-d-arrow-right"></i></button>
               </div>
             </el-card>
@@ -206,12 +207,27 @@
                        :total="this.tabActive == 1 ? total1: total2">
         </el-pagination>
       </div>
+      <el-dialog title="考试试卷信息"
+                 :visible.sync="examDetailDialog"
+                 top="5vh">
+        <div class="student-answer-box"
+             style="min-height: 300px"
+             v-loading="examDetailLoading">
+          <student-exam :exam-info="examDetail.examInfo"
+                        :question-list="examDetail.questionList"
+                        :show-exam-detail="true"></student-exam>
+        </div>
+      </el-dialog>
     </div>
   </div>
 </template>
 <script>
+import StudentExam from '@/components/student-exam'
 export default {
   name: 'ExamList',
+  components: {
+    StudentExam
+  },
   data () {
     return {
       loading: false,
@@ -238,7 +254,23 @@ export default {
       total1: 0,
       page2: 1,
       pageSize2: 10,
-      total2: 0
+      total2: 0,
+      examDetailDialog: false,
+      examDetailLoading: false,
+      examDetail: {
+        examInfo: {
+          autoMarking: 1,
+          classroom: '',
+          course: '',
+          endTime: '',
+          long: 120,
+          publisher: '',
+          randomOrder: 1,
+          startTime: '',
+          title: ''
+        },
+        questionList: []
+      }
     }
   },
   mounted () {
@@ -312,6 +344,23 @@ export default {
     },
     turnToScoreManage () {
       this.$router.push({ name: 'scoreManage' })
+    },
+    async viewExamDetail (examId) {
+      this.examDetailDialog = true
+      this.examDetailLoading = true
+      this.examDetail = {}
+      await this.$api('getExamInfoFromTeacher', {
+        examId
+      }).then(data => {
+        data.questionList.map(item => {
+          item.studentAnswer = item.answer ? item.answer.toString() : 'none'
+          item.questionAnswer = item.studentAnswer
+          item.answer = true
+        })
+        this.examDetail = data
+      }).finally(_ => {
+        this.examDetailLoading = false
+      })
     }
   }
 }
@@ -427,5 +476,8 @@ export default {
 }
 #ExamList .el-card {
   height: 100%;
+}
+#ExamList .el-dialog__body {
+  padding: 10px 20px;
 }
 </style>

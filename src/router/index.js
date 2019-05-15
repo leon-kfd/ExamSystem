@@ -80,14 +80,14 @@ let adminRouter = [
           label: '成绩管理'
         }
       },
-      {
-        path: 'studentMessage',
-        name: 'studentMessage',
-        component: () => import('@/pages/admin/student-manage/student-message'),
-        meta: {
-          label: '学生留言'
-        }
-      }
+      // {
+      //   path: 'studentMessage',
+      //   name: 'studentMessage',
+      //   component: () => import('@/pages/admin/student-manage/student-message'),
+      //   meta: {
+      //     label: '学生留言'
+      //   }
+      // }
     ]
   },
   {

@@ -50,9 +50,9 @@
                            align="center"
                            width="200">
             <template slot-scope="scope">
-              <el-button @click="SendEmail(scope.row)"
-                         type="text"
-                         size="small">发送邮件</el-button>
+              <a :href="`mailto://${scope.row.email}`"
+                 class="mail-link el-button el-button--text el-button--small"
+                 :class="{'is-disabled': !scope.row.email}">发送邮件</a>
             </template>
           </el-table-column>
         </el-table>
@@ -125,6 +125,9 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+.mail-link {
+  text-decoration: none;
+}
 </style>
 
 

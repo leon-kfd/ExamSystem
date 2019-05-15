@@ -15,7 +15,7 @@
                 <span class="username">{{studentInfo.username}}</span>
               </div>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item>个人中心</el-dropdown-item>
+                <el-dropdown-item @click.native="$router.push({name: 'StudentPersonal'})">个人中心</el-dropdown-item>
                 <el-dropdown-item @click.native="toLogout">退出系统</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
@@ -53,8 +53,8 @@ export default {
       this.$message.success('成功注销..')
       this.$router.push('/')
     },
-    async getUserInfo () {
-      if (this.$store.state.studentInfo.username) {
+    getUserInfo () {
+      if (this.$store.state.studentInfo.username && !this.$store.state.studentRefresh) {
         this.studentInfo = this.$store.state.studentInfo
       } else {
         this.$api('getStudentInfo').then(data => {
@@ -62,9 +62,10 @@ export default {
             username: data.student_name || data.student_account,
             number: data.student_num || '-未设置学号-',
             classname: data.class_fullname || data.class_name || '-未设置班级-',
-            portrait: REQUEST_URL + data.portrait_address || '../../static/img/user.jpg'
+            portrait: data.portrait_address ? REQUEST_URL + data.portrait_address : '../../static/img/user.jpg'
           }
           this.$store.commit('updateStudentInfo', this.studentInfo)
+          this.$store.commit('updateStudentRefresh', false)
         })
       }
     }
@@ -107,6 +108,7 @@ nav.nav {
       border-radius: 50%;
       display: inline-block;
       vertical-align: middle;
+      object-fit: cover;
     }
     .username {
       font-size: 14px;

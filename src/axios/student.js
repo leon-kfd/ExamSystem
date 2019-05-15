@@ -54,5 +54,10 @@ export default {
   // 获取全部公告列表
   getStudentAllNoticeList: {
     url: '/getStudentAllNoticeList'
+  },
+  // 上传头像
+  uploadAvatar: {
+    url: '/uploadAvatar',
+    methods: 'get'
   }
 }
