@@ -51,6 +51,14 @@ let adminRouter = [
         meta: {
           label: '阅卷评卷'
         }
+      },
+      {
+        path: 'ExamReport',
+        name: 'ExamReport',
+        component: () => import('@/pages/admin/exam-manage/exam-report'),
+        meta: {
+          label: '考试报表'
+        }
       }
     ]
   },

@@ -408,6 +408,7 @@ $theme-color: #573896;
 }
 #registerForm .el-form-item__label {
   line-height: 28px;
+  padding: 0;
 }
 </style>
 

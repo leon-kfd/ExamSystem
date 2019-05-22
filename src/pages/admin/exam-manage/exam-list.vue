@@ -125,6 +125,8 @@
         <div class="exam-listitem fake"></div>
         <div class="exam-listitem fake"></div>
         <div class="exam-listitem fake"></div>
+        <p class="no-data"
+           v-if="myExamList.length == 0">没有找到相应数据...</p>
       </div>
       <div class="finish-exam-box tab2"
            id="FinishExam"
@@ -195,6 +197,8 @@
         <div class="exam-listitem fake"></div>
         <div class="exam-listitem fake"></div>
         <div class="exam-listitem fake"></div>
+        <p class="no-data"
+           v-if="myExamFinishList.length == 0">没有找到相应数据...</p>
       </div>
       <div class="pagination-box clear">
         <el-pagination class="fr"
@@ -457,6 +461,13 @@ export default {
       min-height: 285px;
     }
   }
+}
+.no-data {
+  line-height: 250px;
+  text-align: center;
+  font-size: 12px;
+  color: #99a;
+  width: 100%;
 }
 </style>
 <style lang="scss">

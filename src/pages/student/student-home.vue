@@ -75,7 +75,7 @@
                   <div class="exam-info-main">
                     <dl>
                       <dt>试卷题目</dt>
-                      <dd>{{item.title}}</dd>
+                      <dd style="font-weight:bold">{{item.title}}</dd>
                     </dl>
                     <dl>
                       <dt>出卷人</dt>
@@ -721,6 +721,9 @@ export default {
   .content {
     min-height: 200px;
   }
+}
+.pagination-box {
+  margin-top: 10px;
 }
 @media screen and (min-width: 820px) and (max-width: 1180px) {
   .container {

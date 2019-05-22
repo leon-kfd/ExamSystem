@@ -135,6 +135,12 @@
             </div>
           </div>
         </main>
+        <div class="submit-btn-box">
+          <el-button :type="canSubmitExam?'success':''"
+                     :disabled="!canSubmitExam"
+                     @click="submitExam"
+                     style="width:100%;margin-bottom:10px;">交卷</el-button>
+        </div>
       </div>
       <div class="right-box">
         <aside class="exam-timer">
@@ -505,6 +511,9 @@ footer {
   .center-box {
     margin: 10px 240px 10px;
     padding: 10px;
+    .submit-btn-box {
+      display: none;
+    }
   }
 }
 @media screen and (min-width: 820px) and (max-width: 1180px) {
@@ -518,7 +527,10 @@ footer {
       transition: all 0.6s;
     }
     .center-box {
-      margin: 0 240px 10px 0;
+      margin: 10px 240px 10px 0;
+      .submit-btn-box {
+        display: none;
+      }
     }
     .right-box {
       transform: translateX(400px);
@@ -541,8 +553,11 @@ footer {
       transition: all 0.6s;
     }
     .center-box {
-      margin: 0 auto 10px;
+      margin: 10px auto;
       padding: 0 !important;
+      .submit-btn-box {
+        display: block;
+      }
     }
     .right-box {
       display: none;
