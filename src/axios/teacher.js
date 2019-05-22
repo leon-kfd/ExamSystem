@@ -70,5 +70,9 @@ export default {
   // 评卷
   setEvaluation: {
     url: '/setEvaluation'
+  },
+  // 获取含有问答题的考试列表（阅卷评卷）
+  getEssayExamList: {
+    url: '/getEssayExamList'
   }
 }

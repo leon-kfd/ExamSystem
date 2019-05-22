@@ -54,7 +54,7 @@ export default {
       border-color: #67c23a;
       &:after {
         font-family: element-icons !important;
-        content: "\E611";
+        content: "\e6da";
         position: absolute;
         top: -6px;
         right: -4px;
@@ -72,7 +72,7 @@ export default {
       border-color: #f56c6c;
       &:after {
         font-family: element-icons !important;
-        content: "\e6da";
+        content: "\e6db";
         position: absolute;
         top: -6px;
         right: -4px;
@@ -89,8 +89,8 @@ export default {
       color: #e6a23c;
       border-color: #e6a23c;
       &:after {
-        font-family: element-icons !important;
-        content: "\e6db";
+        // font-family: element-icons !important;
+        content: "?";
         position: absolute;
         top: -6px;
         right: -4px;

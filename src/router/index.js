@@ -73,7 +73,7 @@ let adminRouter = [
         }
       },
       {
-        path: 'scoreManage',
+        path: 'scoreManage/:examId?',
         name: 'scoreManage',
         component: () => import('@/pages/admin/student-manage/score-manage'),
         meta: {

@@ -24,7 +24,9 @@
           <el-table-column prop="examTitle"
                            label="题目"
                            align="center"
-                           min-width="200">
+                           min-width="200"
+                           :filters="examFilterList"
+                           :filter-method="filterExam">
           </el-table-column>
           <el-table-column prop="studentName"
                            label="学生姓名"
@@ -33,13 +35,16 @@
           </el-table-column>
           <el-table-column prop="submitTime"
                            label="交卷时间"
+                           sortable
                            align="center"
                            min-width="200">
           </el-table-column>
           <el-table-column prop="status"
                            label="当前状态"
                            align="center"
-                           min-width="200">
+                           min-width="200"
+                           :filters="[{ text: '等待评卷', value: '3' }, { text: '评卷已完成', value: '4' }]"
+                           :filter-method="filterStatus">
             <template slot-scope="scope">
               <span :style="{color: statusList[scope.row.status].color}">{{statusList[scope.row.status].text}}</span>
             </template>
@@ -154,14 +159,16 @@ export default {
         essayList: []
       },
       detailLoading: false,
-      btnSubmitLoading: false
+      btnSubmitLoading: false,
+      examFilterList: []
     }
   },
   mounted () {
     this.getData()
+    this.getEssayExamList()
   },
   methods: {
-    async getData () {
+    getData () {
       this.loading = true
       this.$api('getEvaluationList', {
         page: this.page,
@@ -171,6 +178,11 @@ export default {
         this.total = data.total
       }).finally(_ => {
         this.loading = false
+      })
+    },
+    getEssayExamList () {
+      this.$api('getEssayExamList').then(data => {
+        this.examFilterList = data
       })
     },
     handleSizeChange (val) {
@@ -237,6 +249,12 @@ export default {
       } else {
         this.detail.essayList[index].essay_score = 0
       }
+    },
+    filterStatus (value, row) {
+      return row.status == value
+    },
+    filterExam (value, row) {
+      return row.examId == value
     }
   }
 }

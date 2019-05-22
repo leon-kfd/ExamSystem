@@ -14,6 +14,8 @@
       <span class="h-operation-text"
             style="margin-left: 20px;">考试题目</span>
       <el-select v-model="CurrentExamTitle"
+                 :disabled="CurrentClass.length==0"
+                 :placeholder="CurrentClass.length==0 ?'请先选择班级':'请选择'"
                  size="small"
                  @change="getData"
                  v-loading="examTitleLoading">
@@ -25,7 +27,7 @@
       <el-button style="margin-left:10px"
                  type="text"
                  size="small"
-                 @click="clear">清空条件</el-button>
+                 @click="clear">{{$route.params.examId?'查看全部':'清空条件'}}</el-button>
       <el-button type="primary"
                  size="small"
                  class="fr"
@@ -48,6 +50,10 @@
           </el-table-column>
           <el-table-column prop="name"
                            label="姓名"
+                           align="center">
+          </el-table-column>
+          <el-table-column prop="studentClass"
+                           label="课程"
                            align="center">
           </el-table-column>
           <el-table-column prop="course"
@@ -189,7 +195,8 @@ export default {
     async getData () {
       this.loading = true
       await this.$api('getStudentScoreList', {
-        examId: this.CurrentExamTitle || 0
+        examId: this.CurrentExamTitle || this.$route.params.examId || 0,
+        classId: this.CurrentClass || 0
       }).then(data => {
         this.tableData = data.items
         this.page = data.page
@@ -201,6 +208,7 @@ export default {
     async getExamTitleList () {
       this.examTitleLoading = true
       await this.$api('getTeacherFinishedExamList', {
+        classId: this.CurrentClass
       }).then(data => {
         this.examTitleList = data
       }).finally(_ => {
@@ -212,6 +220,7 @@ export default {
       this.getExamTitleList()
     },
     clear () {
+      this.$router.push({ name: 'scoreManage' })
       this.CurrentClass = ''
       this.CurrentExamTitle = ''
       this.getData()

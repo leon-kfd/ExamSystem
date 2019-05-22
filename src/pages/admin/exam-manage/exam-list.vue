@@ -184,7 +184,7 @@
               </div>
               <div class="exam-info-footer">
                 <button class="d-btn btn-enter btn-animate1"
-                        @click="turnToScoreManage">查看详情 <i class="el-icon-d-arrow-right"></i></button>
+                        @click="turnToScoreManage(item.examId)">查看详情 <i class="el-icon-d-arrow-right"></i></button>
               </div>
             </el-card>
           </div>
@@ -342,8 +342,13 @@ export default {
       }
       this.getData()
     },
-    turnToScoreManage () {
-      this.$router.push({ name: 'scoreManage' })
+    turnToScoreManage (examId) {
+      this.$router.push({
+        name: 'scoreManage',
+        params: {
+          examId
+        }
+      })
     },
     async viewExamDetail (examId) {
       this.examDetailDialog = true
