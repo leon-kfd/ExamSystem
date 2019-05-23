@@ -1,6 +1,6 @@
 <template>
   <div class="score-pie"
-       style="width: 500px;height: 500px;margin-top: 10px"
+       style="width: 550px;height: 500px;margin-top: 10px"
        ref="myEchart"></div>
 </template>
 <script>
@@ -27,14 +27,21 @@ export default {
       this.chart = echarts.init(this.$refs.myEchart);
       // 把配置和数据放这里
       let option = {
+        color: ['#f15a57', '#f2c46e', '#83a4d7', '#79ab36', '#22c044'],
         tooltip: {
           trigger: 'item',
           formatter: "{a} <br/>{b}: {c} ({d}%)"
         },
         legend: {
           orient: 'vertical',
-          x: 'right',
+          x: 'left',
           data: ['≤60', '60~70', '70~80', '80~90', '90~100']
+        },
+        grid: {
+          left: '3%',
+          right: '4%',
+          bottom: '3%',
+          containLabel: true
         },
         series: [
           {
@@ -44,20 +51,13 @@ export default {
             avoidLabelOverlap: false,
             label: {
               normal: {
-                show: false,
-                position: 'center'
-              },
-              emphasis: {
                 show: true,
-                textStyle: {
-                  fontSize: '30',
-                  fontWeight: 'bold'
-                }
+                formatter: '{b}: \n {d}%'
               }
             },
             labelLine: {
               normal: {
-                show: false
+                show: true
               }
             },
             data: [
