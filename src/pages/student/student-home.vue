@@ -688,17 +688,17 @@ export default {
   margin-top: 20px;
   margin-bottom: 10px;
   text-align: center;
-  button {
-    i {
-      display: none;
-      margin-left: 5px;
-    }
-    &:hover {
-      i {
-        display: inline;
-      }
-    }
-  }
+  // button {
+  //   i {
+  //     display: none;
+  //     margin-left: 5px;
+  //   }
+  //   &:hover {
+  //     i {
+  //       display: inline;
+  //     }
+  //   }
+  // }
 }
 .notice-detail-box {
   padding: 10px;

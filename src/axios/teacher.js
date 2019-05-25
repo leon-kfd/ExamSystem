@@ -31,6 +31,9 @@ export default {
   deleteTempExam: {
     url: '/deleteTempExam'
   },
+  cancelExam: {
+    url: '/cancelExam'
+  },
   // 发布考试
   publishExam: {
     url: '/publishExam'

@@ -146,6 +146,19 @@ li {
   padding: 10px 0;
   font-size: 14px;
   border-radius: 4px;
+  i {
+    transition: transform .3s;
+  }
+  &:hover {
+    i {
+      transform: translateX(3px);
+      transition: transform .3s;
+    }
+  }
+}
+.btn-cancel {
+  border: 1px solid #F5aabb;
+  color: #f5aabb;
 }
 $btnColor: #409eff;
 $duration: 0.1s;

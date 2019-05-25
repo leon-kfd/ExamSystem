@@ -51,13 +51,13 @@
                      :rules="examForm.rules"
                      :model="examForm.fields"
                      label-width="100px"
-                     style="width: 550px">
+                     style="width: 500px">
               <el-form-item label="考试题目"
                             prop="title">
                 <el-input v-model="examForm.fields.title"
                           size="small"
                           placeholder="请输入试卷标题"
-                          style="width: 450px"></el-input>
+                          style="width: 400px"></el-input>
               </el-form-item>
               <el-form-item label="考试时间"
                             prop="date">
@@ -69,7 +69,7 @@
                                 end-placeholder="结束日期"
                                 value-format="yyyy-MM-dd HH:mm:ss"
                                 :picker-options="pickerBeginDateAfter"
-                                style="width: 450px">
+                                style="width: 400px">
                 </el-date-picker>
               </el-form-item>
               <el-form-item label="考试班级"
@@ -79,7 +79,7 @@
                            multiple
                            placeholder="请选择"
                            size="small"
-                           style="width: 450px">
+                           style="width: 400px">
                   <el-option v-for="item in classList"
                              :key="item.value"
                              :label="item.label"
@@ -96,7 +96,7 @@
                 <el-input v-model="examForm.fields.course"
                           size="small"
                           placeholder="请输入考试相关课程"
-                          style="width: 450px">
+                          style="width: 400px">
                 </el-input>
               </el-form-item>
               <el-form-item label="考试时长"
@@ -132,8 +132,9 @@
                   <li>考试班级可多选，若无相应班级，请老师先在班级管理页面添加自己的班级</li>
                   <li>当考试为纯选择题题型时可以开启自动阅卷功能，考试结束自动计算考试得分，问答题不会进行自动阅卷，含有问答题的考试需要老师进行手动阅卷</li>
                   <li>请设置合理地考试时长，学生进入考试后开始计时，学生需要在考试时长时间内完成试卷</li>
-                  <li>添加题目后记得设置题目相应的分数，请尽量将总分控制在100分</li>
                   <li>考虑到不可控因素，当考试题量较多时，请多使用临时保存功能，以防数据丢失。可以在临时保存页面找到自己保存的试题继续进行编辑。</li>
+                  <li>未开始的考试，可以进行取消考试，取消的考试会移至临时保存模块</li>
+                  <li>添加题目后记得设置题目相应的分数，请尽量将总分控制在100分</li>
                 </ul>
               </slot>
             </el-alert>
@@ -294,7 +295,7 @@
             <div class="content">
               <span style="margin-right: 25px"
                     :class="{'text-success':examForm.fields.autoMarking}">自动阅卷 <i :class="examForm.fields.autoMarking ? 'el-icon-check':'el-icon-close'"></i></span>
-              <span :class="{'text-success':examForm.fields.randomOrder}">随机顺序 <i :class="examForm.fields.randomOrder ? 'el-icon-check':'el-icon-close'"></i></span>
+              <!-- <span :class="{'text-success':examForm.fields.randomOrder}">随机顺序 <i :class="examForm.fields.randomOrder ? 'el-icon-check':'el-icon-close'"></i></span> -->
             </div>
           </div>
           <div class="info-listitem">
@@ -806,10 +807,10 @@ export default {
   .exam-info-box {
     padding: 8px;
     .form {
-      width: 550px;
+      width: 500px;
     }
     .tips {
-      width: 450px;
+      width: 500px;
       margin-left: 45px;
       .tips-list {
         list-style-type: circle !important;

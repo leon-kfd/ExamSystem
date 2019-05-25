@@ -24,7 +24,7 @@
         <div class="content">
           <span style="margin-right: 25px"
                 :class="{'text-success':examInfo.autoMarking}">自动阅卷 <i :class="examInfo.autoMarking ? 'el-icon-check':'el-icon-close'"></i></span>
-          <span :class="{'text-success':examInfo.randomOrder}">随机顺序 <i :class="examInfo.randomOrder ? 'el-icon-check':'el-icon-close'"></i></span>
+          <!-- <span :class="{'text-success':examInfo.randomOrder}">随机顺序 <i :class="examInfo.randomOrder ? 'el-icon-check':'el-icon-close'"></i></span> -->
         </div>
       </div>
     </div>
@@ -105,7 +105,12 @@ export default {
   name: 'StudentExam',
   props: {
     examInfo: {
-      require: true
+      type: Object,
+      default() {
+        return {
+          classroom: []
+        }
+      }
     },
     questionList: {
       require: true

@@ -111,10 +111,11 @@
               </div>
               <div class="exam-info-footer">
                 <button class="d-btn btn-enter btn-animate1"
-                        v-if="item.status==1">预览试卷 <i class="el-icon-d-arrow-right"></i></button>
-                <button class="d-btn btn-enter btn-animate1"
-                        @click="viewExamDetail(item.examId)"
-                        v-if="item.status==2">查看详情 <i class="el-icon-d-arrow-right"></i></button>
+                        @click="viewExamDetail(item.examId)" :style="item.status == 1 && 'width: 100px;margin-right:5px'"
+                        v-if="item.status==1||item.status==2">预览试卷 <i class="el-icon-d-arrow-right"></i></button>
+                <button class="d-btn btn-cancel" 
+                        @click="cancelExam(item.examId)" style="width: 100px"
+                        v-if="item.status==1">取消考试 <i class="el-icon-d-arrow-right"></i></button>
               </div>
             </el-card>
           </el-badge>
@@ -217,9 +218,9 @@
         <div class="student-answer-box"
              style="min-height: 300px"
              v-loading="examDetailLoading">
-          <student-exam :exam-info="examDetail.examInfo"
-                        :question-list="examDetail.questionList"
-                        :show-exam-detail="true"></student-exam>
+          <student-exam :examInfo="examDetail.examInfo"
+                        :questionList="examDetail.questionList"
+                        :showExamDetail="true"></student-exam>
         </div>
       </el-dialog>
     </div>
@@ -281,9 +282,9 @@ export default {
     this.getMyExamList()
   },
   methods: {
-    async getMyExamList () {
+    getMyExamList () {
       this.loading = true
-      await this.$api('getTeacherExamList', {
+      this.$api('getTeacherExamList', {
         mode: 1,
         page: this.page1,
         pageSize: this.pageSize1
@@ -294,10 +295,10 @@ export default {
         this.loading = false
       })
     },
-    async getMyExamFinishList () {
+    getMyExamFinishList () {
       if (!this.finishLoadFlag) {
         this.loading = true
-        await this.$api('getTeacherExamList', {
+        this.$api('getTeacherExamList', {
           mode: 2,
           page: this.page2,
           pageSize: this.pageSize2
@@ -310,9 +311,9 @@ export default {
         })
       }
     },
-    async getData (refresh) {
+    getData (refresh) {
       this.loading = true
-      await this.$api('getTeacherExamList', {
+      this.$api('getTeacherExamList', {
         mode: this.tabActive == 1 ? 1 : 2,
         page: this.tabActive == 1 ? this.page1 : this.page2,
         pageSize: this.tabActive == 1 ? this.pageSize2 : this.pageSize2
@@ -354,11 +355,11 @@ export default {
         }
       })
     },
-    async viewExamDetail (examId) {
+    viewExamDetail (examId) {
       this.examDetailDialog = true
       this.examDetailLoading = true
       this.examDetail = {}
-      await this.$api('getExamInfoFromTeacher', {
+      this.$api('getExamInfoFromTeacher', {
         examId
       }).then(data => {
         data.questionList.map(item => {
@@ -369,6 +370,29 @@ export default {
         this.examDetail = data
       }).finally(_ => {
         this.examDetailLoading = false
+      })
+    },
+    cancelExam (examId) {
+      this.$confirm('取消的考试将被移至临时保存, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+        beforeClose: (action, instance, done) => {
+          if (action === 'confirm') {
+            instance.confirmButtonLoading = true
+            this.$api('cancelExam', {
+              examId: examId
+            }).then(data => {
+              this.$message.success('取消考试成功,你可以在临时保存模块进行重新编辑..')
+              this.getData()
+            }).finally(_ => {
+              instance.confirmButtonLoading = false
+              done()
+            })
+          } else {
+            done()
+          }
+        }
       })
     }
   }
