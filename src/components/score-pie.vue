@@ -14,6 +14,11 @@ import echarts from 'echarts'
 
 export default {
   name: 'ScorePie',
+  props: {
+    pieData: {
+      type:Array
+    }
+  },
   data () {
     return {
       chart: null
@@ -33,7 +38,7 @@ export default {
           formatter: "{a} <br/>{b}: {c} ({d}%)"
         },
         legend: {
-          orient: 'vertical',
+          // orient: 'vertical',
           x: 'left',
           data: ['≤60', '60~70', '70~80', '80~90', '90~100']
         },
@@ -60,17 +65,22 @@ export default {
                 show: true
               }
             },
-            data: [
-              { value: 30, name: '≤60' },
-              { value: 20, name: '60~70' },
-              { value: 15, name: '70~80' },
-              { value: 15, name: '80~90' },
-              { value: 10, name: '90~100' }
-            ]
+            data: []
           }
         ]
       };
+      option.series[0].data = this.pieData
       this.chart.setOption(option)
+    },
+    refresh() {
+      this.chart && this.chart.clear()
+      this.initChart()
+    }
+  },
+  watch: {
+    pieData () {
+      this.chart && this.chart.clear()
+      this.initChart()
     }
   }
 }

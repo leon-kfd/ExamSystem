@@ -8,6 +8,14 @@ import echarts from 'echarts'
 
 export default {
   name: 'TestAnalysis',
+  props: {
+    xData: {
+      type: Array
+    },
+    yData: {
+      type: Array
+    }
+  },
   data () {
     return {
       chart: null
@@ -41,17 +49,19 @@ export default {
         },
         xAxis: {
           type: 'value',
-          boundaryGap: [0, 0.01]
+          boundaryGap: [0, 0.01],
+          min: 0,
+          max: 100
         },
         yAxis: {
           type: 'category',
-          data: ['第1题', '第2题', '第3题', '第4题', '第5题', '第6题']
+          data: []
         },
         series: [
           {
             name: '正确率',
             type: 'bar',
-            data: [30, 40, 60, 50, 60, 40],
+            data: [],
             itemStyle: {
               normal: {
                 color: function (params) {
@@ -64,13 +74,33 @@ export default {
                   } else {
                     return "#79ab36"
                   }
+                },
+                label: {
+                  show: true,
+                  formatter: '{c}%'
                 }
               }
             }
           }
         ]
-      };
+      }
+      option.yAxis.data = this.xData
+      option.series[0].data = this.yData
       this.chart.setOption(option)
+    },
+    refresh() {
+      this.chart && this.chart.clear()
+      this.initChart()
+    }
+  },
+  watch: {
+    xData() {
+      this.chart && this.chart.clear()
+      this.initChart()
+    },
+    yData() {
+      this.chart && this.chart.clear()
+      this.initChart()
     }
   }
 }

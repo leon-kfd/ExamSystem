@@ -2,6 +2,7 @@ import axios from 'axios'
 import qs from 'qs'
 import { Message } from 'element-ui'
 import promiseFinally from 'promise.prototype.finally'
+import router from '@/router/'
 
 promiseFinally.shim()
 /**
@@ -44,9 +45,14 @@ instance.interceptors.response.use(
       return data.data
     } else {
       if (data.code === 300) {
-        // router.push('/login')
-      }
-      if (data.message) {
+        Message({
+          showClose: true,
+          message: data.message,
+          type: 'error',
+          duration: 2000
+        })
+        router.push('/login')
+      } else if (data.message) {
         Message({
           showClose: true,
           message: data.message,

@@ -74,5 +74,9 @@ export default {
   // 获取含有问答题的考试列表（阅卷评卷）
   getEssayExamList: {
     url: '/getEssayExamList'
+  },
+  // 获取考试报表
+  getExamReport: {
+    url: '/getExamReport'
   }
 }

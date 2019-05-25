@@ -19,15 +19,15 @@
           <el-progress :text-inside="true"
                        style="width: 80%"
                        :stroke-width="18"
-                       :percentage="70"></el-progress>
+                       :percentage="examPercentage"></el-progress>
         </div>
       </div>
     </div>
     <div class="score-body">
       <div class="score-box">
-        <div class="title">考试成绩分布占比图</div>
+        <div class="title">考试成绩分布占比图<span class="tip">(自动转换成百分制)</span></div>
         <div class="content">
-          <score-pie></score-pie>
+          <score-pie :pieData="pieData" ref="scorePie"></score-pie>
         </div>
       </div>
     </div>
@@ -35,7 +35,7 @@
       <div class="question-box">
         <div class="title">试题正确率分析</div>
         <div class="content">
-          <test-analysis></test-analysis>
+          <test-analysis :xData="xData" :yData="yData" ref="testAnalysis"></test-analysis>
         </div>
       </div>
     </div>
@@ -45,23 +45,23 @@
         <div class="content">
           <p class="number-item">
             <span class="name">完成情况:</span>
-            <span class="text">45 <span class="tip">/ 50</span></span>
+            <span class="text">{{examDetail.finishCount}} <span class="tip">/ {{examDetail.sumCount}}</span></span>
           </p>
           <p class="number-item">
             <span class="name">平均分:</span>
-            <span class="text avg">80 <span class="tip">分</span></span>
+            <span class="text avg">{{examDetail.avg}} <span class="tip">分</span></span>
           </p>
           <p class="number-item">
             <span class="name">最高分:</span>
-            <span class="text max">95 <span class="tip">分</span></span>
+            <span class="text max">{{examDetail.max}} <span class="tip">分</span></span>
           </p>
           <p class="number-item">
             <span class="name">最低分:</span>
-            <span class="text min">58 <span class="tip">分</span></span>
+            <span class="text min">{{examDetail.min}} <span class="tip">分</span></span>
           </p>
           <p class="number-item">
             <span class="name">平均用时:</span>
-            <span class="text">30 <span class="tip">分钟</span></span>
+            <span class="text">{{examDetail.avgUseTime}} <span class="tip">分钟</span></span>
           </p>
         </div>
       </div>
@@ -81,19 +81,25 @@ export default {
     return {
       examList: [],
       CurrentExam: '',
-      examInfo: {
-        autoMarking: 1,
-        checkboxCount: 1,
-        classroom: [1, 2],
-        course: "测试",
-        endTime: "2019-05-24 00:00:00",
-        essayCount: 1,
-        judgeCount: 1,
-        long: 120,
-        radioCount: 1,
-        randomOrder: 1,
-        startTime: "2019-05-22 00:00:00",
-        title: "测试0522"
+      examPercentage: 0,
+      examHasEssay: false,
+      pieData: [
+        { value: 0, name: '≤60' },
+        { value: 0, name: '60~70' },
+        { value: 0, name: '70~80' },
+        { value: 0, name: '80~90' },
+        { value: 0, name: '90~100' }
+      ],
+      xData: [],
+      yData: [],
+      examDetail: {
+        finishCount: 0,
+        needEvaluationCount: 0,
+        sumCount: 0,
+        avg: 0,
+        max: 0,
+        min: 0,
+        avgUseTime: 0
       }
     }
   },
@@ -107,10 +113,62 @@ export default {
       })
     },
     getExamDetail () {
-      this.$api('getExamInfoFromTeacher', {
+      this.$api('getExamReport', {
         examId: this.CurrentExam
       }).then(data => {
         console.log(data)
+        this.examPercentage = ~~((data.finishStatus.finishedCount + data.finishStatus.needEvaluation) / data.finishStatus.classCount * 100)
+        this.examHasEssay = data.examInfo.essay_count > 0
+        // 渲染成绩分布饼图
+        let scoreFull = data.examInfo.score_sum
+        let lt60 = 0, lt70 = 0, lt80 = 0, lt90 = 0, lt100 = 0, studentScoreSum = 0, studentUseTimeSum = 0
+        let scoreList = data.studentExamList.map((item,index) => {
+          let scoreStudent = ~~(item.objectiveScore + item.essayScore)
+          let score = scoreStudent / scoreFull * 100 
+          switch(true) {
+            case score < 60 : lt60++; break
+            case score < 70 : lt70++; break
+            case score < 80 : lt80++; break
+            case score < 90 : lt90++; break
+            case score >=90 && score <=100 : lt100++; break
+          }
+          studentScoreSum += scoreStudent
+          studentUseTimeSum += item.useTime
+          return scoreStudent
+        })
+        let pieData = [
+          { value: lt60 == 0 ? null: lt60, name: '≤60' },
+          { value: lt70 == 0 ? null: lt70, name: '60~70' },
+          { value: lt80 == 0 ? null: lt80, name: '70~80' },
+          { value: lt90 == 0 ? null: lt90, name: '80~90' },
+          { value: lt100 == 0 ? null: lt100, name: '90~100' }
+        ]
+        this.pieData = pieData
+        this.$refs.scorePie.refresh()
+        // 渲染错题统计折线
+        let xData = []
+        let yData = []
+        let studentAnswerList = data.studentAnswerList
+        for (let i in studentAnswerList) {
+          xData.push("第" + i + "题")
+          let truth = studentAnswerList[i].answerList.filter(item => item).length
+          let sum = studentAnswerList[i].answerList.length
+          let truthPercent = ~~(truth / sum * 100)
+          yData.push(truthPercent)
+        }
+        this.xData = xData
+        this.yData = yData
+        this.$refs.testAnalysis.refresh()
+        // 渲染详情
+        this.examDetail.finishCount = data.finishStatus.finishedCount + data.finishStatus.needEvaluation
+        this.examDetail.needEvaluation = data.finishStatus.needEvaluation
+        this.examDetail.sumCount = data.finishStatus.classCount
+        console.log(scoreList,studentScoreSum, studentUseTimeSum)
+        this.examDetail.avg = ~~(studentScoreSum / scoreList.length)
+        this.examDetail.max = Math.max(...scoreList)
+        this.examDetail.min = Math.min(...scoreList)
+        this.examDetail.avgUseTime = ~~(studentUseTimeSum / scoreList.length) + 1
+        console.log(this.examDetail)
       })
     },
     examChange () {
@@ -126,7 +184,7 @@ export default {
 .question-box {
   margin-bottom: 20px;
   .title {
-    color: #778;
+    color: #556;
     height: 30px;
     line-height: 30px;
     padding-left: 10px;
@@ -139,6 +197,11 @@ export default {
       height: 16px;
       top: 7px;
       border-left: 4px solid #bb55c2;
+    }
+    .tip {
+      font-size: 12px;
+      color: #889;
+      margin-left: 8px;
     }
   }
 }
