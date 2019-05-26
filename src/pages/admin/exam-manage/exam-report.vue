@@ -4,6 +4,7 @@
     <div class="h-operation clear">
       <span class="h-operation-text">考试</span>
       <el-select v-model="CurrentExam"
+                 v-loading="examListLoading"
                  @change="examChange"
                  size="small">
         <el-option v-for="(item,index) in examList"
@@ -12,7 +13,9 @@
                    :label="item.label"></el-option>
       </el-select>
     </div>
-    <div class="report-body">
+    <div class="report-body"
+         :class="{'report-empty': !CurrentExam}"
+         v-loading="loading">
       <div class="percent-box">
         <div class="title">完成情况</div>
         <div class="content">
@@ -22,47 +25,56 @@
                        :percentage="examPercentage"></el-progress>
         </div>
       </div>
-    </div>
-    <div class="score-body">
-      <div class="score-box">
-        <div class="title">考试成绩分布占比图<span class="tip">(自动转换成百分制)</span></div>
-        <div class="content">
-          <score-pie :pieData="pieData" ref="scorePie"></score-pie>
+      <div class="number-count">
+        <div class="number-box">
+          <div class="title">考试结果统计</div>
+          <div class="content">
+            <p class="number-item">
+              <span class="name">完成情况:</span>
+              <span class="text">{{examDetail.finishCount}}
+                <span class="tip">/ {{examDetail.sumCount}}</span>
+                <span class="warning"
+                      v-if="examDetail.needEvaluation>0">
+                  <br>-检测到 <span style="font-weight:bold;color: #565656">{{examDetail.needEvaluation}}</span> 份试卷未手动阅卷-
+                </span>
+              </span>
+            </p>
+            <p class="number-item">
+              <span class="name">平均分:</span>
+              <span class="text avg">{{examDetail.avg}} <span class="tip">分</span></span>
+            </p>
+            <p class="number-item">
+              <span class="name">最高分:</span>
+              <span class="text max">{{examDetail.max}} <span class="tip">分</span></span>
+            </p>
+            <p class="number-item">
+              <span class="name">最低分:</span>
+              <span class="text min">{{examDetail.min}} <span class="tip">分</span></span>
+            </p>
+            <p class="number-item">
+              <span class="name">平均用时:</span>
+              <span class="text">{{examDetail.avgUseTime}} <span class="tip">分钟</span></span>
+            </p>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="question-report">
-      <div class="question-box">
-        <div class="title">试题正确率分析</div>
-        <div class="content">
-          <test-analysis :xData="xData" :yData="yData" ref="testAnalysis"></test-analysis>
+      <div class="score-body">
+        <div class="score-box">
+          <div class="title">考试成绩分布占比图<span class="tip">(自动转换成百分制)</span></div>
+          <div class="content">
+            <score-pie :pieData="pieData"
+                       ref="scorePie"></score-pie>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="number-count">
-      <div class="number-box">
-        <div class="title">考试详细统计</div>
-        <div class="content">
-          <p class="number-item">
-            <span class="name">完成情况:</span>
-            <span class="text">{{examDetail.finishCount}} <span class="tip">/ {{examDetail.sumCount}}</span></span>
-          </p>
-          <p class="number-item">
-            <span class="name">平均分:</span>
-            <span class="text avg">{{examDetail.avg}} <span class="tip">分</span></span>
-          </p>
-          <p class="number-item">
-            <span class="name">最高分:</span>
-            <span class="text max">{{examDetail.max}} <span class="tip">分</span></span>
-          </p>
-          <p class="number-item">
-            <span class="name">最低分:</span>
-            <span class="text min">{{examDetail.min}} <span class="tip">分</span></span>
-          </p>
-          <p class="number-item">
-            <span class="name">平均用时:</span>
-            <span class="text">{{examDetail.avgUseTime}} <span class="tip">分钟</span></span>
-          </p>
+      <div class="question-report">
+        <div class="question-box">
+          <div class="title">试题正确率分析</div>
+          <div class="content">
+            <test-analysis :xData="xData"
+                           :yData="yData"
+                           ref="testAnalysis"></test-analysis>
+          </div>
         </div>
       </div>
     </div>
@@ -100,7 +112,9 @@ export default {
         max: 0,
         min: 0,
         avgUseTime: 0
-      }
+      },
+      examListLoading: false,
+      loading: false
     }
   },
   mounted () {
@@ -108,11 +122,15 @@ export default {
   },
   methods: {
     getExamList () {
+      this.examListLoading = true
       this.$api('getTeacherFinishedExamList').then(data => {
         this.examList = data
+      }).finally(_ => {
+        this.examListLoading = false
       })
     },
     getExamDetail () {
+      this.loading = true
       this.$api('getExamReport', {
         examId: this.CurrentExam
       }).then(data => {
@@ -122,26 +140,26 @@ export default {
         // 渲染成绩分布饼图
         let scoreFull = data.examInfo.score_sum
         let lt60 = 0, lt70 = 0, lt80 = 0, lt90 = 0, lt100 = 0, studentScoreSum = 0, studentUseTimeSum = 0
-        let scoreList = data.studentExamList.map((item,index) => {
+        let scoreList = data.studentExamList.map((item, index) => {
           let scoreStudent = ~~(item.objectiveScore + item.essayScore)
-          let score = scoreStudent / scoreFull * 100 
-          switch(true) {
-            case score < 60 : lt60++; break
-            case score < 70 : lt70++; break
-            case score < 80 : lt80++; break
-            case score < 90 : lt90++; break
-            case score >=90 && score <=100 : lt100++; break
+          let score = scoreStudent / scoreFull * 100
+          switch (true) {
+            case score < 60: lt60++; break
+            case score < 70: lt70++; break
+            case score < 80: lt80++; break
+            case score < 90: lt90++; break
+            case score >= 90 && score <= 100: lt100++; break
           }
           studentScoreSum += scoreStudent
           studentUseTimeSum += item.useTime
           return scoreStudent
         })
         let pieData = [
-          { value: lt60 == 0 ? null: lt60, name: '≤60' },
-          { value: lt70 == 0 ? null: lt70, name: '60~70' },
-          { value: lt80 == 0 ? null: lt80, name: '70~80' },
-          { value: lt90 == 0 ? null: lt90, name: '80~90' },
-          { value: lt100 == 0 ? null: lt100, name: '90~100' }
+          { value: lt60 == 0 ? null : lt60, name: '≤60' },
+          { value: lt70 == 0 ? null : lt70, name: '60~70' },
+          { value: lt80 == 0 ? null : lt80, name: '70~80' },
+          { value: lt90 == 0 ? null : lt90, name: '80~90' },
+          { value: lt100 == 0 ? null : lt100, name: '90~100' }
         ]
         this.pieData = pieData
         this.$refs.scorePie.refresh()
@@ -163,12 +181,12 @@ export default {
         this.examDetail.finishCount = data.finishStatus.finishedCount + data.finishStatus.needEvaluation
         this.examDetail.needEvaluation = data.finishStatus.needEvaluation
         this.examDetail.sumCount = data.finishStatus.classCount
-        console.log(scoreList,studentScoreSum, studentUseTimeSum)
         this.examDetail.avg = ~~(studentScoreSum / scoreList.length)
         this.examDetail.max = Math.max(...scoreList)
         this.examDetail.min = Math.min(...scoreList)
         this.examDetail.avgUseTime = ~~(studentUseTimeSum / scoreList.length) + 1
-        console.log(this.examDetail)
+      }).finally(_ => {
+        this.loading = false
       })
     },
     examChange () {
@@ -213,6 +231,7 @@ export default {
   margin-right: 50px;
 }
 .number-box {
+  width: 300px;
   .content {
     padding: 10px 40px;
     .number-item {
@@ -242,8 +261,31 @@ export default {
           font-size: 14px;
           color: #778;
         }
+        .warning {
+          font-size: 12px;
+          color: #ffaa22;
+          font-weight: normal;
+        }
       }
     }
+  }
+}
+.report-empty {
+  position: relative;
+  &:after {
+    content: "请先选择考试...";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    line-height: 500px;
+    font-size: 28px;
+    font-weight: bold;
+    color: #667;
+    background: rgba(255, 255, 255, 0.95);
+    transition: all 0.4s;
   }
 }
 </style>

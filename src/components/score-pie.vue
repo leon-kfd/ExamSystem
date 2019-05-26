@@ -1,6 +1,6 @@
 <template>
   <div class="score-pie"
-       style="width: 550px;height: 500px;margin-top: 10px"
+       style="width: 550px;height: 600px;margin-top: 10px"
        ref="myEchart"></div>
 </template>
 <script>
@@ -16,7 +16,7 @@ export default {
   name: 'ScorePie',
   props: {
     pieData: {
-      type:Array
+      type: Array
     }
   },
   data () {
@@ -72,7 +72,7 @@ export default {
       option.series[0].data = this.pieData
       this.chart.setOption(option)
     },
-    refresh() {
+    refresh () {
       this.chart && this.chart.clear()
       this.initChart()
     }

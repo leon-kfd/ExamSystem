@@ -240,11 +240,11 @@ export default {
     },
     checkNumber (val, maxScore, index) {
       if (!val) return
-      if (/^\d$/.test(val)) {
+      if (/^\d+$/.test(val)) {
         if (val <= 0) {
           this.detail.essayList[index].essay_score = 0
-        } else if (val >= 5) {
-          this.detail.essayList[index].essay_score = 5
+        } else if (val >= maxScore) {
+          this.detail.essayList[index].essay_score = maxScore
         }
       } else {
         this.detail.essayList[index].essay_score = 0

@@ -1,6 +1,6 @@
 <template>
   <div class="test-analysis"
-       style="width: 550px;height: 500px;margin-top: 10px"
+       style="width: 550px;height: 600px;margin-top: 10px"
        ref="myEchart"></div>
 </template>
 <script>
@@ -88,17 +88,17 @@ export default {
       option.series[0].data = this.yData
       this.chart.setOption(option)
     },
-    refresh() {
+    refresh () {
       this.chart && this.chart.clear()
       this.initChart()
     }
   },
   watch: {
-    xData() {
+    xData () {
       this.chart && this.chart.clear()
       this.initChart()
     },
-    yData() {
+    yData () {
       this.chart && this.chart.clear()
       this.initChart()
     }
