@@ -95,7 +95,7 @@
               <p class="login-footer clear">
                 <!-- <span class="text1 fl"
                       @click="active=false">注册</span> -->
-                <span class="text2 fr">忘记密码?</span>
+                <!-- <span class="text2 fr">忘记密码?</span> -->
               </p>
             </div>
           </div>

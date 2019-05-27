@@ -28,6 +28,89 @@
       <div class="number-count">
         <div class="number-box">
           <div class="title">考试结果统计</div>
+          <div class="exam-info-content">
+            <dl>
+              <dt>试卷题目</dt>
+              <dd>{{examInfo.exam_title}}</dd>
+            </dl>
+            <!-- <dl>
+              <dt>发布时间</dt>
+              <dd>{{examInfo.publish_date}}</dd>
+            </dl> -->
+            <dl>
+              <dt>考试时长</dt>
+              <dd>{{examInfo.exam_long}} 分钟</dd>
+            </dl>
+            <!-- <dl>
+              <dt>开始时间</dt>
+              <dd style="font-size: 13px;color: #445">{{examInfo.exam_starttime}}</dd>
+            </dl>
+            <dl>
+              <dt>结束时间</dt>
+              <dd style="font-size: 13px;color: #445">{{examInfo.exam_endtime}}</dd>
+            </dl> -->
+            <dl>
+              <dt>考试班级</dt>
+              <dd>
+                <el-tag size="mini"
+                        type="info"
+                        v-for="item in examClass"
+                        style="margin-right: 4px;margin-bottom: 4px"
+                        :key="item">{{item}}</el-tag>
+              </dd>
+            </dl>
+            <dl>
+              <dt>相关课程</dt>
+              <dd>{{examInfo.exam_course}}</dd>
+            </dl>
+            <dl>
+              <dt>试卷题量</dt>
+              <dd>
+                <el-row>
+                  <el-col :span="6">
+                    <p class="type-count-title">单选</p>
+                  </el-col>
+                  <el-col :span="6">
+                    <p class="type-count-title">判断</p>
+                  </el-col>
+                  <el-col :span="6">
+                    <p class="type-count-title">多选</p>
+                  </el-col>
+                  <el-col :span="6">
+                    <p class="type-count-title">问答</p>
+                  </el-col>
+                </el-row>
+                <el-row>
+                  <el-col :span="6">
+                    <p class="type-count-text">{{examInfo.radio_count}}</p>
+                  </el-col>
+                  <el-col :span="6">
+                    <p class="type-count-text">{{examInfo.judge_count}}</p>
+                  </el-col>
+                  <el-col :span="6">
+                    <p class="type-count-text">{{examInfo.checkbox_count}}</p>
+                  </el-col>
+                  <el-col :span="6">
+                    <p class="type-count-text">{{examInfo.essay_count}}</p>
+                  </el-col>
+                </el-row>
+              </dd>
+            </dl>
+            <dl>
+              <dt>当前状态</dt>
+              <dd>
+                <el-tag type="success"
+                        v-if="examInfo.status==2"
+                        size="small">已开始,进行中</el-tag>
+                <el-tag type="warning"
+                        v-if="examInfo.status==3"
+                        size="small">已结束,阅卷未完成</el-tag>
+                <el-tag type="success"
+                        v-if="examInfo.status==4"
+                        size="small">已结束,阅卷完成</el-tag>
+              </dd>
+            </dl>
+          </div>
           <div class="content">
             <p class="number-item">
               <span class="name">完成情况:</span>
@@ -69,7 +152,7 @@
       </div>
       <div class="question-report">
         <div class="question-box">
-          <div class="title">试题正确率分析</div>
+          <div class="title">试题正确率分析<span class="tip">(自动过滤掉问答题)</span></div>
           <div class="content">
             <test-analysis :xData="xData"
                            :yData="yData"
@@ -113,8 +196,33 @@ export default {
         min: 0,
         avgUseTime: 0
       },
+      examInfo: {
+        auto_marking: 1,
+        checkbox_count: 0,
+        created_at: "",
+        essay_count: 0,
+        exam_class: "1,2",
+        exam_course: "",
+        exam_endtime: "",
+        exam_long: 120,
+        exam_starttime: "",
+        judge_count: 0,
+        publish_date: "",
+        radio_count: 0,
+        random_order: 1,
+        score_sum: 100,
+        status: 0,
+        updated_at: "",
+      },
+      examClass: [],
       examListLoading: false,
       loading: false
+    }
+  },
+  filters: {
+    classListFilter (val) {
+      // return val + 1
+      return this.$store.state.classList
     }
   },
   mounted () {
@@ -135,6 +243,10 @@ export default {
         examId: this.CurrentExam
       }).then(data => {
         console.log(data)
+        this.examInfo = data.examInfo
+        this.examClass = data.examInfo.exam_class.split(',').map(item => {
+          return this.$store.state.classList.find(item1 => item1.value == item).label
+        })
         this.examPercentage = ~~((data.finishStatus.finishedCount + data.finishStatus.needEvaluation) / data.finishStatus.classCount * 100)
         this.examHasEssay = data.examInfo.essay_count > 0
         // 渲染成绩分布饼图
@@ -168,11 +280,13 @@ export default {
         let yData = []
         let studentAnswerList = data.studentAnswerList
         for (let i in studentAnswerList) {
-          xData.push("第" + i + "题")
-          let truth = studentAnswerList[i].answerList.filter(item => item).length
-          let sum = studentAnswerList[i].answerList.length
-          let truthPercent = ~~(truth / sum * 100)
-          yData.push(truthPercent)
+          if (studentAnswerList[i].questionType != 4) {
+            xData.push("第" + i + "题")
+            let truth = studentAnswerList[i].answerList.filter(item => item).length
+            let sum = studentAnswerList[i].answerList.length
+            let truthPercent = ~~(truth / sum * 100)
+            yData.push(truthPercent)
+          }
         }
         this.xData = xData
         this.yData = yData
@@ -232,6 +346,40 @@ export default {
 }
 .number-box {
   width: 300px;
+  .exam-info-content {
+    padding: 5px 20px;
+    border-bottom: 1px solid #eee;
+    dl {
+      margin-bottom: 8px;
+      display: flex;
+      dt {
+        font-size: 14px;
+        color: #889;
+        line-height: 20px;
+        text-align: right;
+        margin-right: 10px;
+        width: 65px;
+      }
+      dd {
+        width: 100%;
+        flex: 1;
+        color: #262630;
+        font-size: 14px;
+        text-align: left;
+        line-height: 20px;
+        .type-count-title {
+          text-align: center;
+          color: #454549;
+          border-bottom: 1px solid #eee;
+        }
+        .type-count-text {
+          text-align: center;
+          font-weight: bold;
+          border-bottom: 1px solid #eee;
+        }
+      }
+    }
+  }
   .content {
     padding: 10px 40px;
     .number-item {
