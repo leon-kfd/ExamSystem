@@ -3,7 +3,7 @@
     <nav class="nav">
       <keep-alive>
         <div class="container">
-          <router-link to="StudentHome">
+          <router-link :to="{name:'StudentHome'}">
             <img src="@/assets/img/logo.svg"
                  class="logo">
           </router-link>
