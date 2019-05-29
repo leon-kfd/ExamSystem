@@ -296,8 +296,8 @@ export default {
         this.examDetail.needEvaluation = data.finishStatus.needEvaluation
         this.examDetail.sumCount = data.finishStatus.classCount
         this.examDetail.avg = ~~(studentScoreSum / scoreList.length)
-        this.examDetail.max = Math.max(...scoreList)
-        this.examDetail.min = Math.min(...scoreList)
+        this.examDetail.max = scoreList.length > 0 ? Math.max(...scoreList) : 0
+        this.examDetail.min = scoreList.length > 0 ? Math.min(...scoreList) : 0
         this.examDetail.avgUseTime = ~~(studentUseTimeSum / scoreList.length) + 1
       }).finally(_ => {
         this.loading = false

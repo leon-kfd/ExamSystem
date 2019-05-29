@@ -606,7 +606,7 @@ export default {
         event.preventDefault()
       }
     },
-    async saveTemp () {
+    saveTemp () {
       if (this.examForm.fields.title) {
         let params = {
           ...this.examForm.fields,
@@ -614,7 +614,7 @@ export default {
         }
         delete params.date
         this.saveTempLoading = true
-        await this.$api('saveExam', params).then(data => {
+        this.$api('saveExam', params).then(data => {
           this.examForm.fields.examId = data.examId || -1
           this.$message.success('操作成功')
         }).finally(_ => {
@@ -624,7 +624,7 @@ export default {
         this.$message.error('请填写考试题目再进行该操作....')
       }
     },
-    async checkPublishExam () {
+    checkPublishExam () {
       this.questionListFlag = false
       this.$refs['examForm'].validate(async (valid) => {
         if (valid) {
@@ -655,7 +655,7 @@ export default {
           } else {
             this.checkExamDialog = true
             let radio = 0, judge = 0, checkbox = 0, question = 0, score = 0
-            this.questionList.map(item => {
+            this.questionList.map((item, index) => {
               switch (item.type) {
                 case 1: radio++; break
                 case 2: judge++; break
@@ -672,14 +672,14 @@ export default {
         }
       })
     },
-    async publishExam () {
+    publishExam () {
       this.publishExamLoading = true
       let params = {
         ...this.examForm.fields,
         questionList: this.questionList
       }
       delete params.date
-      await this.$api('publishExam', params).then(data => {
+      this.$api('publishExam', params).then(data => {
         if (data.examId) {
           this.$message.success('考试发布成功!')
           this.checkExamDialog = false
@@ -695,9 +695,9 @@ export default {
         ScrollTo(0, 400, el)
       })
     },
-    async getData () {
+    getData () {
       this.dataLoading = true
-      await this.$api('getExamInfoFromTeacher', {
+      this.$api('getExamInfoFromTeacher', {
         examId: this.examForm.fields.examId
       }).then(data => {
         let { title, startTime, endTime, long, classroom, course, autoMarking, randomOrder } = data.examInfo
@@ -713,10 +713,10 @@ export default {
         this.dataLoading = false
       })
     },
-    async getClassList () {
+    getClassList () {
       this.classroomLoading = true
-      await this.$api('getTeacherClassroom').then(data => {
-        this.$store.commit('updateClassList', this.classList)
+      this.$api('getTeacherClassroom').then(data => {
+        this.$store.commit('updateClassList', data)
       }).finally(_ => {
         this.classroomLoading = false
       })

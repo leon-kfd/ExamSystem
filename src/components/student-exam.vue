@@ -106,7 +106,7 @@ export default {
   props: {
     examInfo: {
       type: Object,
-      default() {
+      default () {
         return {
           classroom: []
         }
@@ -198,7 +198,9 @@ export default {
         .t-number {
           font-size: 18px;
           font-weight: bold;
-          padding: 0 8px;
+          margin-right: 8px;
+          min-width: 24px;
+          text-align: right;
         }
         .t-type {
           margin: 0 5px 0 2px;
