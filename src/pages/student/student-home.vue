@@ -31,6 +31,8 @@
                 <span class="notice-date fr">{{item.showTime.split(" ")[0]}}</span>
               </p>
             </div>
+            <p class="no-data"
+               v-if="noticeList.length == 0">当前没有公告...</p>
           </div>
           <p class="btn-viewmore-box">
             <button class="d-btn btn-viewmore btn-animate1"
