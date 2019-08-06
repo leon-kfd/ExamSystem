@@ -266,16 +266,16 @@ export default {
       examInfo: {
         autoMarking: 1,
         checkboxCount: 1,
-        classroom: "",
-        course: "",
-        endTime: "",
+        classroom: '',
+        course: '',
+        endTime: '',
         essayCount: 0,
         judgeCount: 0,
         long: 0,
         radioCount: 0,
         randomOrder: 1,
-        startTime: "",
-        title: ""
+        startTime: '',
+        title: ''
       },
       restDuration: 7200,
       durationTimer: null,
@@ -416,7 +416,7 @@ export default {
         type: 'warning',
         beforeClose: async (action, instance, done) => {
           if (action === 'confirm') {
-            instance.confirmButtonLoading = true;
+            instance.confirmButtonLoading = true
             instance.confirmButtonText = '执行中...'
             // 计时器停止
             clearInterval(this.timer)
@@ -440,7 +440,7 @@ export default {
               this.submitLoading = false
             })
           } else {
-            done();
+            done()
           }
         }
       })
@@ -837,5 +837,3 @@ textarea {
   max-width: 480px;
 }
 </style>
-
-

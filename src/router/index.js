@@ -5,7 +5,7 @@ import Student from '@/pages/student'
 import StudentHome from '@/pages/student/student-home'
 import Exam from '@/pages/student/exam'
 import Admin from '@/pages/admin/index'
-import { Message } from 'element-ui'
+// import { Message } from 'element-ui'
 
 Vue.use(Router)
 
@@ -87,7 +87,7 @@ let adminRouter = [
         meta: {
           label: '成绩管理'
         }
-      },
+      }
       // {
       //   path: 'studentMessage',
       //   name: 'studentMessage',

@@ -26,7 +26,7 @@ export default {
   },
   methods: {
     initChart () {
-      this.chart = echarts.init(this.$refs.myEchart);
+      this.chart = echarts.init(this.$refs.myEchart)
       // 把配置和数据放这里
       let option = {
         title: {
@@ -66,13 +66,13 @@ export default {
               normal: {
                 color: function (params) {
                   if (params.value > 0 && params.value < 30) {
-                    return "#f15a57"
+                    return '#f15a57'
                   } else if (params.value >= 30 && params.value < 60) {
-                    return "#f2c46e"
+                    return '#f2c46e'
                   } else if (params.value >= 60 && params.value < 80) {
-                    return "#83a4d7"
+                    return '#83a4d7'
                   } else {
-                    return "#79ab36"
+                    return '#79ab36'
                   }
                 },
                 label: {

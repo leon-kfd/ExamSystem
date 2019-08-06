@@ -197,7 +197,7 @@
                    :key="optionIndex">
                 <div class="options-box"
                      :class="{
-                      editing: editOptionIndex == optionIndex && currentTestIndex == index, 
+                      editing: editOptionIndex == optionIndex && currentTestIndex == index,
                       answer: (typeof item.answer == 'number' && optionIndex == item.answer - 1) || (typeof item.answer == 'object' && item.answer.includes(optionIndex+1))
                      }">
                   <span class="options">{{optionIndex | questionOption}}</span>
@@ -396,7 +396,7 @@ export default {
         radio: 0,
         judge: 0,
         checkbox: 0,
-        question: 0,
+        question: 0
       }],
       scoreCount: 0,
       classroomLoading: false
@@ -728,7 +728,7 @@ export default {
   },
   directives: {
     focus: {
-      update: el => el.querySelector('input, textarea').focus(),
+      update: el => el.querySelector('input, textarea').focus()
     }
   }
 }

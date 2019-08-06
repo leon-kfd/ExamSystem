@@ -111,10 +111,12 @@
               </div>
               <div class="exam-info-footer">
                 <button class="d-btn btn-enter btn-animate1"
-                        @click="viewExamDetail(item.examId)" :style="item.status == 1 && 'width: 100px;margin-right:5px'"
+                        @click="viewExamDetail(item.examId)"
+                        :style="item.status == 1 && 'width: 100px;margin-right:5px'"
                         v-if="item.status==1||item.status==2">预览试卷 <i class="el-icon-d-arrow-right"></i></button>
-                <button class="d-btn btn-cancel" 
-                        @click="cancelExam(item.examId)" style="width: 100px"
+                <button class="d-btn btn-cancel"
+                        @click="cancelExam(item.examId)"
+                        style="width: 100px"
                         v-if="item.status==1">取消考试 <i class="el-icon-d-arrow-right"></i></button>
               </div>
             </el-card>

@@ -74,7 +74,7 @@
                      v-for="(optionItem, optionIndex) in item.option"
                      :key="optionIndex"
                      :class="{
-                           'true': (item.studentAnswer.split(',').includes(optionIndex + 1 + '')) && item.answer, 
+                           'true': (item.studentAnswer.split(',').includes(optionIndex + 1 + '')) && item.answer,
                            'false': (item.studentAnswer.split(',').includes(optionIndex + 1 + '')) && !item.answer
                           }">
                   <span class="a-options">{{optionIndex | questionOption}}</span>
@@ -347,4 +347,3 @@ export default {
   }
 }
 </style>
-

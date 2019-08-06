@@ -3,7 +3,7 @@
        id="StudentList">
     <div class="h-operation clear">
       <span class="h-operation-text">班级</span>
-      <el-select v-model="CurrentClass"
+      <el-select v-model="tableConfig.params.classId"
                  size="small"
                  placeholder="请选择"
                  @change="getData">
@@ -67,12 +67,19 @@
                        :total="total">
         </el-pagination>
       </div>
+      <standard-table :conf="tableConfig"
+                      ref="table"
+                      :loading.sync="loading"></standard-table>
     </div>
   </div>
 </template>
 <script>
+import StandardTable from '@/components/standard-table'
 export default {
   name: 'StudentList',
+  components: {
+    StandardTable
+  },
   data () {
     return {
       loading: false,
@@ -86,7 +93,53 @@ export default {
       tableData: [],
       page: 1,
       pageSize: 10,
-      total: 0
+      total: 0,
+      tableConfig: {
+        data: [],
+        row: [
+          {
+            prop: 'student_num',
+            label: '学号'
+          },
+          {
+            prop: 'name',
+            label: '姓名'
+          },
+          {
+            prop: 'tel',
+            label: '学号'
+          },
+          {
+            prop: 'email',
+            label: 'Email'
+          }
+        ],
+        operation: {
+          btns: [
+            {
+              label: '发送邮件',
+              type: 'text',
+              fn: (row) => {
+                console.log(row)
+              }
+            }
+          ]
+        },
+        pagination: {
+          requestMap: {
+            page: 'page',
+            pageSize: 'pageSize'
+          },
+          responseMap: {
+            total: 'total'
+          }
+        },
+        url: 'getStudentList',
+        params: {
+          classId: ''
+        },
+        resultMap: 'items'
+      }
     }
   },
   async created () {
@@ -107,19 +160,24 @@ export default {
       this.loading = true
       let classList = await this.$api('getTeacherClassroom')
       this.classList = classList
-      this.CurrentClass = classList ? classList[0].value : 0
+      this.tableConfig.params.classId = classList ? classList[0].value : 0
     },
     async getData () {
-      this.loading = true
-      let { items, total } = await this.$api('getStudentList', {
-        classId: this.CurrentClass,
-        page: this.page,
-        pageSize: this.pageSize
-      }).finally(_ => {
-        this.loading = false
+      // this.loading = true
+      // let { items, total } = await this.$api('getStudentList', {
+      //   classId: this.CurrentClass,
+      //   page: this.page,
+      //   pageSize: this.pageSize
+      // }).finally(_ => {
+      //   this.loading = false
+      // })
+      // this.tableData = items
+      // this.total = total
+      this.$nextTick(() => {
+        this.$refs.table.fetch().finally(() => {
+          this.loading = false
+        })
       })
-      this.tableData = items
-      this.total = total
     }
   }
 }
@@ -129,5 +187,3 @@ export default {
   text-decoration: none;
 }
 </style>
-
-

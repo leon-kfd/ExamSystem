@@ -4,8 +4,8 @@
       <span class="item"
             v-for="(item,index) in resultList"
             :key="index"
-            :class="{'q-true': typeof item.answer == 'boolean' && item.answer, 
-            'q-false': !item.answer, 
+            :class="{'q-true': typeof item.answer == 'boolean' && item.answer,
+            'q-false': !item.answer,
             'q-unkonwn':typeof item.answer == 'string' && item.answer=='unknown'}">{{item.index}}</span>
       <span class="item fake"
             v-for="item in 5"

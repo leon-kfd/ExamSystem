@@ -454,8 +454,8 @@ export default {
       }).then(data => {
         console.log(data)
         this.noticeDetail.title = data.notice_title
-        this.noticeDetail.publisher = data.teacher_name,
-          this.noticeDetail.showTime = data.show_time
+        this.noticeDetail.publisher = data.teacher_name
+        this.noticeDetail.showTime = data.show_time
         this.noticeDetail.content = data.notice_content
       }).finally(_ => {
         this.noticeDetailLoading = false
@@ -782,4 +782,3 @@ export default {
   height: 100%;
 }
 </style>
-

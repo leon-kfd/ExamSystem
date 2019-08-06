@@ -36,14 +36,18 @@
     "env": {
       "node": true
     },
+    "globals": {
+      "REQUEST_URL": true
+    },
     "extends": [
       "plugin:vue/essential",
       "@vue/standard"
     ],
     "rules": {
-      "eqeqeq": [
-        "off"
-      ]
+      "eqeqeq": "off",
+      "one-var": "off",
+      "camelcase": "off",
+      "no-mixed-operators": "off"
     },
     "parserOptions": {
       "parser": "babel-eslint"

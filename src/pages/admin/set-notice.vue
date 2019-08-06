@@ -254,7 +254,7 @@ export default {
       editorOption: {
         modules: {
           toolbar: [
-            ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
+            ['bold', 'italic', 'underline', 'strike'], // toggled buttons
             ['blockquote', 'code-block'],
             ['link', 'image']
           ]
@@ -430,5 +430,3 @@ export default {
   min-height: 200px;
 }
 </style>
-
-

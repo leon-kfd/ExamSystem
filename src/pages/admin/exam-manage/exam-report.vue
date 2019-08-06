@@ -199,20 +199,20 @@ export default {
       examInfo: {
         auto_marking: 1,
         checkbox_count: 0,
-        created_at: "",
+        created_at: '',
         essay_count: 0,
-        exam_class: "1,2",
-        exam_course: "",
-        exam_endtime: "",
+        exam_class: '1,2',
+        exam_course: '',
+        exam_endtime: '',
         exam_long: 120,
-        exam_starttime: "",
+        exam_starttime: '',
         judge_count: 0,
-        publish_date: "",
+        publish_date: '',
         radio_count: 0,
         random_order: 1,
         score_sum: 100,
         status: 0,
-        updated_at: "",
+        updated_at: ''
       },
       examClass: [],
       examListLoading: false,
@@ -281,7 +281,7 @@ export default {
         let studentAnswerList = data.studentAnswerList
         for (let i in studentAnswerList) {
           if (studentAnswerList[i].questionType != 4) {
-            xData.push("第" + i + "题")
+            xData.push('第' + i + '题')
             let truth = studentAnswerList[i].answerList.filter(item => item).length
             let sum = studentAnswerList[i].answerList.length
             let truthPercent = ~~(truth / sum * 100)

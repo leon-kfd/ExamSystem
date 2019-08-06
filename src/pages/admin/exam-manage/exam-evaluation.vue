@@ -155,7 +155,6 @@ export default {
         studentId: 0,
         studentName: '',
         objectiveScore: 0,
-        studentId: 0,
         essayList: []
       },
       detailLoading: false,
@@ -203,8 +202,7 @@ export default {
       this.detail.examId = row.examId
       await this.$api('getEvaluationDetail', {
         examId: row.examId,
-        studentId: row.studentId,
-        examId: row.examId
+        studentId: row.studentId
       }).then(data => {
         this.detail.objectiveScore = data.objectScore
         this.detail.essayList = data.essayList
@@ -313,4 +311,3 @@ export default {
   text-align: center;
 }
 </style>
-

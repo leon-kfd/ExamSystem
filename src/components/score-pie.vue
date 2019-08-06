@@ -29,13 +29,13 @@ export default {
   },
   methods: {
     initChart () {
-      this.chart = echarts.init(this.$refs.myEchart);
+      this.chart = echarts.init(this.$refs.myEchart)
       // 把配置和数据放这里
       let option = {
         color: ['#f15a57', '#f2c46e', '#83a4d7', '#79ab36', '#22c044'],
         tooltip: {
           trigger: 'item',
-          formatter: "{a} <br/>{b}: {c} ({d}%)"
+          formatter: '{a} <br/>{b}: {c} ({d}%)'
         },
         legend: {
           // orient: 'vertical',
@@ -68,7 +68,7 @@ export default {
             data: []
           }
         ]
-      };
+      }
       option.series[0].data = this.pieData
       this.chart.setOption(option)
     },
@@ -85,4 +85,3 @@ export default {
   }
 }
 </script>
-
