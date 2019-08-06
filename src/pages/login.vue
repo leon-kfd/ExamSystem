@@ -236,7 +236,7 @@ $theme-color: #573896;
     .left-box {
       width: 40%;
       // background: #a0a0b0;
-      background: url("../../static/img/img02.jpg") center center;
+      background: url("../assets/img/img02.jpg") center center;
       background-size: cover;
     }
     .right-box {
@@ -252,7 +252,7 @@ $theme-color: #573896;
     .right-box {
       width: 40%;
       // background: #a0a0b0;
-      background: url("../../static/img/img03.jpg") center center;
+      background: url("../assets/img/img03.jpg") center center;
       background-size: cover;
     }
   }
@@ -411,4 +411,3 @@ $theme-color: #573896;
   padding: 0;
 }
 </style>
-
