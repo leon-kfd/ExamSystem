@@ -21,52 +21,6 @@
                  @click="getData">刷新</el-button>
     </div>
     <div class="student-list-table">
-      <div class="table-main">
-        <el-table :data="tableData"
-                  border
-                  stripe
-                  style="width: 100%"
-                  v-loading="loading">
-          <el-table-column prop="student_num"
-                           label="学号"
-                           align="center"
-                           min-width="100"
-                           sortable>
-          </el-table-column>
-          <el-table-column prop="name"
-                           label="姓名"
-                           align="center">
-          </el-table-column>
-          <el-table-column prop="tel"
-                           label="手机号"
-                           align="center">
-          </el-table-column>
-          <el-table-column prop="email"
-                           align="center"
-                           label="Email">
-          </el-table-column>
-          <el-table-column fixed="right"
-                           label="操作"
-                           align="center"
-                           width="200">
-            <template slot-scope="scope">
-              <a :href="`mailto://${scope.row.email}`"
-                 class="mail-link el-button el-button--text el-button--small"
-                 :class="{'is-disabled': !scope.row.email}">发送邮件</a>
-            </template>
-          </el-table-column>
-        </el-table>
-      </div>
-      <div class="table-pagination">
-        <el-pagination @size-change="handleSizeChange"
-                       @current-change="handleCurrentChange"
-                       :current-page="page"
-                       :page-sizes="[10, 20, 30, 40]"
-                       :page-size="pageSize"
-                       layout="total, sizes, prev, pager, next, jumper"
-                       :total="total">
-        </el-pagination>
-      </div>
       <standard-table :conf="tableConfig"
                       ref="table"
                       :loading.sync="loading"></standard-table>
@@ -107,7 +61,7 @@ export default {
           },
           {
             prop: 'tel',
-            label: '学号'
+            label: '手机号'
           },
           {
             prop: 'email',
@@ -115,30 +69,20 @@ export default {
           }
         ],
         operation: {
-          btns: [
+          links: [
             {
               label: '发送邮件',
-              type: 'text',
-              fn: (row) => {
-                console.log(row)
-              }
+              disabled: (row) => !row.email,
+              href: (row) => 'mailto://' + row.email,
+              target: '_self'
             }
           ]
         },
-        pagination: {
-          requestMap: {
-            page: 'page',
-            pageSize: 'pageSize'
-          },
-          responseMap: {
-            total: 'total'
-          }
-        },
+        pagination: true,
         url: 'getStudentList',
         params: {
           classId: ''
-        },
-        resultMap: 'items'
+        }
       }
     }
   },
@@ -163,16 +107,6 @@ export default {
       this.tableConfig.params.classId = classList ? classList[0].value : 0
     },
     async getData () {
-      // this.loading = true
-      // let { items, total } = await this.$api('getStudentList', {
-      //   classId: this.CurrentClass,
-      //   page: this.page,
-      //   pageSize: this.pageSize
-      // }).finally(_ => {
-      //   this.loading = false
-      // })
-      // this.tableData = items
-      // this.total = total
       this.$nextTick(() => {
         this.$refs.table.fetch().finally(() => {
           this.loading = false

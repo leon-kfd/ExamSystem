@@ -10,23 +10,17 @@
                          :key="index"
                          :align="item.align || 'center'"
                          v-bind="{...item}"></el-table-column>
-        <el-table-column v-if="!['selection', 'index'].includes(item.type) && !item.slot"
+        <el-table-column v-if="!['selection', 'index'].includes(item.type)"
                          :key="index"
                          :align="item.align || 'center'"
                          :type="item.type"
-                         v-bind="{...item}">
-          <template #default="scope">
-            <span :style="item.style ? item.style(scope.row) : ''">{{item.formatter ? item.formatter(scope.row) : scope.row[item.prop]}}</span>
-          </template>
-        </el-table-column>
-        <el-table-column v-if="!['selection', 'index'].includes(item.type) && item.slot"
-                         :key="index"
-                         :align="item.align || 'center'"
                          :slot="null"
                          v-bind="{...item}">
           <template #default="scope">
             <slot :name="item.slot"
-                  :row="scope.row"></slot>
+                  :row="scope.row">
+              <span :style="item.style ? item.style(scope.row) : ''">{{item.formatter ? item.formatter(scope.row) : scope.row[item.prop]}}</span>
+            </slot>
           </template>
         </el-table-column>
       </template>
@@ -35,22 +29,30 @@
                        :align="conf.operation.align || 'center'"
                        :fixed="conf.operation.fixed || 'right'">
         <template slot-scope="scope">
-          <el-button v-for="(item,index) in conf.operation.btns"
-                     :key="index"
+          <el-button v-for="(item,index1) in conf.operation.btns"
+                     :key="index1"
                      :type="item.type || 'text'"
                      :size="item.size || 'small'"
+                     :disabled="item.disabled ? item.disabled(scope.row) : false"
                      @click="item.fn && item.fn(scope.row)">{{item.label}}</el-button>
+          <el-link v-for="(item,index2) in conf.operation.links"
+                   :key="index2"
+                   :type="item.type || 'primary'"
+                   :disabled="item.disabled ? item.disabled(scope.row) : false"
+                   :href="typeof item.href == 'function' ? item.href(scope.row) : item.href"
+                   :target="item.target || '_blank'">{{item.label}}</el-link>
         </template>
       </el-table-column>
     </el-table>
     <div class="pagination-box"
-         v-if="conf.pagination">
+         v-if="conf.pagination"
+         :style="{'text-align': conf.pagination.align || 'right'}">
       <el-pagination @size-change="handleSizeChange"
                      @current-change="handleCurrentChange"
                      :current-page="currentPage"
                      :page-size="currentPageSize"
-                     :page-sizes="conf.pagination && conf.pagination.pageSizes || [10, 20, 30, 50]"
-                     :layout="conf.pagination && conf.pagination.layout || 'total, sizes, prev, pager, next, jumper'"
+                     :page-sizes="(conf.pagination && conf.pagination.pageSizes) || [10, 20, 30, 50]"
+                     :layout="(conf.pagination && conf.pagination.layout) || 'total, sizes, prev, pager, next, jumper'"
                      :total="total">
       </el-pagination>
     </div>
@@ -72,7 +74,14 @@ export default {
       currentPageSize: 20,
       total: 0,
       isStaticPagination: false,
-      staticData: []
+      staticData: [],
+      defaultMap: {
+        page: 'page',
+        pageSize: 'pageSize',
+        total: 'total',
+        items: 'items'
+      },
+      defalutMethod: 'post'
     }
   },
   mounted () {
@@ -124,8 +133,8 @@ export default {
         let config = Object.assign(axiosDefaultConfig, this.conf.axiosConfig)
         let params = this.conf.params
         if (this.conf.pagination && !this.isStaticPagination) {
-          let page = this.conf.pagination.requestMap.page || 'page'
-          let pageSize = this.conf.pagination.requestMap.pageSize || 'pageSize'
+          let page = (this.conf.pagination.requestMap && this.conf.pagination.requestMap.page) || this.defaultMap.page
+          let pageSize = (this.conf.pagination.requestMap && this.conf.pagination.requestMap.pageSize) || this.defaultMap.pageSize
           params[page] = this.currentPage
           params[pageSize] = this.currentPageSize
         }
@@ -137,14 +146,13 @@ export default {
         } else {
           instance = axios({
             ...config,
-            method: this.conf.axiosConfig && this.conf.axiosConfig.method || 'post',
+            method: (this.conf.axiosConfig && this.conf.axiosConfig.method) || this.defalutMethod,
             url: this.conf.url,
             data: this.conf.params
           })
         }
         instance.then(data => {
-          console.log('resultItems', data)
-          let resultItems = this.getMap(data, this.conf.resultMap || 'data.items')
+          let resultItems = this.getMap(data, this.conf.resultMap || this.defaultMap.items)
           if (resultItems) {
             if (!this.conf.pagination) {
               this.conf.data = resultItems
@@ -154,7 +162,7 @@ export default {
               this.staticPagination()
             } else {
               this.conf.data = resultItems
-              let resultTotal = this.getMap(data, this.conf.pagination.responseMap && this.conf.pagination.responseMap.total || 'data.total')
+              let resultTotal = this.getMap(data, (this.conf.pagination.responseMap && this.conf.pagination.responseMap.total) || this.defaultMap.total)
               if (resultTotal) {
                 this.total = resultTotal
               } else {
@@ -177,6 +185,6 @@ export default {
 </script>
 <style lang='scss' scoped>
 .pagination-box {
-  margin-top: 10px;
+  margin-top: 15px;
 }
 </style>
