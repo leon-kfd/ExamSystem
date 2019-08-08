@@ -10,82 +10,74 @@
                  @click="getData">刷新</el-button>
     </div>
     <div class="save-temp-table">
-      <div class="table-main">
-        <el-table :data="tableData"
-                  v-loading="loading"
-                  border
-                  stripe
-                  style="width: 100%">
-          <el-table-column prop="lastEditDate"
-                           label="最后一次编辑时间"
-                           align="center"
-                           min-width="150"
-                           sortable>
-          </el-table-column>
-          <el-table-column prop="examId"
-                           label="ID"
-                           align="center"
-                           min-width="200">
-          </el-table-column>
-          <el-table-column prop="title"
-                           label="题目"
-                           align="center"
-                           min-width="200">
-          </el-table-column>
-          <el-table-column fixed="right"
-                           label="操作"
-                           align="center"
-                           width="200">
-            <template slot-scope="scope">
-              <el-button @click="returnEdit(scope.row)"
-                         type="text"
-                         size="small">继续编辑</el-button>
-              <el-button type="text"
-                         @click="del(scope.row)"
-                         size="small"
-                         style="color: #b33">删除</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-      </div>
-      <div class="table-pagination">
-        <el-pagination @size-change="handleSizeChange"
-                       @current-change="handleCurrentChange"
-                       :current-page="page"
-                       :page-sizes="[10, 20, 30, 40]"
-                       :page-size="pageSize"
-                       layout="total, sizes, prev, pager, next, jumper"
-                       :total="total">
-        </el-pagination>
-      </div>
+      <standard-table :conf="tableConfig"
+                      ref="table"
+                      :loading.sync="loading"></standard-table>
     </div>
   </div>
 </template>
 <script>
+import StandardTable from '@/components/standard-table'
 export default {
   name: 'SaveTempExam',
+  components: {
+    StandardTable
+  },
   data () {
     return {
       loading: false,
-      tableData: [],
-      page: 1,
-      pageSize: 10,
-      total: 0
+      tableConfig: {
+        data: [],
+        row: [
+          {
+            prop: 'lastEditDate',
+            label: '最后一次编辑时间',
+            align: 'center',
+            'min-width': '150'
+          },
+          {
+            prop: 'examId',
+            label: 'ID',
+            align: 'center',
+            'min-width': '200'
+          },
+          {
+            prop: 'title',
+            label: '题目',
+            align: 'center',
+            'min-width': '200'
+          }
+        ],
+        operation: {
+          btns: [
+            {
+              label: '继续编辑',
+              type: 'text',
+              fn: (row) => {
+                this.returnEdit(row)
+              }
+            },
+            {
+              label: '删除',
+              type: 'text',
+              style: (row) => {
+                return 'color: #b33'
+              }
+            }
+          ]
+        },
+        pagination: true,
+        url: 'getTeacherExamList',
+        params: {
+          status: 0
+        }
+      }
     }
   },
   mounted () {
     this.getData()
   },
   methods: {
-    handleSizeChange (val) {
-      this.page = 1
-      this.pageSize = val
-      this.getData()
-    },
-    handleCurrentChange (val) {
-      this.page = val
-      this.getData()
-    },
     returnEdit (row) {
       this.$router.push({
         name: 'createExam',
@@ -120,17 +112,8 @@ export default {
       })
     },
     async getData () {
-      this.loading = true
-      await this.$api('getTeacherExamList', {
-        status: 0,
-        page: this.page,
-        pageSize: this.pageSize
-      }).then(data => {
-        this.tableData = data.items
-        this.page = data.page
-        this.total = data.total
-      }).finally(_ => {
-        this.loading = false
+      this.$nextTick(() => {
+        this.$refs.table.fetch()
       })
     }
   }

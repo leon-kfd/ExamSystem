@@ -14,7 +14,7 @@
                  @click="getData">刷新</el-button>
     </div>
     <div class="notice-table">
-      <div class="table-main">
+      <!-- <div class="table-main">
         <el-table :data="tableData"
                   v-loading="loading"
                   border
@@ -66,7 +66,10 @@
                        layout="total, sizes, prev, pager, next, jumper"
                        :total="total">
         </el-pagination>
-      </div>
+      </div> -->
+      <standard-table :conf="tableConfig"
+                      ref="table"
+                      :loading.sync="loading"></standard-table>
     </div>
     <el-dialog :visible.sync="addDialog"
                title="发布公告"
@@ -196,20 +199,63 @@
   </div>
 </template>
 <script>
+import StandardTable from '@/components/standard-table'
 import { quillEditor } from 'vue-quill-editor'
 export default {
   name: 'SetNotice',
   components: {
-    quillEditor
+    quillEditor,
+    StandardTable
   },
   data () {
     return {
       loading: false,
       classroomLoading: false,
-      tableData: [],
-      page: 1,
-      pageSize: 10,
-      total: 0,
+      tableConfig: {
+        data: [],
+        row: [
+          {
+            prop: 'noticeTitle',
+            label: '公告标题',
+            'min-width': '150'
+          },
+          {
+            prop: 'showClass',
+            label: '展示班级'
+          },
+          {
+            prop: 'publishTime',
+            label: '发布时间'
+          },
+          {
+            prop: 'publishTime',
+            label: '展示结束时间'
+          }
+        ],
+        operation: {
+          btns: [
+            {
+              label: '重新编辑',
+              type: 'text',
+              fn: (row) => {
+                this.edit(row)
+              }
+            },
+            {
+              label: '删除',
+              type: 'text',
+              style: (row) => {
+                return 'color: #b33'
+              },
+              fn: (row) => {
+                this.del(row)
+              }
+            }
+          ]
+        },
+        pagination: true,
+        url: 'getNoticeListFromTeacher'
+      },
       classList: [],
       addDialog: false,
       addForm: {
@@ -281,15 +327,6 @@ export default {
     this.getData()
   },
   methods: {
-    handleSizeChange (val) {
-      this.page = 1
-      this.pageSize = val
-      this.getData()
-    },
-    handleCurrentChange (val) {
-      this.page = val
-      this.getData()
-    },
     edit (row) {
       this.init()
       this.editDialog = true
@@ -303,9 +340,9 @@ export default {
         type: 'warning',
         beforeClose: (action, instance, done) => {
           if (action === 'confirm') {
-            (async () => {
+            (() => {
               instance.confirmButtonLoading = true
-              await this.$api('deleteNotice', {
+              this.$api('deleteNotice', {
                 noticeId: row.id
               }).then(data => {
                 this.$message.success('删除成功')
@@ -324,11 +361,11 @@ export default {
     addNotice () {
       this.addDialog = true
     },
-    async publishNotice () {
+    publishNotice () {
       this.$refs['addForm'].validate(async (valid) => {
         if (valid) {
           this.btnAddNoticeLoading = true
-          await this.$api('publishOrEditNotice', {
+          this.$api('publishOrEditNotice', {
             noticeTitle: this.addForm.fields.title,
             showClassroom: this.addForm.fields.class,
             showTime: this.addForm.fields.showTime,
@@ -345,11 +382,11 @@ export default {
         }
       })
     },
-    async editNotice () {
+    editNotice () {
       this.$refs['editForm'].validate(async (valid) => {
         if (valid) {
           this.btnEditNoticeLoading = true
-          await this.$api('publishOrEditNotice', {
+          this.$api('publishOrEditNotice', {
             noticeId: this.currentDetailId,
             noticeTitle: this.editForm.fields.title,
             showClassroom: this.editForm.fields.class,
@@ -386,17 +423,17 @@ export default {
       }
       this.currentDetailId = 0
     },
-    async getClassList () {
+    getClassList () {
       this.classroomLoading = true
-      await this.$api('getTeacherClassroom').then(data => {
+      this.$api('getTeacherClassroom').then(data => {
         this.classList = data
       }).finally(_ => {
         this.classroomLoading = false
       })
     },
-    async getNoticeDetail () {
+    getNoticeDetail () {
       this.noticeDetailLoading = true
-      await this.$api('getNoticeDetailFromTeacher', {
+      this.$api('getNoticeDetailFromTeacher', {
         id: this.currentDetailId
       }).then(data => {
         this.editForm.fields.title = data.notice_title
@@ -407,17 +444,9 @@ export default {
         this.noticeDetailLoading = false
       })
     },
-    async getData () {
-      this.loading = true
-      await this.$api('getNoticeListFromTeacher', {
-        page: this.page,
-        pageSize: this.pageSize
-      }).then(data => {
-        this.tableData = data.items
-        this.page = data.page
-        this.total = data.total
-      }).finally(_ => {
-        this.loading = false
+    getData () {
+      this.$nextTick(() => {
+        this.$refs.table.fetch()
       })
     }
   }

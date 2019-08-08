@@ -10,72 +10,9 @@
                  @click="getData">刷新</el-button>
     </div>
     <div class="exam-evaluation-table">
-      <div class="table-main">
-        <el-table :data="tableData"
-                  v-loading="loading"
-                  border
-                  stripe
-                  style="width: 100%">
-          <el-table-column prop="examId"
-                           label="ExamId"
-                           align="center"
-                           min-width="200">
-          </el-table-column>
-          <el-table-column prop="examTitle"
-                           label="题目"
-                           align="center"
-                           min-width="200"
-                           :filters="examFilterList"
-                           :filter-method="filterExam">
-          </el-table-column>
-          <el-table-column prop="studentName"
-                           label="学生姓名"
-                           align="center"
-                           min-width="200">
-          </el-table-column>
-          <el-table-column prop="submitTime"
-                           label="交卷时间"
-                           sortable
-                           align="center"
-                           min-width="200">
-          </el-table-column>
-          <el-table-column prop="status"
-                           label="当前状态"
-                           align="center"
-                           min-width="200"
-                           :filters="[{ text: '等待评卷', value: '3' }, { text: '评卷已完成', value: '4' }]"
-                           :filter-method="filterStatus">
-            <template slot-scope="scope">
-              <span :style="{color: statusList[scope.row.status].color}">{{statusList[scope.row.status].text}}</span>
-            </template>
-          </el-table-column>
-          <el-table-column fixed="right"
-                           label="操作"
-                           align="center"
-                           width="200">
-            <template slot-scope="scope">
-              <el-button @click="evaluation(scope.row)"
-                         type="text"
-                         v-show="scope.row.status == 3"
-                         size="small">评卷</el-button>
-              <el-button @click="evaluation(scope.row)"
-                         type="text"
-                         v-show="scope.row.status == 4"
-                         size="small">重新评卷</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-      </div>
-      <div class="table-pagination">
-        <el-pagination @size-change="handleSizeChange"
-                       @current-change="handleCurrentChange"
-                       :current-page="page"
-                       :page-sizes="[10, 20, 30, 40]"
-                       :page-size="pageSize"
-                       layout="total, sizes, prev, pager, next, jumper"
-                       :total="total">
-        </el-pagination>
-      </div>
+      <standard-table :conf="tableConfig"
+                      ref="table"
+                      :loading.sync="loading"></standard-table>
     </div>
     <el-dialog :visible.sync="detailDialog"
                title="评卷">
@@ -129,10 +66,15 @@
   </div>
 </template>
 <script>
+import StandardTable from '@/components/standard-table'
 export default {
   name: 'ExamEvaluation',
+  components: {
+    StandardTable
+  },
   data () {
     return {
+      loading: false,
       statusList: {
         3: {
           text: '等待评卷',
@@ -143,11 +85,71 @@ export default {
           color: '#67C23A'
         }
       },
-      loading: false,
-      tableData: [],
-      page: 1,
-      pageSize: 10,
-      total: 0,
+      tableConfig: {
+        data: [],
+        row: [
+          {
+            prop: 'examId',
+            label: 'ExamId',
+            align: 'center',
+            'min-width': '200'
+          },
+          {
+            prop: 'studentName',
+            label: '学生姓名',
+            align: 'center',
+            'min-width': '200'
+          },
+          {
+            prop: 'submitTime',
+            label: '交卷时间',
+            sortable: true,
+            align: 'center',
+            'min-width': '200'
+          },
+          {
+            prop: 'status',
+            label: '当前状态',
+            align: 'center',
+            'min-width': '200',
+            filters: [
+              {
+                text: '等待评卷',
+                value: '3'
+              },
+              {
+                text: '评卷已完成',
+                value: '4'
+              }
+            ],
+            'filter-method': this.filterStatus,
+            style: (row) => ({ color: this.statusList[row.status].color }),
+            formatter: (row) => this.statusList[row.status].text
+          }
+        ],
+        operation: {
+          btns: [
+            {
+              label: '评卷',
+              type: 'text',
+              show: (row) => row.status == 3,
+              fn: (row) => {
+                this.evaluation(row)
+              }
+            },
+            {
+              label: '重新评卷',
+              type: 'text',
+              show: (row) => row.status == 4,
+              fn: (row) => {
+                this.evaluation(row)
+              }
+            }
+          ]
+        },
+        pagination: true,
+        url: 'getEvaluationList'
+      },
       detailDialog: false,
       detail: {
         examId: '',
@@ -168,30 +170,14 @@ export default {
   },
   methods: {
     getData () {
-      this.loading = true
-      this.$api('getEvaluationList', {
-        page: this.page,
-        pageSize: this.pageSize
-      }).then(data => {
-        this.tableData = data.items
-        this.total = data.total
-      }).finally(_ => {
-        this.loading = false
+      this.$nextTick(() => {
+        this.$refs.table.fetch()
       })
     },
     getEssayExamList () {
       this.$api('getEssayExamList').then(data => {
         this.examFilterList = data
       })
-    },
-    handleSizeChange (val) {
-      this.page = 1
-      this.pageSize = val
-      this.getData()
-    },
-    handleCurrentChange (val) {
-      this.page = val
-      this.getData()
     },
     async evaluation (row) {
       this.detailDialog = true

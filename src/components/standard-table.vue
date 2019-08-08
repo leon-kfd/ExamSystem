@@ -27,14 +27,18 @@
       <el-table-column v-if="conf.operation"
                        :label="conf.operation.label || '操作'"
                        :align="conf.operation.align || 'center'"
-                       :fixed="conf.operation.fixed || 'right'">
+                       :fixed="conf.operation.fixed || 'right'"
+                       min-width="150px"
+                       width="150px">
         <template slot-scope="scope">
-          <el-button v-for="(item,index1) in conf.operation.btns"
-                     :key="index1"
-                     :type="item.type || 'text'"
-                     :size="item.size || 'small'"
-                     :disabled="item.disabled ? item.disabled(scope.row) : false"
-                     @click="item.fn && item.fn(scope.row)">{{item.label}}</el-button>
+          <template v-for="(item,index1) in conf.operation.btns">
+            <el-button v-if="item.show ? item.show(scope.row) : true"
+                       :key="index1"
+                       :type="item.type || 'text'"
+                       :size="item.size || 'small'"
+                       :disabled="item.disabled ? item.disabled(scope.row) : false"
+                       @click="item.fn && item.fn(scope.row)">{{item.label}}</el-button>
+          </template>
           <el-link v-for="(item,index2) in conf.operation.links"
                    :key="index2"
                    :type="item.type || 'primary'"
@@ -131,7 +135,7 @@ export default {
           }
         }
         let config = Object.assign(axiosDefaultConfig, this.conf.axiosConfig)
-        let params = this.conf.params
+        let params = this.conf.params || {}
         if (this.conf.pagination && !this.isStaticPagination) {
           let page = (this.conf.pagination.requestMap && this.conf.pagination.requestMap.page) || this.defaultMap.page
           let pageSize = (this.conf.pagination.requestMap && this.conf.pagination.requestMap.pageSize) || this.defaultMap.pageSize
@@ -153,7 +157,7 @@ export default {
         }
         instance.then(data => {
           let resultItems = this.getMap(data, this.conf.resultMap || this.defaultMap.items)
-          if (resultItems) {
+          if (resultItems != null) {
             if (!this.conf.pagination) {
               this.conf.data = resultItems
             } else if (this.conf.pagination && this.isStaticPagination) {
@@ -163,7 +167,7 @@ export default {
             } else {
               this.conf.data = resultItems
               let resultTotal = this.getMap(data, (this.conf.pagination.responseMap && this.conf.pagination.responseMap.total) || this.defaultMap.total)
-              if (resultTotal) {
+              if (resultTotal != null) {
                 this.total = resultTotal
               } else {
                 this.$message.error(`返回数据total字段映射失败,请检查Map配置与后端返回数据是否配置正确..`)

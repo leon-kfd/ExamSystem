@@ -36,85 +36,22 @@
                  @click="getData">刷新</el-button>
     </div>
     <div class="score-table">
-      <div class="table-main">
-        <el-table :data="tableData"
-                  border
-                  stripe
-                  style="width: 100%"
-                  v-loading="loading">
-          <el-table-column prop="studentNum"
-                           label="学号"
-                           align="center"
-                           min-width="100"
-                           sortable>
-          </el-table-column>
-          <el-table-column prop="name"
-                           label="姓名"
-                           align="center">
-          </el-table-column>
-          <el-table-column prop="studentClass"
-                           label="课程"
-                           align="center">
-          </el-table-column>
-          <el-table-column prop="course"
-                           label="课程"
-                           align="center">
-          </el-table-column>
-          <el-table-column prop="submitTime"
-                           align="center"
-                           label="交卷时间">
-          </el-table-column>
-          <el-table-column prop="status"
-                           align="center"
-                           label="状态">
-            <template slot-scope="scope">
-              <span :style="{color: statusList[scope.row.status].color}">{{statusList[scope.row.status].text}}</span>
-            </template>
-          </el-table-column>
-          <el-table-column prop="score"
-                           align="center"
-                           label="得分 / 总分"
-                           min-width="120px"
-                           fixed="right">
-            <template slot-scope="scope">
-              <span class="bold"
-                    style="font-size: 18px"
-                    v-if="scope.row.status == 2 || scope.row.status == 4"
-                    :class="((scope.row.score+scope.row.essayScore) / scope.row.scoreSum) >= 0.8 ? 'text-success' :
-                              ((scope.row.score+scope.row.essayScore) / scope.row.scoreSum) >= 0.6 ? 'text-info' : 'text-danger'">{{scope.row.score+scope.row.essayScore}}
-              </span>
-              <span class="bold"
-                    style="font-size: 18px"
-                    v-if="scope.row.status == 3">{{scope.row.score}} + ?</span>
-              <span style="font-size: 14px;color: #778"> / {{scope.row.scoreSum}}</span>
-            </template>
-          </el-table-column>
-          <el-table-column fixed="right"
-                           label="操作"
-                           align="center"
-                           width="200">
-            <template slot-scope="scope">
-              <el-button @click="turnToEvaluation(scope.row)"
-                         v-if="scope.row.status == 3"
-                         type="text">评卷</el-button>
-              <el-button @click="detail(scope.row)"
-                         type="text">查看试卷</el-button>
-              <!-- <el-button @click="setScore(scope.row)"
-                         type="text">更改分数</el-button> -->
-            </template>
-          </el-table-column>
-        </el-table>
-      </div>
-      <div class="table-pagination">
-        <el-pagination @size-change="handleSizeChange"
-                       @current-change="handleCurrentChange"
-                       :current-page="page"
-                       :page-sizes="[10, 20, 30, 40]"
-                       :page-size="pageSize"
-                       layout="total, sizes, prev, pager, next, jumper"
-                       :total="total">
-        </el-pagination>
-      </div>
+      <standard-table :conf="tableConfig"
+                      ref="table"
+                      :loading.sync="loading">
+        <template #score="scoped">
+          <span class="bold"
+                style="font-size: 18px"
+                v-if="scoped.row.status == 2 || scoped.row.status == 4"
+                :class="((scoped.row.score+scoped.row.essayScore) / scoped.row.scoreSum) >= 0.8 ? 'text-success' :
+                              ((scoped.row.score+scoped.row.essayScore) / scoped.row.scoreSum) >= 0.6 ? 'text-info' : 'text-danger'">{{scoped.row.score+scoped.row.essayScore}}
+          </span>
+          <span class="bold"
+                style="font-size: 18px"
+                v-if="scoped.row.status == 3">{{scoped.row.score}} + ?</span>
+          <span style="font-size: 14px;color: #778"> / {{scoped.row.scoreSum}}</span>
+        </template>
+      </standard-table>
     </div>
     <el-dialog title="学生答卷信息"
                :visible.sync="studentAnswerDialog"
@@ -128,10 +65,14 @@
   </div>
 </template>
 <script>
+import StandardTable from '@/components/standard-table'
 import StudentExam from '@/components/student-exam'
 export default {
   name: 'ScoreManage',
-  components: { StudentExam },
+  components: {
+    StudentExam,
+    StandardTable
+  },
   data () {
     return {
       statusList: {
@@ -153,10 +94,71 @@ export default {
       examTitleList: [],
       CurrentClass: '',
       CurrentExamTitle: '',
-      tableData: [],
-      page: 1,
-      pageSize: 10,
-      total: 0,
+      tableConfig: {
+        data: [],
+        row: [
+          {
+            prop: 'studentNum',
+            label: '学号',
+            'min-width': '100',
+            sortable: true
+          },
+          {
+            prop: 'name',
+            label: '姓名'
+          },
+          {
+            prop: 'studentClass',
+            label: '班级'
+          },
+          {
+            prop: 'course',
+            label: '课程'
+          },
+          {
+            prop: 'submitTime',
+            label: '交卷时间'
+          },
+          {
+            prop: 'status',
+            label: '状态',
+            style: (row) => ({ color: this.statusList[row.status].color }),
+            formatter: (row) => this.statusList[row.status].text
+          },
+          {
+            prop: 'score',
+            label: '得分 / 总分',
+            'min-width': '120px',
+            fixed: 'right',
+            slot: 'score'
+          }
+        ],
+        operation: {
+          btns: [
+            {
+              label: '评卷',
+              type: 'text',
+              show: (row) => row.status == 3,
+              fn: (row) => {
+                this.turnToEvaluation(row)
+              }
+            },
+            {
+              label: '查看试卷',
+              type: 'text',
+              fn: (row) => {
+                this.detail(row)
+              }
+            }
+          ]
+        },
+        pagination: true,
+        url: 'getStudentScoreList',
+        params: {
+          examId: 0,
+          classI: 0
+        }
+      },
       examTitleLoading: false,
       studentAnswerDialog: false,
       examInfo: {
@@ -179,30 +181,16 @@ export default {
     this.getData()
   },
   methods: {
-    handleCurrentChange (val) {
-      this.page = val
-      this.getData()
-    },
-    handleSizeChange (val) {
-      this.pageSize = val
-      this.getData()
-    },
     async getClassList () {
       await this.$api('getClassroomList').then(data => {
         this.classList = data
       })
     },
     async getData () {
-      this.loading = true
-      await this.$api('getStudentScoreList', {
-        examId: this.CurrentExamTitle || this.$route.params.examId || 0,
-        classId: this.CurrentClass || 0
-      }).then(data => {
-        this.tableData = data.items
-        this.page = data.page
-        this.total = data.total
-      }).finally(_ => {
-        this.loading = false
+      this.tableConfig.params.examId = this.CurrentExamTitle || this.$route.params.examId || 0
+      this.tableConfig.params.classId = this.CurrentClass || 0
+      this.$nextTick(() => {
+        this.$refs.table.fetch()
       })
     },
     async getExamTitleList () {
@@ -238,7 +226,6 @@ export default {
         this.studentAnswerLoading = false
       })
     },
-    setScore () { },
     turnToEvaluation () {
       this.$router.push({ name: 'ExamEvaluation' })
     }

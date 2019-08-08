@@ -44,10 +44,6 @@ export default {
           label: '数据加载中'
         }
       ],
-      tableData: [],
-      page: 1,
-      pageSize: 10,
-      total: 0,
       tableConfig: {
         data: [],
         row: [
@@ -91,15 +87,6 @@ export default {
     await this.getData()
   },
   methods: {
-    handleCurrentChange (val) {
-      this.page = val
-      this.getData()
-    },
-    handleSizeChange (val) {
-      this.pageSize = val
-      this.getData()
-    },
-    SendEmail () { },
     async getClassroomList () {
       this.loading = true
       let classList = await this.$api('getTeacherClassroom')
