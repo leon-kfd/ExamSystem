@@ -29,7 +29,7 @@
                        :align="conf.operation.align || 'center'"
                        :fixed="conf.operation.fixed || 'right'"
                        min-width="150px"
-                       width="150px">
+                       :width="conf.operation.width || '150px'">
         <template slot-scope="scope">
           <template v-for="(item,index1) in conf.operation.btns">
             <el-button v-if="item.show ? item.show(scope.row) : true"
@@ -37,6 +37,7 @@
                        :type="item.type || 'text'"
                        :size="item.size || 'small'"
                        :disabled="item.disabled ? item.disabled(scope.row) : false"
+                       :style="(item.style && typeof item.style == 'function') ? item.style(scope.row) : item.style"
                        @click="item.fn && item.fn(scope.row)">{{item.label}}</el-button>
           </template>
           <el-link v-for="(item,index2) in conf.operation.links"
@@ -128,6 +129,7 @@ export default {
     fetch () {
       return new Promise((resolve, reject) => {
         this.loading = true
+        this.$emit('update:loading', true)
         let axiosDefaultConfig = {
           method: 'post',
           headers: {
@@ -181,6 +183,7 @@ export default {
           reject(data)
         }).finally(() => {
           this.loading = false
+          this.$emit('update:loading', false)
         })
       })
     }

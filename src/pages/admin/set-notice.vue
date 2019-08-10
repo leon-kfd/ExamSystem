@@ -244,9 +244,7 @@ export default {
             {
               label: '删除',
               type: 'text',
-              style: (row) => {
-                return 'color: #b33'
-              },
+              style: 'color: #b33',
               fn: (row) => {
                 this.del(row)
               }

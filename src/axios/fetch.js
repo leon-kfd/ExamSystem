@@ -12,7 +12,6 @@ promiseFinally.shim()
 // var devURL = 'http://localhost/ExamSystemApi/public/api/'
 var baseURL = process.env.NODE_ENV === 'production' ? './api' : './api/api'
 window.REQUEST_URL = process.env.NODE_ENV === 'production' ? '.' : baseURL.slice(-4)
-console.log(window.REQUEST_URL)
 
 const instance = axios.create({
   baseURL,
@@ -22,7 +21,23 @@ const instance = axios.create({
   }
 })
 
+let axiosPendingList = []
+
 instance.interceptors.request.use((config) => {
+  let mark = config.url
+  let markIndex = axiosPendingList.findIndex(item => item.name == mark)
+  if (markIndex > -1) {
+    axiosPendingList[markIndex].cancel('重复请求')
+    axiosPendingList.splice(markIndex, 1)
+  }
+  const CancelToken = axios.CancelToken
+  const source = CancelToken.source()
+  config.cancelToken = source.token
+  config._mark = mark
+  axiosPendingList.push({
+    name: mark,
+    cancel: source.cancel
+  })
   let token = sessionStorage.getItem('token') || ''
   if (token) {
     if (config.data) {
@@ -40,6 +55,10 @@ instance.interceptors.request.use((config) => {
 
 instance.interceptors.response.use(
   response => {
+    let markIndex = axiosPendingList.findIndex(item => item.name == response.config.url)
+    if (markIndex > -1) {
+      axiosPendingList.splice(markIndex, 1)
+    }
     let data = response.data
     if (data.code === 200) {
       return data.data
@@ -64,13 +83,15 @@ instance.interceptors.response.use(
     }
   },
   err => {
-    Message({
-      showClose: true,
-      message: 'Api访问失败，请检查网络..',
-      type: 'error',
-      duration: 1500
-    })
-    return Promise.reject(err)
+    if (!err.message === '重复请求') {
+      Message({
+        showClose: true,
+        message: 'Api访问失败，请检查网络..',
+        type: 'error',
+        duration: 1500
+      })
+      return Promise.reject(err)
+    }
   }
 )
 

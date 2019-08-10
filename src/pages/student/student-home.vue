@@ -563,7 +563,6 @@ export default {
   }
 }
 .exam-list-box {
-  min-height: 500px;
   .exam-tab-select {
     ul.tab-list {
       width: 100%;

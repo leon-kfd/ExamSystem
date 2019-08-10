@@ -5,10 +5,11 @@
          :style="{width: isCollapse ? '64px' : '200px'}">
       <el-menu class="el-menu-vertical-demo"
                :collapse="isCollapse"
-               :default-active="MenuActiveIndex">
+               :default-active="activeRouteName">
         <template v-for="(menu,index) in menuList">
           <el-submenu :index="menu.name"
                       :key="index"
+                      :class="{'menu-active': menu.name == activeRouteName}"
                       v-if="menu.children&&!menu.noChildren">
             <template slot="title">
               <i :class="menu.meta.iconClass"></i>
@@ -17,6 +18,7 @@
             <el-menu-item v-for="(menuSecond, indexSecond) in menu.children"
                           :key="indexSecond"
                           :index="menuSecond.name"
+                          :class="{'menu-active': menuSecond.name == activeRouteName}"
                           @click="$router.push({name:menuSecond.name})"
                           style="padding-left: 55px;">{{menuSecond.meta.label}}</el-menu-item>
           </el-submenu>
@@ -30,6 +32,7 @@
           <el-menu-item v-else-if="menu.noChildren"
                         :index="menu.name"
                         :key="index"
+                        :class="{'menu-active': menu.name == activeRouteName}"
                         @click="$router.push({name:menu.name})">
             <i :class="menu.meta.iconClass"></i>
             <span slot="title">{{ menu.meta.label }}</span>
@@ -89,7 +92,8 @@ export default {
       isCollapse: false,
       adminRouterList: [],
       username: '',
-      userImg: ''
+      userImg: '',
+      activeRouteName: ''
     }
   },
   computed: {
@@ -103,6 +107,19 @@ export default {
       let temp = this.$route.matched
       temp.shift()
       return temp
+    }
+  },
+  watch: {
+    '$route.path': {
+      handler (val) {
+        let nameArr = val.split('/')
+        if (nameArr[nameArr.length - 1] !== 'index') {
+          this.activeRouteName = nameArr[nameArr.length - 1]
+        } else {
+          this.activeRouteName = nameArr[nameArr.length - 2]
+        }
+      },
+      immediate: true
     }
   },
   mounted () {
