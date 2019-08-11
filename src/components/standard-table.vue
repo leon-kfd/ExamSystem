@@ -117,7 +117,7 @@ export default {
     getMap (result, mapRule) {
       let mapItems = mapRule.split('.') || []
       mapItems.map(item => {
-        if (result) {
+        if (typeof result !== 'undefined' && result !== null) {
           result = result[item]
         } else {
           this.$message.error(`返回${mapRule}映射失败,请检查Map配置与后端返回数据是否配置正确..`)
@@ -158,27 +158,29 @@ export default {
           })
         }
         instance.then(data => {
-          let resultItems = this.getMap(data, this.conf.resultMap || this.defaultMap.items)
-          if (resultItems != null) {
-            if (!this.conf.pagination) {
-              this.conf.data = resultItems
-            } else if (this.conf.pagination && this.isStaticPagination) {
-              this.staticData = resultItems
-              this.total = this.staticData.length || 0
-              this.staticPagination()
-            } else {
-              this.conf.data = resultItems
-              let resultTotal = this.getMap(data, (this.conf.pagination.responseMap && this.conf.pagination.responseMap.total) || this.defaultMap.total)
-              if (resultTotal != null) {
-                this.total = resultTotal
+          if (data) {
+            let resultItems = this.getMap(data, this.conf.resultMap || this.defaultMap.items)
+            if (typeof resultItems !== 'undefined' && resultItems !== null) {
+              if (!this.conf.pagination) {
+                this.conf.data = resultItems
+              } else if (this.conf.pagination && this.isStaticPagination) {
+                this.staticData = resultItems
+                this.total = this.staticData.length || 0
+                this.staticPagination()
               } else {
-                this.$message.error(`返回数据total字段映射失败,请检查Map配置与后端返回数据是否配置正确..`)
+                this.conf.data = resultItems
+                let resultTotal = this.getMap(data, (this.conf.pagination.responseMap && this.conf.pagination.responseMap.total) || this.defaultMap.total)
+                if (typeof resultTotal !== 'undefined' && resultTotal !== null) {
+                  this.total = resultTotal
+                } else {
+                  this.$message.error(`返回数据total字段映射失败,请检查Map配置与后端返回数据是否配置正确..`)
+                }
               }
+            } else {
+              this.$message.error(`返回数据items字段映射失败,请检查Map配置与后端返回数据是否正确...`)
             }
-          } else {
-            this.$message.error(`返回数据items字段映射失败,请检查Map配置与后端返回数据是否正确...`)
+            resolve(data)
           }
-          resolve(data)
         }, data => {
           reject(data)
         }).finally(() => {

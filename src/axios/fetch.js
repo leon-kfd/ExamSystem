@@ -55,7 +55,7 @@ instance.interceptors.request.use((config) => {
 
 instance.interceptors.response.use(
   response => {
-    let markIndex = axiosPendingList.findIndex(item => item.name == response.config.url)
+    let markIndex = axiosPendingList.findIndex(item => item.name == response.config._mark)
     if (markIndex > -1) {
       axiosPendingList.splice(markIndex, 1)
     }
@@ -96,7 +96,8 @@ instance.interceptors.response.use(
 )
 
 export {
-  baseURL
+  baseURL,
+  axiosPendingList
 }
 
 export default instance

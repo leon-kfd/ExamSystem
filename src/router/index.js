@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import { axiosPendingList } from '@/axios/fetch.js'
 import Login from '@/pages/login'
 import Student from '@/pages/student'
 import StudentHome from '@/pages/student/student-home'
@@ -188,6 +189,16 @@ const router = new Router({
       children: studentRouter
     }
   ]
+})
+
+router.beforeEach((to, from, next) => {
+  console.log('axiosPendingList', axiosPendingList)
+  axiosPendingList.map(item => {
+    if (!item.notAllowCancel) {
+      item.cancel()
+    }
+  })
+  next()
 })
 
 export default router

@@ -291,8 +291,8 @@ export default {
         page: this.page1,
         pageSize: this.pageSize1
       }).then(data => {
-        this.myExamList = data.items
-        this.total1 = data.total
+        this.myExamList = data && data.items || []
+        this.total1 = data && data.total || 0
       }).finally(_ => {
         this.loading = false
       })
@@ -305,8 +305,8 @@ export default {
           page: this.page2,
           pageSize: this.pageSize2
         }).then(data => {
-          this.myExamFinishList = data.items
-          this.total2 = data.total
+          this.myExamFinishList = data && data.items || []
+          this.total2 = data && data.total || 0
           this.finishLoadFlag = true
         }).finally(_ => {
           this.loading = false
