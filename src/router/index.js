@@ -192,7 +192,6 @@ const router = new Router({
 })
 
 router.beforeEach((to, from, next) => {
-  console.log('axiosPendingList', axiosPendingList)
   axiosPendingList.map(item => {
     if (!item.notAllowCancel) {
       item.cancel()

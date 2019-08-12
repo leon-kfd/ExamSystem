@@ -75,6 +75,9 @@
           </el-dropdown-menu>
         </el-dropdown>
       </div>
+      <div class="fr">
+        <theme-seletor></theme-seletor>
+      </div>
     </div>
     <div class="app-content"
          ref="appContent"
@@ -85,8 +88,12 @@
 </template>
 <script>
 import { adminRouter } from '@/router/index'
+import ThemeSeletor from '@/components/theme-selector'
 export default {
   name: 'AdminHome',
+  components: {
+    ThemeSeletor
+  },
   data () {
     return {
       isCollapse: false,
