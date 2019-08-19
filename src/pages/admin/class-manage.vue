@@ -105,4 +105,7 @@ export default {
 #ClassManage .el-transfer-panel .el-transfer-panel__footer {
   height: 50px;
 }
+#ClassManage .el-transfer-panel__item.el-checkbox {
+  display: block;
+}
 </style>

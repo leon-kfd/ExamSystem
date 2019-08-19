@@ -8,5 +8,5 @@
   "light-6": "color(primary tint(60%))",
   "light-7": "color(primary tint(70%))",
   "light-8": "color(primary tint(80%))",
-  "light-9": "color(primary tint(90%))"
+  "light-9": "color(primary 90%))"
 }

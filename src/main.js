@@ -14,11 +14,15 @@ import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.snow.css'
 import 'quill/dist/quill.bubble.css'
 
+import NewLoading from '@/components/loading'
+
 Vue.use(VueQuillEditor)
 
 Vue.config.productionTip = false
 
 Vue.use(ElementUI)
+Vue.use(NewLoading)
+
 Vue.prototype.$api = api
 
 new Vue({
