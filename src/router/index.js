@@ -1,5 +1,5 @@
-import Vue from 'vue'
-import Router from 'vue-router'
+// import Vue from 'vue'
+// import Router from 'vue-router'
 import { axiosPendingList } from '@/axios/fetch.js'
 import Login from '@/pages/login'
 import Student from '@/pages/student'
@@ -8,7 +8,7 @@ import Exam from '@/pages/student/exam'
 import Admin from '@/pages/admin/index'
 // import { Message } from 'element-ui'
 
-Vue.use(Router)
+Vue.use(VueRouter)
 
 let adminRouter = [
   {
@@ -162,7 +162,7 @@ let studentRouter = [
     component: () => import('@/pages/student/notice-list')
   }
 ]
-const router = new Router({
+const router = new VueRouter({
   routes: [
     {
       path: '/',

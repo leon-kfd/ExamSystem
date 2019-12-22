@@ -38,7 +38,10 @@
       "node": true
     },
     "globals": {
-      "REQUEST_URL": true
+      "REQUEST_URL": true,
+      "Vue": true,
+      "VueRouter": true,
+      "ELEMENT": true
     },
     "extends": [
       "plugin:vue/essential",

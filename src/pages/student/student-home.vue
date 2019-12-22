@@ -293,12 +293,6 @@ export default {
       myExamListFlag: false,
       myExamFinishListFlag: false,
       noticeList: [],
-      studentInfo: {
-        username: '',
-        number: '',
-        classname: '',
-        portrait: ''
-      },
       noticeDialog: false,
       noticeDetail: {
         title: '',
@@ -319,10 +313,19 @@ export default {
     }
   },
   mounted () {
-    this.getStudentInfo()
     // this.getExamList()
     this.getNoticeList()
     this.getCurrentExamList()
+  },
+  computed: {
+    studentInfo () {
+      return this.$store.state.studentInfo || {
+        username: '',
+        number: '',
+        classname: '',
+        portrait: ''
+      }
+    }
   },
   methods: {
     // async getExamList () {
@@ -346,7 +349,6 @@ export default {
       }
     },
     handleCurrentChange (val) {
-      console.log('a')
       if (this.tabActive == 1) {
         this.page1 = val
         this.getCurrentExamList()
@@ -386,29 +388,6 @@ export default {
         })
       }
     },
-    getStudentInfo () {
-      if (this.$store.state.studentInfo.username && !this.$store.state.studentRefresh) {
-        this.studentInfo = this.$store.state.studentInfo
-      } else {
-        this.studentInfoLoading = true
-        this.$api('getStudentInfo').then(data => {
-          this.studentInfo = {
-            username: data.student_name || data.student_account,
-            number: data.student_num || '-未设置学号-',
-            classname: data.class_fullname || data.class_name || '-未设置班级-',
-            portrait: data.portrait_address ? REQUEST_URL + data.portrait_address : '../../static/img/user.jpg'
-          }
-          if (!data.student_num) {
-            this.$message.warning('检测到未绑定用户信息，请先绑定学生账号')
-            this.$router.push({ name: 'StudentPersonal' })
-          }
-          this.$store.commit('updateStudentInfo', this.studentInfo)
-          this.$store.commit('updateStudentRefresh', false)
-        }).finally(_ => {
-          this.studentInfoLoading = false
-        })
-      }
-    },
     turnToExam (examId, status) {
       if (status == 2) {
         this.$confirm('进入考试后开始计时, 不可暂停，是否确认开始考试?', '提示', {
@@ -417,7 +396,6 @@ export default {
           type: 'warning'
         }).then(() => {
           this.$router.push({ name: 'Exam', params: { examId } })
-          console.log(examId)
         }).catch({})
       } else {
         this.$message.warning('考试未开始...')
@@ -452,7 +430,6 @@ export default {
       await this.$api('getNoticeDetailFromStudent', {
         id
       }).then(data => {
-        console.log(data)
         this.noticeDetail.title = data.notice_title
         this.noticeDetail.publisher = data.teacher_name
         this.noticeDetail.showTime = data.show_time

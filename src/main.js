@@ -1,10 +1,10 @@
-import Vue from 'vue'
+// import Vue from 'vue'
 import App from './App'
 import router from './router'
 import store from './store'
 import 'babel-polyfill'
-import ElementUI from 'element-ui'
-import 'element-ui/lib/theme-chalk/index.css'
+// import ElementUI from 'element-ui'
+// import 'element-ui/lib/theme-chalk/index.css'
 import '@/assets/css/index.scss'
 import api from '@/axios/api.js'
 
@@ -20,7 +20,7 @@ Vue.use(VueQuillEditor)
 
 Vue.config.productionTip = false
 
-Vue.use(ElementUI)
+Vue.use(ELEMENT)
 Vue.use(NewLoading)
 
 Vue.prototype.$api = api

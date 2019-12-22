@@ -5,16 +5,16 @@ Vue.use(Vuex)
 const store = new Vuex.Store({
   state: {
     studentInfo: {},
-    studentRefresh: true,
+    // studentRefresh: true,
     classList: []
   },
   mutations: {
     updateStudentInfo (state, studentInfo) {
       state.studentInfo = studentInfo
     },
-    updateStudentRefresh (state, studentRefresh) {
-      state.studentRefresh = studentRefresh
-    },
+    // updateStudentRefresh (state, studentRefresh) {
+    //   state.studentRefresh = studentRefresh
+    // },
     updateClassList (state, classList) {
       state.classList = classList
     }
