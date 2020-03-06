@@ -14,59 +14,6 @@
                  @click="getData">刷新</el-button>
     </div>
     <div class="notice-table">
-      <!-- <div class="table-main">
-        <el-table :data="tableData"
-                  v-loading="loading"
-                  border
-                  stripe
-                  style="width: 100%">
-          <el-table-column prop="noticeTitle"
-                           label="公告标题"
-                           align="center"
-                           min-width="150">
-          </el-table-column>
-          <el-table-column prop="showClass"
-                           label="展示班级"
-                           align="center">
-          </el-table-column>
-          <el-table-column prop="publishTime"
-                           label="发布时间"
-                           align="center">
-          </el-table-column>
-          <el-table-column prop="showTime"
-                           label="展示开始时间"
-                           align="center">
-          </el-table-column>
-          <el-table-column prop="publishTime"
-                           label="展示结束时间"
-                           align="center">
-          </el-table-column>
-          <el-table-column fixed="right"
-                           label="操作"
-                           align="center"
-                           width="200">
-            <template slot-scope="scope">
-              <el-button @click="edit(scope.row)"
-                         type="text"
-                         size="small">重新编辑</el-button>
-              <el-button type="text"
-                         @click="del(scope.row)"
-                         size="small"
-                         style="color: #b33">删除</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-      </div>
-      <div class="table-pagination">
-        <el-pagination @size-change="handleSizeChange"
-                       @current-change="handleCurrentChange"
-                       :current-page="page"
-                       :page-sizes="[10, 20, 30, 40]"
-                       :page-size="pageSize"
-                       layout="total, sizes, prev, pager, next, jumper"
-                       :total="total">
-        </el-pagination>
-      </div> -->
       <standard-table :conf="tableConfig"
                       ref="table"
                       :loading.sync="loading"></standard-table>
@@ -128,7 +75,8 @@
                        @click="publishNotice"
                        :loading="btnAddNoticeLoading"
                        size="small">发布</el-button>
-            <el-button size="small">取消</el-button>
+            <el-button size="small"
+                       @click="addDialog = false">取消</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -191,7 +139,8 @@
                        @click="editNotice"
                        :loading="btnEditNoticeLoading"
                        size="small">修改发布</el-button>
-            <el-button size="small">取消</el-button>
+            <el-button size="small"
+                       @click="editDialog = false">取消</el-button>
           </el-form-item>
         </el-form>
       </div>
