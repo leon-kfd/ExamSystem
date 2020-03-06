@@ -1,5 +1,5 @@
-// import Vue from 'vue'
-// import Router from 'vue-router'
+import Vue from 'vue'
+import VueRouter from 'vue-router'
 import { axiosPendingList } from '@/axios/fetch.js'
 import Login from '@/pages/login'
 import Student from '@/pages/student'

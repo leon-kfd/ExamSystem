@@ -78,7 +78,8 @@ export default {
       })
     },
     getIndexStyle () {
-      this.getFile('../../theme/index.css').then(({ data }) => {
+      const publicPath = process.env.NODE_ENV === 'production' ? '/exam/' : '/'
+      this.getFile(`${publicPath}theme/index.css`).then(({ data }) => {
         this.originalStyle = this.getStyleTemplate(data)
       })
     },

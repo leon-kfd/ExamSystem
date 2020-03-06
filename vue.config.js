@@ -14,8 +14,11 @@ module.exports = {
     externals: {
       'vue': 'Vue',
       'vue-router': 'VueRouter',
-      'element-ui': 'ELEMENT'
+      'element-ui': 'ELEMENT',
+      'vuex': 'Vuex',
+      'echarts': 'echarts'
     }
   },
-  publicPath: './'
+  publicPath: './',
+  productionSourceMap: false
 }
